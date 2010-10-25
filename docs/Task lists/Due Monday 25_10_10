@@ -1,0 +1,42 @@
+* Andy - First GUI prototype. V. basic is fine - the main thing is to be
+able to display & set persistent settings, & to have a static
+SettingsManager that will be accessible from various parts of the code.
+* James - Get a shared dir from CSG
+* *Everyone* - Read (and follow!) a git tutorial somewhere on the web.
+Those of you on Windows machines will need to either virtualize (if you
+don't know what this means by now you're basically fired) or use putty
+onto the lab machines and do things from there. git on Windows isn't
+easy to get set up, and besides we can't really develop on Windows
+machines anyway since Vazels doesn't run there. If you don't have git on
+your 'nix box it's on the Ubuntu repositories so a simple sudo apt-get
+install git should put you in good stead. To learn git I used
+http://gitref.org/ and http://progit.org/book/ . Either of those are
+good, but progit is a bit more advanced (beyond what you need to know
+for this project). Also a good introduction to the idea can be found at
+http://eagain.net/articles/git-for-computer-scientists/ .
+  * Andy - good work opening up a shared directory, but we've got issues
+already. Permissions are all wrong - can't use git in a place where I
+don't have any permissions to access the ".git" subdirectory. ffs.
+Bloody access control.
+
+
+  * Simon & Chris - Investigate information available in the current
+dumps that we get from vazels (eg. getalloutput returns a protocol
+buffer...). Investigate how we extract this information from the
+returned data, & how we can assess (maybe through introspection) what
+data it contains without prior knowledge of what was written to it (i.e.
+how can we output it in a useful way without knowing how the user has
+written their actors/workloads).
+  * Andreea - Investigate transactions. What data can we get from them?
+How much can we know about them - what do they potentially return & how
+can we assess that?
+
+In both of these two cases, it'd be really nice if the people involved
+in looking into them could be prepared to explain their findings to the
+rest of the group, so we're all up to speed after Monday's meeting (or
+better yet, before it). Nothing serious, but a quick rundown of what
+we're up against would be great.
+
+  * James - Get a wiki going somewhere accessible at least to the group
+  * James - Investigate existing capabilities for changing groups at
+runtime.
