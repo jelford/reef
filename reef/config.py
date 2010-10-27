@@ -30,9 +30,12 @@ def setConfig(cfgpath):
 def saveConfig():
     global location, settings
     if location:
-        with open(location, 'w') as cfg:
-            import pickle
-            pickle.dump(settings, cfg)
+        try:
+            with open(location, 'w') as cfg:
+                import pickle
+                pickle.dump(settings, cfg)
+        except IOError:
+            print "Couldn't save config...whoopsy"
 
 def onDisk():
     global location

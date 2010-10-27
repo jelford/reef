@@ -33,6 +33,7 @@ def generic_page_handler():
 
 @restlite.resource
 def auth_page_handler():
+    global authmodel
     import os
     def GET(request):
         if authmodel:
@@ -77,6 +78,7 @@ def auth_page_handler():
 # - If a name is given with no value, it is deleted
 @restlite.resource
 def settings_editor():
+    global authmodel
     def GET(request):
         if authmodel:
             authmodel.login(request)
