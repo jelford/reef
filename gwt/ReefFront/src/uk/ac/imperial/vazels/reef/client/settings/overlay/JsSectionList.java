@@ -1,10 +1,10 @@
-package uk.ac.imperial.vazels.reef.client.settings;
+package uk.ac.imperial.vazels.reef.client.settings.overlay;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
-public class SectionList extends JavaScriptObject
+public class JsSectionList extends JavaScriptObject
 {
-	protected SectionList(){}
+	protected JsSectionList(){}
 
 	public final native String sectionAt(int index)
 	/*-{

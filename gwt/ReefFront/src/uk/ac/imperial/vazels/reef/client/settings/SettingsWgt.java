@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import uk.ac.imperial.vazels.reef.client.EasyRequest;
+import uk.ac.imperial.vazels.reef.client.settings.overlay.SectionList;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -51,7 +52,7 @@ public class SettingsWgt extends VerticalPanel
 					statusBar.setText("There was an unknown problem with the request...");
 				else if(code == 200)
 				{
-						SectionList sections = getSections(content);
+						SectionList sections = new SectionList(content);
 						refreshSettings(sections);
 						statusBar.setText("");
 				}
@@ -73,9 +74,8 @@ public class SettingsWgt extends VerticalPanel
 		settingAccordion.clear();
 		HashMap<String, SettingsSectionWgt> newSectionWgts = new HashMap<String, SettingsSectionWgt>();
 		
-		for(int i=0;i<sections.length();i++)
+		for(String section : sections)
 		{
-			String section = sections.sectionAt(i);
 			SettingsSectionWgt wgt = null;
 			
 			if(sectionWgts.containsKey(section))
@@ -90,9 +90,4 @@ public class SettingsWgt extends VerticalPanel
 		
 		sectionWgts = newSectionWgts;
 	}
-	
-	private final native SectionList getSections(String sections)
-	/*-{
-		return eval(sections);
-	}-*/;
 }

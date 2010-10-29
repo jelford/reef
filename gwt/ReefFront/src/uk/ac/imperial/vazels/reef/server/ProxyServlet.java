@@ -16,6 +16,7 @@ package uk.ac.imperial.vazels.reef.server;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  * 
+ * Edited by Andy Gurden
  */
 
 import java.io.IOException;
@@ -131,7 +132,11 @@ public class ProxyServlet extends HttpServlet
 		HttpResponse targetResponse = httpclient.execute(targetRequest);
 		HttpEntity entity = targetResponse.getEntity();
 		
+		// Forward correct status
 		resp.setStatus(targetResponse.getStatusLine().getStatusCode(), targetResponse.getStatusLine().getReasonPhrase());
+		
+		// Forward correct mimetype
+		resp.setContentType(entity.getContentType().getValue());
 		
 		// Send the Response
 		InputStream input = entity.getContent();

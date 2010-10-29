@@ -15,14 +15,15 @@ public abstract class EasyRequest
 	
 	public EasyRequest()
 	{
-		this(false);
+		this(true);
 	}
 	
 	public EasyRequest(boolean inTesting)
 	{
-		proxyURL = GWT.getModuleBaseURL();
 		if(inTesting)
-			proxyURL += "proxy";
+			proxyURL = GWT.getModuleBaseURL() + "proxy";
+		else
+			proxyURL = "http://"+Window.Location.getHost();
 	}
 	
 	public void request(RequestBuilder.Method method, String url, QueryArg[] query)

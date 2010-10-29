@@ -142,7 +142,7 @@ def settings_editor():
         fs = {
             's' : str,
             'i' : int,
-            'f' : float,
+            'd' : float,
         }
 
         l = len(name)

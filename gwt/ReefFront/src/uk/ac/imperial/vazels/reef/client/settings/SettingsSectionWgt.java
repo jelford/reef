@@ -4,13 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import uk.ac.imperial.vazels.reef.client.EasyRequest;
+import uk.ac.imperial.vazels.reef.client.settings.overlay.SettingGroup;
 
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.user.client.ui.DisclosurePanel;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class SettingsSectionWgt extends VerticalPanel
+public class SettingsSectionWgt extends FlexTable
 {
 	private final String section;
 	protected Map<String, SingleSettingWgt> settingWgts;
@@ -22,7 +23,8 @@ public class SettingsSectionWgt extends VerticalPanel
 		errMsg = new DisclosurePanel("Could not check settings...");
 		errMsg.setVisible(false);
 		
-		add(errMsg);
+		getFlexCellFormatter().setColSpan(0, 0, 2);
+		setWidget(0,0,errMsg);
 		settingWgts = new HashMap<String, SingleSettingWgt>();
   }
 	
@@ -41,7 +43,7 @@ public class SettingsSectionWgt extends VerticalPanel
 				// Constant first otherwise JS translation breaks everything
 				if(code != null && code == 200)
 				{
-						SettingGroup settings = getSettings(content);
+						SettingGroup settings = new SettingGroup(content);
 						refreshFields(settings);
 				}
 				else
@@ -58,15 +60,17 @@ public class SettingsSectionWgt extends VerticalPanel
 	
 	private void refreshFields(SettingGroup setGrp)
 	{
-		clear();
+		removeAllRows();
 		errMsg.setVisible(false);
-		add(errMsg);
+		
+		getFlexCellFormatter().setColSpan(0, 0, 2);
+    setWidget(0,0,errMsg);
+    
 		HashMap<String, SingleSettingWgt> newSettings = new HashMap<String, SingleSettingWgt>();
 		
-		for(String key : setGrp.getKeys())
+		for(String key : setGrp.keys())
 		{
 			SingleSettingWgt wgt = null;
-			System.out.println(key);
 			
 			if(settingWgts.containsKey(key))
 				wgt = settingWgts.get(key);
@@ -74,15 +78,12 @@ public class SettingsSectionWgt extends VerticalPanel
 				wgt = new SingleSettingWgt(key);
 			
 			newSettings.put(key, wgt);
-			wgt.currentValue(setGrp.getSetting(key));
-			add(wgt);
+			wgt.currentValue(setGrp.get(key));
+			int row = getRowCount();
+			setText(row, 0, key);
+			setWidget(row, 1, wgt);
 		}
 		
 		settingWgts = newSettings;
 	}
-	
-	private final native SettingGroup getSettings(String settings)
-	/*-{
-		return eval("("+settings+")");
-	}-*/;
 }
