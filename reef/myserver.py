@@ -6,7 +6,7 @@ theserver = None
 
 class ReefServer:
     def __init__(self):
-        self.authmodel = restlite.AuthModel()
+        self.authmodel = None
         self.routes = []
         config.getSettings("server").setdefault("user", pb.appname_file)
         config.getSettings("server").setdefault("passkey", "")
@@ -15,11 +15,13 @@ class ReefServer:
         config.getSettings("server").setdefault("pagedir", "./pages/")
 
     def setup(self):
-        self.authmodel.register(
-            config.getSettings("server")["user"],
-            'localhost',
-            config.getSettings("server")["passkey"]
-        )
+        if config.getSettings("server")["passkey"]:
+            self.authmodel = restlite.AuthModel()
+            self.authmodel.register(
+                config.getSettings("server")["user"],
+                'localhost',
+                config.getSettings("server")["passkey"]
+            )
 
         import handlers
         handlers.setAuth(self.authmodel)

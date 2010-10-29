@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+  
+  <!-- Default page to serve -->
+  <welcome-file-list>
+    <welcome-file>ReefFront.html</welcome-file>
+  </welcome-file-list>
+  
+  <servlet>
+ 2    <servlet-name>proxy</servlet-name>
+ 3    <servlet-class>uk.ac.imperial.vazels.reef.server.ProxyServlet</servlet-class>
+ 4</servlet>
+ 5
+ 6<servlet-mapping>
+ 7    <servlet-name>proxy</servlet-name>
+ 8    <url-pattern>/reeffront/proxy/*</url-pattern>
+ 9</servlet-mapping>
+ 
+</web-app>

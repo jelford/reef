@@ -46,7 +46,7 @@ def auth_page_handler():
             request['PATH_INFO']
         )
         try:
-            return request.response(getPage(page_file), 'text/html')
+            return request.response(getPage(page_file), getType(page_file))
         except restlite.Status:
             index_page = os.path.join(page_file, 'index.html')
             return request.response(getPage(index_page), 'text/html')
@@ -57,6 +57,20 @@ def auth_page_handler():
                 return page.read()
         except IOError:
             raise restlite.Status, "404 Not Found"
+
+    def getType(path):
+        extSplit = path.rsplit('.', 1)
+        ext = extSplit[len(extSplit)-1]
+        try:
+            return {
+                'html' : 'text/html',
+                'htm' : 'text/html',
+                'css' : 'text/css',
+                'js' : 'text/javascript',
+            }[ext]
+        except KeyError:
+            return 'text/plain'
+
     return locals()
 
 
