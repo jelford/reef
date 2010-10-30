@@ -12,6 +12,19 @@ import uk.ac.imperial.vazels.reef.client.settings.overlay.Setting;
 import uk.ac.imperial.vazels.reef.client.settings.overlay.SettingGroup;
 
 public class SettingsManager {
+  
+  // Singleton Schizzlement
+  
+  private static SettingsManager manager = null;
+  
+  public static SettingsManager getManager()
+  {
+    if(manager == null)
+      manager = new SettingsManager();
+    return manager;
+  }
+  
+  // Cached settings
   private UpdateInfo<SectionList> sections;
   private Map<String, UpdateInfo<SettingGroup>> settings;
 
@@ -115,6 +128,11 @@ public class SettingsManager {
     getSettings(section, grpHandler, oldTime);
   }
 
+  // Used as the callback object for any requests
+  // Give reply, response code and response message whenever we have a definite response
+  // If there is an error response code and reason are given
+  // If there is no response, then code is null
+  // When we request cached data, if it is still in date we get a positive response
   public interface RequestHandler<Type> {
     public void handle(Type reply, Integer code, String msg);
   }

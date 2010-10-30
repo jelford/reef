@@ -20,23 +20,35 @@ public class SingleSettingWgt extends TextBox {
   }
 
   // Called to inform the widget of the current setting on the server
-  public void currentValue(Setting value) {
-    switch (value.getType()) {
-    case STRING:
-      type = "_i";
-      break;
-    case DOUBLE:
-      type = "_d";
-      break;
-    case INTEGER:
-      type = "_i";
-      break;
-    default:
-      type="";
-    }
+  public void updateValue(String section) {
+    // We assume the cached values are fine if they're less than 1 min old
+    // Usually the values will have been taken by the Section widget
 
-    this.setName(name + type);
+    final SingleSettingWgt widget = this;
 
-    this.setValue((value == null) ? "" : value.toString());
+    SettingsManager.getManager().getSetting(section, name,
+        new SettingsManager.RequestHandler<Setting>() {
+          @Override
+          public void handle(Setting reply, Integer code, String msg) {
+            if (code == 200 && reply != null) {
+              switch (reply.getType()) {
+              case STRING:
+                type = "_i";
+                break;
+              case DOUBLE:
+                type = "_d";
+                break;
+              case INTEGER:
+                type = "_i";
+                break;
+              default:
+                type = "";
+              }
+
+              widget.setName(name + type);
+              widget.setValue((reply == null) ? "" : reply.toString());
+            }
+          }
+        }, 1);
   }
 }

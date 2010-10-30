@@ -19,7 +19,7 @@ public class JsSettingGroup extends JavaScriptObject
 	
 	public final native boolean hasSetting(String name)
 	/*-{
-		return (this[name] === undefined);
+		return !(this[name] === undefined);
 	}-*/;
 	
 	public final native String getStringSetting(String name)
