@@ -29,8 +29,8 @@ public class SingleSettingWgt extends TextBox {
     SettingsManager.getManager().getSetting(section, name,
         new SettingsManager.RequestHandler<Setting>() {
           @Override
-          public void handle(Setting reply, Integer code, String msg) {
-            if (code == 200 && reply != null) {
+          public void handle(Setting reply, boolean success, String reason) {
+            if (success && reply != null) {
               switch (reply.getType()) {
               case STRING:
                 type = "_i";

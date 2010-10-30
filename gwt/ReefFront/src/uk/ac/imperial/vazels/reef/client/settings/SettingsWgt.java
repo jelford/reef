@@ -37,17 +37,12 @@ public class SettingsWgt extends VerticalPanel {
     SettingsManager.getManager().getSections(
         new SettingsManager.RequestHandler<SectionList>() {
           @Override
-          public void handle(SectionList reply, Integer code, String msg) {
-            if (code == null)
-              statusBar.setText("There was an unknown problem with the request...");
-            else if (code == 200) {
+          public void handle(SectionList reply, boolean success, String reason) {
+            if (success) {
               refreshSettings(reply);
               statusBar.setText("");
             } else {
-              String err = "Problem: " + code;
-              if (msg != null)
-                err += " - " + msg;
-              statusBar.setText(err);
+              statusBar.setText("Problem: " + reason);
             }
           }
         });

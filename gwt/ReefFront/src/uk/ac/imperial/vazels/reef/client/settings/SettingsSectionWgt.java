@@ -32,12 +32,12 @@ public class SettingsSectionWgt extends FlexTable {
     SettingsManager.getManager().getSettings(section,
         new SettingsManager.RequestHandler<SettingGroup>() {
           @Override
-          public void handle(SettingGroup reply, Integer code, String msg) {
-            if (code != null && code == 200) {
+          public void handle(SettingGroup reply, boolean success, String reason) {
+            if (success) {
               refreshFields(reply);
             } else {
               errMsg.clear();
-              errMsg.add(new Label(code + " " + msg));
+              errMsg.add(new Label(reason));
               errMsg.setVisible(true);
             }
           }
