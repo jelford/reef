@@ -34,7 +34,7 @@ def scan_output_helper(path):
 
 	folder_dict = {}
 
-	file_paths = [os.join(path, name) for name in os.listdir(path)]
+	file_paths = [os.path.join(path, name) for name in os.listdir(path)]
 	
 	'''If any of the files in this directory are files, then they all are,
 		and they contain snapshots'''
@@ -42,7 +42,7 @@ def scan_output_helper(path):
 		snapshots_list = [process_file(name) for name in file_paths]
 		snapshots_dict = {}
 		# Join all the dictionaries together as one
-		for snapshot in snapshorts_list :
+		for snapshot in snapshots_list :
 			snapshots_dict.update(snapshot)
 		return snapshots_dict
 	else :
