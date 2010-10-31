@@ -34,6 +34,23 @@ def scan_output_helper(path):
 
 	folder_dict = {}
 
+	file_paths = [os.join(path, name) for name in os.listdir(path)]
+	
+	'''If any of the files in this directory are files, then they all are,
+		and they contain snapshots'''
+	if os.path.isfile(file_paths[0]) :
+		snapshots_list = [process_file(name) for name in file_paths]
+		snapshots_dict = {}
+		# Join all the dictionaries together as one
+		for snapshot in snapshorts_list :
+			snapshots_dict.update(snapshot)
+		return snapshots_dict
+	else :
+		for name in file_paths:
+			# Recurse through each folder building up a tree
+			folder_dict[name] = scan_output_helper(name)
+		return folder_dict
+
 	for name in os.listdir(path):
 		fullpath = os.path.join(path, name)
 		if os.path.isfile(fullpath):
@@ -80,7 +97,9 @@ def process_file(filepath):
 		elif snapshot.value.HasField('customValue'):
 			snapshot_dict['value'] = snapshot.value.customValue
 		
-		time_serie_dict[i] = snapshot_dict
+		# Index them by timestamp instead of order in file
+		time_serie_dict[snapshot_dict['timestamp']] = snapshot_dict
+		# time_serie_dict[i] = snapshot_dict
 		i += 1
 		
 	return time_serie_dict
