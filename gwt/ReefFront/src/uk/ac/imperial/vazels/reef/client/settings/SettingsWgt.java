@@ -3,6 +3,7 @@ package uk.ac.imperial.vazels.reef.client.settings;
 import java.util.HashMap;
 import java.util.Map;
 
+import uk.ac.imperial.vazels.reef.client.RequestHandler;
 import uk.ac.imperial.vazels.reef.client.settings.overlay.SectionList;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -16,6 +17,7 @@ public class SettingsWgt extends VerticalPanel {
   private Label statusBar = new Label();
   private StackPanel settingAccordion = new StackPanel();
   private Button refreshBtn = new Button("Refresh");
+  private Button saveBtn = new Button("Save");
   private Map<String, SettingsSectionWgt> sectionWgts;
 
   public SettingsWgt() {
@@ -27,15 +29,23 @@ public class SettingsWgt extends VerticalPanel {
         refreshSettings();
       }
     });
+    
+    saveBtn.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        saveSettings();
+      }
+    });
 
     this.add(statusBar);
     this.add(settingAccordion);
     this.add(refreshBtn);
+    this.add(saveBtn);
   }
 
   private void refreshSettings() {
-    SettingsManager.getManager().getSections(
-        new SettingsManager.RequestHandler<SectionList>() {
+    SettingsManager.getManager().getSectionsNow(
+        new RequestHandler<SectionList>() {
           @Override
           public void handle(SectionList reply, boolean success, String reason) {
             if (success) {
@@ -66,5 +76,15 @@ public class SettingsWgt extends VerticalPanel {
     }
 
     sectionWgts = newSectionWgts;
+  }
+  
+  public void saveSettings(){
+    SettingsManager manager = SettingsManager.getManager();
+    manager.clearChanges();
+    
+    for(SettingsSectionWgt section : sectionWgts.values())
+      section.addChanges();
+    
+    manager.commitChanges(null);
   }
 }

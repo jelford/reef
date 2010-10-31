@@ -1,10 +1,13 @@
 location = None
 settings = {}
 
-def getSettings(type):
+def getSettings(type, create=True):
     global settings
     if type not in settings:
-        settings[type] = {}
+        if create:
+            settings[type] = {}
+        else:
+            return None
     return settings[type]
 
 def hasSettings(type):

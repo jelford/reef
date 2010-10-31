@@ -26,9 +26,12 @@ public abstract class EasyRequest
 			proxyURL = "http://"+Window.Location.getHost();
 	}
 	
-	public void request(RequestBuilder.Method method, String url, QueryArg[] query)
+	public RequestTicket request(RequestBuilder.Method method, String url, QueryArg[] query)
 	{
+	  final RequestTicket ticket = new RequestTicket();
+	  
 		RequestBuilder builder = new RequestBuilder(method, proxyURL + url);
+		builder.setHeader("Content-Type", "application/x-www-form-urlencoded");
 		
 		StringBuffer queryStrBuf = new StringBuffer();
 		if(query != null)
@@ -48,34 +51,38 @@ public abstract class EasyRequest
 		
 		String queryStr = queryStrBuf == null ? null : queryStrBuf.toString();
 		
+		System.out.println(queryStr);
+		
 		try
 		{
-			builder.sendRequest(queryStr.toString(), new RequestCallback()
+			builder.sendRequest(queryStr, new RequestCallback()
 			{
 				@Override
 				public void onResponseReceived(Request request, Response response)
 				{
-					requested(response.getStatusCode(), response.getStatusText(), response.getText());
+					requested(ticket, response.getStatusCode(), response.getStatusText(), response.getText());
 				}
 				
 				@Override
 				public void onError(Request request, Throwable exception)
 				{
-					requested(null, null, null);
+					requested(ticket, null, null, null);
 				}
 			});
 		}
 		catch(RequestException e)
 		{
-			requested(null, null, null);
+			requested(ticket, null, null, null);
 		}
+		
+		return ticket;
 	}
 	
 	// Sets all if it can.
 	// If there was a problem with the request, everything is null.
-	protected abstract void requested(Integer code, String reason, String content);
+	protected abstract void requested(RequestTicket ticket, Integer code, String reason, String content);
 	
-	public class QueryArg
+	public static class QueryArg
 	{
 		private final String name;
 		private final String value;
@@ -95,5 +102,12 @@ public abstract class EasyRequest
     {
 	    return value;
     }
+	}
+	
+	// Given on each request to identify the reply
+	public class RequestTicket{
+	  public boolean equals(RequestTicket t){
+	    return this == t;
+	  }
 	}
 }

@@ -3,6 +3,7 @@ package uk.ac.imperial.vazels.reef.client.settings;
 import java.util.HashMap;
 import java.util.Map;
 
+import uk.ac.imperial.vazels.reef.client.RequestHandler;
 import uk.ac.imperial.vazels.reef.client.settings.overlay.SettingGroup;
 
 import com.google.gwt.user.client.ui.DisclosurePanel;
@@ -29,8 +30,8 @@ public class SettingsSectionWgt extends FlexTable {
   }
 
   public void refreshFields() {
-    SettingsManager.getManager().getSettings(section,
-        new SettingsManager.RequestHandler<SettingGroup>() {
+    SettingsManager.getManager().getSettingsNow(section,
+        new RequestHandler<SettingGroup>() {
           @Override
           public void handle(SettingGroup reply, boolean success, String reason) {
             if (success) {
@@ -69,5 +70,13 @@ public class SettingsSectionWgt extends FlexTable {
     }
 
     settingWgts = newSettings;
+  }
+  
+  public void addChanges(){
+    SettingsManager manager = SettingsManager.getManager();
+    
+    for(SingleSettingWgt wgt : settingWgts.values()){
+      manager.addChange(section, wgt.getChange());
+    }
   }
 }
