@@ -1,6 +1,5 @@
 package uk.ac.imperial.vazels.reef.client;
 
-
 import uk.ac.imperial.vazels.reef.client.ui.MainReefPanel;
 import uk.ac.imperial.vazels.reef.client.ui.SetupPhasePanel;
 

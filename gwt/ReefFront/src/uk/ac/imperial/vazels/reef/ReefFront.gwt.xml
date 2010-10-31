@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='reeffront'>
-	<!-- Inherit the core Web Toolkit stuff. -->
-	<inherits name='com.google.gwt.user.User' />
+  <!-- Inherit the core Web Toolkit stuff.                        -->
+  <inherits name='com.google.gwt.user.User'/>
+  
+  <!--  Inherit JSON schizzle -->
+  <inherits name="com.google.gwt.json.JSON" />
+  
+  <!--  inheriting maps -->
+  <!-- <inherits name="com.google.gwt.dev.util.collect.HashMap" /> -->
+  <!--  Inheriting things for charts -->
+  <inherits name='com.google.gwt.visualization.Visualization'/>
 
 	<!-- Inherit JSON schizzle -->
 	<!-- <inherits name="com.google.gwt.json.JSON" /> -->
