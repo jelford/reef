@@ -1,9 +1,9 @@
 function reeffront(){
-  var $intern_0 = '', $intern_29 = '" for "gwt:onLoadErrorFn"', $intern_27 = '" for "gwt:onPropertyErrorFn"', $intern_12 = '"><\/script>', $intern_14 = '#', $intern_53 = '.cache.html', $intern_16 = '/', $intern_47 = '36E927B38CDD10A120425A26C13AD453', $intern_48 = '5DE66573396DB3590120F1C412EA4E90', $intern_49 = '7DD02D1F48A81FE40ADD6A29FF97DCAA', $intern_50 = '8C465BE1FEACE4752492E3F8453EDD09', $intern_61 = '<script defer="defer">reeffront.onInjectionDone(\'reeffront\')<\/script>', $intern_11 = '<script id="', $intern_24 = '=', $intern_15 = '?', $intern_51 = 'BB2B14BDEB2676F7328E8EDD413BB417', $intern_26 = 'Bad handler "', $intern_52 = 'D129C9CE8A682CC4F920AEAD0B21A208', $intern_60 = 'DOMContentLoaded', $intern_13 = 'SCRIPT', $intern_10 = '__gwt_marker_reeffront', $intern_17 = 'base', $intern_4 = 'begin', $intern_3 = 'bootstrap', $intern_19 = 'clear.cache.gif', $intern_23 = 'content', $intern_9 = 'end', $intern_41 = 'gecko', $intern_42 = 'gecko1_8', $intern_5 = 'gwt.codesvr=', $intern_6 = 'gwt.hosted=', $intern_7 = 'gwt.hybrid', $intern_54 = 'gwt/standard/standard.css', $intern_28 = 'gwt:onLoadErrorFn', $intern_25 = 'gwt:onPropertyErrorFn', $intern_22 = 'gwt:property', $intern_59 = 'head', $intern_45 = 'hosted.html?reeffront', $intern_58 = 'href', $intern_40 = 'ie6', $intern_39 = 'ie8', $intern_30 = 'iframe', $intern_18 = 'img', $intern_31 = "javascript:''", $intern_55 = 'link', $intern_44 = 'loadExternalRefs', $intern_20 = 'meta', $intern_33 = 'moduleRequested', $intern_8 = 'moduleStartup', $intern_38 = 'msie', $intern_21 = 'name', $intern_35 = 'opera', $intern_32 = 'position:absolute;width:0;height:0;border:none', $intern_1 = 'reeffront', $intern_56 = 'rel', $intern_37 = 'safari', $intern_46 = 'selectingPermutation', $intern_2 = 'startup', $intern_57 = 'stylesheet', $intern_43 = 'unknown', $intern_34 = 'user.agent', $intern_36 = 'webkit';
+  var $intern_0 = '', $intern_34 = '" for "gwt:onLoadErrorFn"', $intern_32 = '" for "gwt:onPropertyErrorFn"', $intern_15 = '"><\/script>', $intern_17 = '#', $intern_59 = '.cache.html', $intern_19 = '/', $intern_52 = '074D7DFA2DA5986F1074BA01C0C42EF8', $intern_53 = '14F7C86C31DC551827BC2C60B5D93062', $intern_54 = '6CFA7B22B94D3B0B0ADD635095D23703', $intern_55 = '91FCA93862AD465CBCAF1E8D8783694D', $intern_58 = ':', $intern_26 = '::', $intern_67 = '<script defer="defer">reeffront.onInjectionDone(\'reeffront\')<\/script>', $intern_14 = '<script id="', $intern_29 = '=', $intern_18 = '?', $intern_31 = 'Bad handler "', $intern_56 = 'C884ED166390F571125240D242EE0459', $intern_57 = 'DF9BFED12F9D1980234B682317C0A4E9', $intern_66 = 'DOMContentLoaded', $intern_16 = 'SCRIPT', $intern_13 = '__gwt_marker_reeffront', $intern_20 = 'base', $intern_10 = 'baseUrl', $intern_4 = 'begin', $intern_3 = 'bootstrap', $intern_22 = 'clear.cache.gif', $intern_28 = 'content', $intern_9 = 'end', $intern_46 = 'gecko', $intern_47 = 'gecko1_8', $intern_5 = 'gwt.codesvr=', $intern_6 = 'gwt.hosted=', $intern_7 = 'gwt.hybrid', $intern_60 = 'gwt/standard/standard.css', $intern_33 = 'gwt:onLoadErrorFn', $intern_30 = 'gwt:onPropertyErrorFn', $intern_27 = 'gwt:property', $intern_65 = 'head', $intern_50 = 'hosted.html?reeffront', $intern_64 = 'href', $intern_45 = 'ie6', $intern_44 = 'ie8', $intern_35 = 'iframe', $intern_21 = 'img', $intern_36 = "javascript:''", $intern_61 = 'link', $intern_49 = 'loadExternalRefs', $intern_23 = 'meta', $intern_38 = 'moduleRequested', $intern_8 = 'moduleStartup', $intern_43 = 'msie', $intern_24 = 'name', $intern_40 = 'opera', $intern_37 = 'position:absolute;width:0;height:0;border:none', $intern_1 = 'reeffront', $intern_12 = 'reeffront.nocache.js', $intern_25 = 'reeffront::', $intern_62 = 'rel', $intern_42 = 'safari', $intern_11 = 'script', $intern_51 = 'selectingPermutation', $intern_2 = 'startup', $intern_63 = 'stylesheet', $intern_48 = 'unknown', $intern_39 = 'user.agent', $intern_41 = 'webkit';
   var $wnd = window, $doc = document, $stats = $wnd.__gwtStatsEvent?function(a){
     return $wnd.__gwtStatsEvent(a);
   }
-  :null, $sessionId = $wnd.__gwtStatsSessionId?$wnd.__gwtStatsSessionId:null, scriptsDone, loadDone, bodyDone, base = $intern_0, metaProps = {}, values = [], providers = [], answers = [], onLoadErrorFunc, propertyErrorFunc;
+  :null, $sessionId = $wnd.__gwtStatsSessionId?$wnd.__gwtStatsSessionId:null, scriptsDone, loadDone, bodyDone, base = $intern_0, metaProps = {}, values = [], providers = [], answers = [], softPermutationId = 0, onLoadErrorFunc, propertyErrorFunc;
   $stats && $stats({moduleName:$intern_1, sessionId:$sessionId, subSystem:$intern_2, evtGroup:$intern_3, millis:(new Date).getTime(), type:$intern_4});
   if (!$wnd.__gwt_stylesLoaded) {
     $wnd.__gwt_stylesLoaded = {};
@@ -37,29 +37,43 @@ function reeffront(){
         ;
       }
       reeffront = null;
-      frameWnd.gwtOnLoad(onLoadErrorFunc, $intern_1, base);
+      frameWnd.gwtOnLoad(onLoadErrorFunc, $intern_1, base, softPermutationId);
       $stats && $stats({moduleName:$intern_1, sessionId:$sessionId, subSystem:$intern_2, evtGroup:$intern_8, millis:(new Date).getTime(), type:$intern_9});
     }
   }
 
   function computeScriptBase(){
-    var thisScript, markerId = $intern_10, markerScript;
-    $doc.write($intern_11 + markerId + $intern_12);
-    markerScript = $doc.getElementById(markerId);
-    thisScript = markerScript && markerScript.previousSibling;
-    while (thisScript && thisScript.tagName != $intern_13) {
-      thisScript = thisScript.previousSibling;
+    if (metaProps[$intern_10]) {
+      base = metaProps[$intern_10];
+      return base;
+    }
+    var thisScript;
+    var scriptTags = $doc.getElementsByTagName($intern_11);
+    for (var i = 0; i < scriptTags.length; ++i) {
+      if (scriptTags[i].src.indexOf($intern_12) != -1) {
+        thisScript = scriptTags[i];
+      }
+    }
+    if (!thisScript) {
+      var markerId = $intern_13;
+      var markerScript;
+      $doc.write($intern_14 + markerId + $intern_15);
+      markerScript = $doc.getElementById(markerId);
+      thisScript = markerScript && markerScript.previousSibling;
+      while (thisScript && thisScript.tagName != $intern_16) {
+        thisScript = thisScript.previousSibling;
+      }
     }
     function getDirectoryOfFile(path){
-      var hashIndex = path.lastIndexOf($intern_14);
+      var hashIndex = path.lastIndexOf($intern_17);
       if (hashIndex == -1) {
         hashIndex = path.length;
       }
-      var queryIndex = path.indexOf($intern_15);
+      var queryIndex = path.indexOf($intern_18);
       if (queryIndex == -1) {
         queryIndex = path.length;
       }
-      var slashIndex = path.lastIndexOf($intern_16, Math.min(queryIndex, hashIndex));
+      var slashIndex = path.lastIndexOf($intern_19, Math.min(queryIndex, hashIndex));
       return slashIndex >= 0?path.substring(0, slashIndex + 1):$intern_0;
     }
 
@@ -68,7 +82,7 @@ function reeffront(){
       base = getDirectoryOfFile(thisScript.src);
     }
     if (base == $intern_0) {
-      var baseElements = $doc.getElementsByTagName($intern_17);
+      var baseElements = $doc.getElementsByTagName($intern_20);
       if (baseElements.length > 0) {
         base = baseElements[baseElements.length - 1].href;
       }
@@ -79,24 +93,29 @@ function reeffront(){
      else if (base.match(/^\w+:\/\//)) {
     }
      else {
-      var img = $doc.createElement($intern_18);
-      img.src = base + $intern_19;
+      var img = $doc.createElement($intern_21);
+      img.src = base + $intern_22;
       base = getDirectoryOfFile(img.src);
     }
     if (markerScript) {
       markerScript.parentNode.removeChild(markerScript);
     }
+    return base;
   }
 
   function processMetas(){
-    var metas = document.getElementsByTagName($intern_20);
+    var metas = document.getElementsByTagName($intern_23);
     for (var i = 0, n = metas.length; i < n; ++i) {
-      var meta = metas[i], name = meta.getAttribute($intern_21), content;
+      var meta = metas[i], name = meta.getAttribute($intern_24), content;
       if (name) {
-        if (name == $intern_22) {
-          content = meta.getAttribute($intern_23);
+        name = name.replace($intern_25, $intern_0);
+        if (name.indexOf($intern_26) >= 0) {
+          continue;
+        }
+        if (name == $intern_27) {
+          content = meta.getAttribute($intern_28);
           if (content) {
-            var value, eq = content.indexOf($intern_24);
+            var value, eq = content.indexOf($intern_29);
             if (eq >= 0) {
               name = content.substring(0, eq);
               value = content.substring(eq + 1);
@@ -108,25 +127,25 @@ function reeffront(){
             metaProps[name] = value;
           }
         }
-         else if (name == $intern_25) {
-          content = meta.getAttribute($intern_23);
+         else if (name == $intern_30) {
+          content = meta.getAttribute($intern_28);
           if (content) {
             try {
               propertyErrorFunc = eval(content);
             }
              catch (e) {
-              alert($intern_26 + content + $intern_27);
+              alert($intern_31 + content + $intern_32);
             }
           }
         }
-         else if (name == $intern_28) {
-          content = meta.getAttribute($intern_23);
+         else if (name == $intern_33) {
+          content = meta.getAttribute($intern_28);
           if (content) {
             try {
               onLoadErrorFunc = eval(content);
             }
              catch (e) {
-              alert($intern_26 + content + $intern_29);
+              alert($intern_31 + content + $intern_34);
             }
           }
         }
@@ -161,55 +180,55 @@ function reeffront(){
   function maybeInjectFrame(){
     if (!frameInjected) {
       frameInjected = true;
-      var iframe = $doc.createElement($intern_30);
-      iframe.src = $intern_31;
+      var iframe = $doc.createElement($intern_35);
+      iframe.src = $intern_36;
       iframe.id = $intern_1;
-      iframe.style.cssText = $intern_32;
+      iframe.style.cssText = $intern_37;
       iframe.tabIndex = -1;
       $doc.body.appendChild(iframe);
-      $stats && $stats({moduleName:$intern_1, sessionId:$sessionId, subSystem:$intern_2, evtGroup:$intern_8, millis:(new Date).getTime(), type:$intern_33});
+      $stats && $stats({moduleName:$intern_1, sessionId:$sessionId, subSystem:$intern_2, evtGroup:$intern_8, millis:(new Date).getTime(), type:$intern_38});
       iframe.contentWindow.location.replace(base + initialHtml);
     }
   }
 
-  providers[$intern_34] = function(){
+  providers[$intern_39] = function(){
     var ua = navigator.userAgent.toLowerCase();
     var makeVersion = function(result){
       return parseInt(result[1]) * 1000 + parseInt(result[2]);
     }
     ;
-    if (ua.indexOf($intern_35) != -1) {
-      return $intern_35;
+    if (ua.indexOf($intern_40) != -1) {
+      return $intern_40;
     }
-     else if (ua.indexOf($intern_36) != -1) {
-      return $intern_37;
+     else if (ua.indexOf($intern_41) != -1) {
+      return $intern_42;
     }
-     else if (ua.indexOf($intern_38) != -1) {
+     else if (ua.indexOf($intern_43) != -1) {
       if (document.documentMode >= 8) {
-        return $intern_39;
+        return $intern_44;
       }
        else {
         var result = /msie ([0-9]+)\.([0-9]+)/.exec(ua);
         if (result && result.length == 3) {
           var v = makeVersion(result);
           if (v >= 6000) {
-            return $intern_40;
+            return $intern_45;
           }
         }
       }
     }
-     else if (ua.indexOf($intern_41) != -1) {
+     else if (ua.indexOf($intern_46) != -1) {
       var result = /rv:([0-9]+)\.([0-9]+)/.exec(ua);
       if (result && result.length == 3) {
         if (makeVersion(result) >= 1008)
-          return $intern_42;
+          return $intern_47;
       }
-      return $intern_41;
+      return $intern_46;
     }
-    return $intern_43;
+    return $intern_48;
   }
   ;
-  values[$intern_34] = {gecko:0, gecko1_8:1, ie6:2, ie8:3, opera:4, safari:5};
+  values[$intern_39] = {gecko:0, gecko1_8:1, ie6:2, ie8:3, opera:4, safari:5};
   reeffront.onScriptLoad = function(){
     if (frameInjected) {
       loadDone = true;
@@ -219,10 +238,11 @@ function reeffront(){
   ;
   reeffront.onInjectionDone = function(){
     scriptsDone = true;
-    $stats && $stats({moduleName:$intern_1, sessionId:$sessionId, subSystem:$intern_2, evtGroup:$intern_44, millis:(new Date).getTime(), type:$intern_9});
+    $stats && $stats({moduleName:$intern_1, sessionId:$sessionId, subSystem:$intern_2, evtGroup:$intern_49, millis:(new Date).getTime(), type:$intern_9});
     maybeStartModule();
   }
   ;
+  processMetas();
   computeScriptBase();
   var strongName;
   var initialHtml;
@@ -231,21 +251,25 @@ function reeffront(){
       $wnd.location.reload();
       return;
     }
-    initialHtml = $intern_45;
+    initialHtml = $intern_50;
     strongName = $intern_0;
   }
-  processMetas();
-  $stats && $stats({moduleName:$intern_1, sessionId:$sessionId, subSystem:$intern_2, evtGroup:$intern_3, millis:(new Date).getTime(), type:$intern_46});
+  $stats && $stats({moduleName:$intern_1, sessionId:$sessionId, subSystem:$intern_2, evtGroup:$intern_3, millis:(new Date).getTime(), type:$intern_51});
   if (!isHostedMode()) {
     try {
-      unflattenKeylistIntoAnswers([$intern_37], $intern_47);
-      unflattenKeylistIntoAnswers([$intern_40], $intern_48);
-      unflattenKeylistIntoAnswers([$intern_39], $intern_49);
-      unflattenKeylistIntoAnswers([$intern_35], $intern_50);
-      unflattenKeylistIntoAnswers([$intern_42], $intern_51);
-      unflattenKeylistIntoAnswers([$intern_41], $intern_52);
-      strongName = answers[computePropValue($intern_34)];
-      initialHtml = strongName + $intern_53;
+      unflattenKeylistIntoAnswers([$intern_44], $intern_52);
+      unflattenKeylistIntoAnswers([$intern_45], $intern_53);
+      unflattenKeylistIntoAnswers([$intern_42], $intern_54);
+      unflattenKeylistIntoAnswers([$intern_46], $intern_55);
+      unflattenKeylistIntoAnswers([$intern_47], $intern_56);
+      unflattenKeylistIntoAnswers([$intern_40], $intern_57);
+      strongName = answers[computePropValue($intern_39)];
+      var idx = strongName.indexOf($intern_58);
+      if (idx != -1) {
+        softPermutationId = Number(strongName.substring(idx + 1));
+        strongName = strongName.substring(0, idx);
+      }
+      initialHtml = strongName + $intern_59;
     }
      catch (e) {
       return;
@@ -255,16 +279,16 @@ function reeffront(){
   function onBodyDone(){
     if (!bodyDone) {
       bodyDone = true;
-      if (!__gwt_stylesLoaded[$intern_54]) {
-        var l = $doc.createElement($intern_55);
-        __gwt_stylesLoaded[$intern_54] = l;
-        l.setAttribute($intern_56, $intern_57);
-        l.setAttribute($intern_58, base + $intern_54);
-        $doc.getElementsByTagName($intern_59)[0].appendChild(l);
+      if (!__gwt_stylesLoaded[$intern_60]) {
+        var l = $doc.createElement($intern_61);
+        __gwt_stylesLoaded[$intern_60] = l;
+        l.setAttribute($intern_62, $intern_63);
+        l.setAttribute($intern_64, base + $intern_60);
+        $doc.getElementsByTagName($intern_65)[0].appendChild(l);
       }
       maybeStartModule();
       if ($doc.removeEventListener) {
-        $doc.removeEventListener($intern_60, onBodyDone, false);
+        $doc.removeEventListener($intern_66, onBodyDone, false);
       }
       if (onBodyDoneTimerId) {
         clearInterval(onBodyDoneTimerId);
@@ -273,7 +297,7 @@ function reeffront(){
   }
 
   if ($doc.addEventListener) {
-    $doc.addEventListener($intern_60, function(){
+    $doc.addEventListener($intern_66, function(){
       maybeInjectFrame();
       onBodyDone();
     }
@@ -287,8 +311,8 @@ function reeffront(){
   }
   , 50);
   $stats && $stats({moduleName:$intern_1, sessionId:$sessionId, subSystem:$intern_2, evtGroup:$intern_3, millis:(new Date).getTime(), type:$intern_9});
-  $stats && $stats({moduleName:$intern_1, sessionId:$sessionId, subSystem:$intern_2, evtGroup:$intern_44, millis:(new Date).getTime(), type:$intern_4});
-  $doc.write($intern_61);
+  $stats && $stats({moduleName:$intern_1, sessionId:$sessionId, subSystem:$intern_2, evtGroup:$intern_49, millis:(new Date).getTime(), type:$intern_4});
+  $doc.write($intern_67);
 }
 
 reeffront();

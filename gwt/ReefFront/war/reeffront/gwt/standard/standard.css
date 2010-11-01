@@ -263,6 +263,9 @@ a, a:visited, a:hover {
 .gwt-MenuBar .gwt-MenuItem-selected {
   background: #E0EDFE;
 }
+.gwt-MenuBar .gwt-MenuItem-disabled {
+  color: #c0c0c0;
+}
 .gwt-MenuBar-horizontal {
   background: #e3e8f3 url(images/hborder.png) repeat-x 0px -2003px;
   border: 1px solid #BBBBBB;
@@ -1093,6 +1096,9 @@ td.datePickerMonth {
   border: 1px solid #bbbbbb;
   border-bottom: 0px;
   background: #d3def6 url(images/hborder.png) repeat-x 0px -989px;
+}
+.gwt-StackLayoutPanel .gwt-StackLayoutPanelHeader-hovering {
+  background: #d3def6 url(images/hborder.png) repeat-x 0px -1464px;
 }
 .gwt-StackLayoutPanel .gwt-StackLayoutPanelContent {
   border: 1px solid #bbbbbb;
