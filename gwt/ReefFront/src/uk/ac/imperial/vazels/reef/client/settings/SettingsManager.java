@@ -192,6 +192,7 @@ public class SettingsManager {
       return lastUpdate.getTime() < then.getTime();
     }
     
+    @SuppressWarnings("unused")
     public boolean olderThan(UpdateInfo<Type> then) {
       return olderThan(then.lastUpdate);
     }

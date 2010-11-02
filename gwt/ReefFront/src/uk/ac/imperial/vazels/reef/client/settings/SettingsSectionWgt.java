@@ -6,51 +6,60 @@ import java.util.Map;
 import uk.ac.imperial.vazels.reef.client.RequestHandler;
 import uk.ac.imperial.vazels.reef.client.settings.overlay.SettingGroup;
 
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.DisclosurePanel;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.FlexTable;
 
-public class SettingsSectionWgt extends FlexTable {
-  private final String section;
+public class SettingsSectionWgt extends Composite {
   protected Map<String, SingleSettingWgt> settingWgts;
-  protected DisclosurePanel errMsg;
+  protected String section;
+  private DisclosurePanel errorBox;
+  private Label errMsg;
+  private FlexTable settingArea;
 
   public SettingsSectionWgt(String section) {
+    
+    VerticalPanel mainPanel = new VerticalPanel();
+    initWidget(mainPanel);
+    
+    errorBox = new DisclosurePanel("Problem retrieving settings");
+    errorBox.setOpen(false);
+    errorBox.setAnimationEnabled(true);
+    mainPanel.add(errorBox);
+    mainPanel.setCellHorizontalAlignment(errorBox, HasHorizontalAlignment.ALIGN_CENTER);
+    
+    errMsg = new Label("");
+    errorBox.setContent(errMsg);
+    errMsg.setSize("5cm", "4cm");
+    
+    settingArea = new FlexTable();
+    mainPanel.add(settingArea);
+    mainPanel.setCellHorizontalAlignment(settingArea, HasHorizontalAlignment.ALIGN_CENTER);
+    
     this.section = section;
-    errMsg = new DisclosurePanel("Could not check settings...");
-    errMsg.setVisible(false);
-
-    getFlexCellFormatter().setColSpan(0, 0, 2);
-    setWidget(0, 0, errMsg);
     settingWgts = new HashMap<String, SingleSettingWgt>();
   }
 
-  public String getSection() {
-    return section;
-  }
-
-  public void refreshFields() {
+  public void refreshFields(){
     SettingsManager.getManager().getSettingsNow(section,
         new RequestHandler<SettingGroup>() {
           @Override
           public void handle(SettingGroup reply, boolean success, String reason) {
             if (success) {
               refreshFields(reply);
+              setError(null);
             } else {
-              errMsg.clear();
-              errMsg.add(new Label(reason));
-              errMsg.setVisible(true);
+              setError(reason);
             }
           }
         });
   }
-
-  private void refreshFields(SettingGroup setGrp) {
-    removeAllRows();
-    errMsg.setVisible(false);
-
-    getFlexCellFormatter().setColSpan(0, 0, 2);
-    setWidget(0, 0, errMsg);
+  
+  void refreshFields(SettingGroup setGrp){
+    settingArea.removeAllRows();
 
     HashMap<String, SingleSettingWgt> newSettings = new HashMap<String, SingleSettingWgt>();
 
@@ -64,9 +73,9 @@ public class SettingsSectionWgt extends FlexTable {
 
       newSettings.put(key, wgt);
       wgt.updateValue(section);
-      int row = getRowCount();
-      setText(row, 0, key);
-      setWidget(row, 1, wgt);
+      int row = settingArea.getRowCount();
+      settingArea.setText(row, 0, key);
+      settingArea.setWidget(row, 1, wgt);
     }
 
     settingWgts = newSettings;
@@ -78,5 +87,12 @@ public class SettingsSectionWgt extends FlexTable {
     for(SingleSettingWgt wgt : settingWgts.values()){
       manager.addChange(section, wgt.getChange());
     }
+  }
+  
+  void setError(String err){
+    errorBox.setOpen(false);
+    if(err != null)
+      errMsg.setText(err);
+    errorBox.setVisible(err != null);
   }
 }

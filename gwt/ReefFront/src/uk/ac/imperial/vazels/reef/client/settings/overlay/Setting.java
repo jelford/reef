@@ -16,6 +16,11 @@ public class Setting
 	  return type;
 	}
 	
+	public Object getSetting()
+	{
+	  return setting;
+	}
+	
 	public String toString()
 	{
 		return setting.toString();

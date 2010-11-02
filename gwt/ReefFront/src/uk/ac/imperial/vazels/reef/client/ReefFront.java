@@ -10,13 +10,11 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public class ReefFront implements EntryPoint
 {
-	private final SettingsWgt settingsTest = new SettingsWgt();
-	
 	/**
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad()
 	{
-		RootPanel.get("settingstest").add(settingsTest);
+	  RootPanel.get("settingstest").add(new SettingsWgt());
 	}
 }
