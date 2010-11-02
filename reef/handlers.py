@@ -1,5 +1,7 @@
 import restlite
 import config
+import os
+import vazelsmanager
 
 authmodel = None
 
@@ -9,11 +11,14 @@ def setAuth(model):
 
 def getRouting():
     return [
-        (r'GET,POST /settings$', 'GET,POST /settings/'),
+        #(r'GET,POST /settings$', 'GET,POST /settings/'),
         #(r'GET,POST /settings/', settings_editor),
         (r'GET,POST /testing/', test_handler),
         (r'GET,POST /groups/$', group_batch_handler),
         (r'GET,POST /groups/', group_handler),
+        (r'POST /control/start/?$', start_handler),
+        (r'POST /control/stop/?$', stop_handler),
+        (r'GET,POST /control/?$', control_handler),
         (r'GET,POST /', auth_page_handler),
     ]
 
@@ -28,7 +33,71 @@ def generic_page_handler():
         #    authmodel.login(request)
         #return request.response(('path', request['PATH_INFO'], request['SCRIPT_NAME']))
         raise restlite.Status, "404 Not Found"
+    def POST(request,entity):
+      raise restlite.Status, "405, could not handle generic post request"
     return locals()
+
+
+### Manage starting & stopping the server ###
+
+@restlite.resource
+def control_handler():
+  global authmodel
+  def GET(request):
+    if authmodel:
+      authmodel.login(request)
+    if vazelsmanager.vazelsRunning():
+      return request.response({"control_centre_status": "running"})
+    else:
+      return request.response({"control_centre_status": "ready"})
+  
+  def POST(request, entity):
+    return GET(request)
+  
+  return locals()
+
+@restlite.resource
+def start_handler():
+  global authmodel
+  def GET(request):
+    if authmodel:
+      authmodel.login(request)
+    return request.response("Got a start GET request")
+  
+  def POST(request, entity):
+    if authmodel:
+      authmodel.login(request)
+      
+    os_call_to_vazels = vazelsmanager.runVazels()
+      
+    if os_call_to_vazels :
+      # Need to upadate client to handle 204 as a successful response
+      return request.response("")
+    else :
+      raise restlite.Status("500 Vazels Control Centre failed to start")
+    
+  return locals()
+
+@restlite.resource
+def stop_handler():
+  global authmodel
+  def GET(request):
+    if authmodel:
+      authmodel.login(request)
+    return request.response("Got a stop GET request")
+  
+  def POST(request,entity):
+    if authmodel:
+      authmodel.login(request)
+    
+    os_call_to_vazels = vazelsmanager.stopVazels()
+    
+    if os_call_to_vazels is True :
+      return request.response("")
+    else :
+      raise restlite.Status("500 "+str(os_call_to_vazels))
+      
+  return locals()
 
 ### Allows for submitting groups ###
 
@@ -41,6 +110,8 @@ def group_batch_handler():
   
   ## GET requests to this uri will return a summary of current groups
   def GET(request):
+    if authmodel:
+      authmodel.login(request)
     groups_summary = {}
     group_data = config.getSettings("groups")
     for group in group_data:
@@ -53,7 +124,9 @@ def group_batch_handler():
     #groups_summary = {"group1":1,"group2":3}
     return request.response(groups_summary)
     
-  def POST(request,entity):    
+  def POST(request,entity):
+    if authmodel:
+      authmodel.login(request)
     argument_list = {}
     variables = entity.split("&")
     for variable in variables:
@@ -93,9 +166,10 @@ def group_batch_handler():
       except KeyError:
         # If we haven't got the group already, create a new one
         # and add it to the list.
+        groups_before_this_one = len(filter(lambda g: g < group_name, groups))
         old_group = {
-          "group_number" : len(groups),
-          "workloads" : {}
+          "group_number" : groups_before_this_one,
+          "workloads" : {},
         }
         groups[group_name] = old_group
       
@@ -113,6 +187,8 @@ def group_handler():
   
   ## GET requests are for grabbing current info on a group
   def GET(request):
+    if authmodel:
+      authmodel.login(request)
     # To find info on a group call /groups/groupName (note no trailing slash)
     group_settings = {}
     group_name = request['PATH_INFO']
@@ -315,5 +391,5 @@ def test_handler():
     def POST(request, entity):
         code.InteractiveConsole(locals()).interact()
         return request.response('', 'text/plain')
-
+        
     return locals()

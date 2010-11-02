@@ -1,6 +1,8 @@
 package uk.ac.imperial.vazels.reef.client;
 
 import uk.ac.imperial.vazels.reef.client.groups.AllocateGroups;
+import uk.ac.imperial.vazels.reef.client.servercontrol.ServerControl;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -16,5 +18,6 @@ public class ReefFront implements EntryPoint
 	{
 	  //RootPanel.get("settingstest").add(new SettingsWgt());
 	  RootPanel.get("specify-groups").add(new AllocateGroups());
+	  RootPanel.get("server-control").add(new ServerControl());
 	}
 }

@@ -47,7 +47,7 @@ public class MultipleRequester<Type> extends EasyRequest {
    * @throws NullPointerException If any of the parameters are {@code null}
    */
   public MultipleRequester(RequestBuilder.Method method, String addr, Converter<Type> converter){
-    if(addr == null || method == null || converter == null)
+    if(addr == null || method == null)
       throw new NullPointerException();
     handlers = new HashMap<RequestTicket, RequestHandler<Type>>();
     this.addr = addr;
@@ -68,7 +68,7 @@ public class MultipleRequester<Type> extends EasyRequest {
     RequestHandler<Type> handler = handlers.get(ticket);
     
     if(isSuccess(code)){
-      Type reply = converter.convert(content);
+      Type reply = (converter != null) ? converter.convert(content) : null;
       handler.handle(reply);
     }
     else{
@@ -170,7 +170,7 @@ public class MultipleRequester<Type> extends EasyRequest {
    * 
    * @param <Type> The type to convert to.
    */
-  protected interface Converter<Type>{
+  public interface Converter<Type>{
     /**
      * Converts a {@link String} to the given type.
      * 

@@ -20,7 +20,7 @@ show_break()
 
 # Set up base directories
 
-base_dir = os.path.dirname(sys.argv[0])
+base_dir = os.path.join(os.path.dirname(sys.argv[0]),os.path.pardir)
 base_dir = os.path.abspath(base_dir)
 
 proj_dir = os.path.abspath(os.curdir)
