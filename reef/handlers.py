@@ -315,5 +315,5 @@ def test_handler():
     def POST(request, entity):
         code.InteractiveConsole(locals()).interact()
         return request.response('', 'text/plain')
-
+        
     return locals()
