@@ -302,7 +302,7 @@ public class SettingsManager {
 
     @Override
     public String getValue() {
-      return "";
+      return null;
     }
   }
 
@@ -353,7 +353,7 @@ public class SettingsManager {
 
     public PendingString(String setting, String value) {
       super(setting);
-      if (value == null || value == "")
+      if (value == null)
         throw new NullPointerException();
       this.value = value;
     }

@@ -5,7 +5,9 @@ import uk.ac.imperial.vazels.reef.client.settings.SettingsManager.PendingChange;
 import uk.ac.imperial.vazels.reef.client.settings.SettingsManager.PendingDouble;
 import uk.ac.imperial.vazels.reef.client.settings.SettingsManager.PendingInteger;
 import uk.ac.imperial.vazels.reef.client.settings.SettingsManager.PendingString;
+import uk.ac.imperial.vazels.reef.client.settings.SettingsManager.PendingDeletion;
 import uk.ac.imperial.vazels.reef.client.settings.overlay.Setting;
+import uk.ac.imperial.vazels.reef.client.settings.overlay.Setting.SettingType;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DoubleBox;
@@ -28,6 +30,26 @@ public class SingleSettingWgt extends Composite {
     this.type = null;
   }
   
+  public SingleSettingWgt(String name, SettingType type){
+    this(name);
+    
+    switch(type){
+    case DOUBLE:
+      setDouble(0.0);
+      break;
+    case INTEGER:
+      setInteger(0);
+      break;
+    case STRING:
+      setString("");
+      break;
+    }
+  }
+  
+  public String getKey(){
+    return name;
+  }
+  
   public void updateValue(String section){
     // We assume the cached values are fine if they're less than 1 min old
     // Usually the values will have been taken by the Section widget
@@ -41,31 +63,79 @@ public class SingleSettingWgt extends Composite {
               
               switch(type){
               case DOUBLE:
-                input = new DoubleBox();
-                ((DoubleBox)input).setValue((Double)reply.getSetting());
+                setDouble((Double)reply.getSetting());
                 break;
               case INTEGER:
-                input = new IntegerBox();
-                ((IntegerBox)input).setValue((Integer)reply.getSetting());
+                setInteger((Integer)reply.getSetting());
                 break;
               case STRING:
-                input = new TextBox();
-                ((TextBox)input).setValue((String)reply.getSetting());
+                setString((String)reply.getSetting());
                 break;
-              default:
-                input = null;
               }
               
-              if(input == null)
+              if(type == null)
                 boxArea.clear();
-              else
-                boxArea.setWidget(input);
             }
           }
         });
   }
+  
+  public void setDouble(Double val){
+    if (val != null) {
+      type = SettingType.DOUBLE;
+      
+      DoubleBox inputD = new DoubleBox();
+      inputD.setValue(val);
+      input = inputD;
+      
+      boxArea.setWidget(input);
+    }
+    else{
+      type = null;
+      boxArea.clear();
+    }
+  }
+  
+  public void setInteger(Integer val){
+    if (val != null) {
+      type = SettingType.INTEGER;
+      
+      IntegerBox inputI = new IntegerBox();
+      inputI.setValue(val);
+      input = inputI;
+      
+      boxArea.setWidget(input);
+    }
+    else{
+      type = null;
+      boxArea.clear();
+    }
+  }
+  
+  public void setString(String val){
+    
+    if (val != null) {
+      type = SettingType.STRING;
+      
+      TextBox inputS = new TextBox();
+      inputS.setValue(val);
+      input = inputS;
+      
+      boxArea.setWidget(input);
+    }
+    else{
+      type = null;
+      boxArea.clear();
+    }
+  }
+  
+  public void erase(){
+    this.type = null;
+  }
 
   public PendingChange getChange(){
+    if(type == null)
+      return new PendingDeletion(name);
     try{
       switch(type){
       case DOUBLE:
@@ -73,7 +143,7 @@ public class SingleSettingWgt extends Composite {
       case INTEGER:
         return new PendingInteger(name, ((IntegerBox)input).getValueOrThrow());
       case STRING:
-        return new PendingString(name, ((TextBox)input).getValueOrThrow());
+        return new PendingString(name, ((TextBox)input).getValue());
       }
     }
     catch(Exception e){}

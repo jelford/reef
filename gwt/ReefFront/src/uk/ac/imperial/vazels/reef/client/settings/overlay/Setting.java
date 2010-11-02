@@ -26,7 +26,7 @@ public class Setting
 		return setting.toString();
 	}
 	
-	public enum SettingType {
+	public static enum SettingType {
     STRING, INTEGER, DOUBLE,
   }
 }

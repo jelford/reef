@@ -40,9 +40,7 @@ public abstract class EasyRequest
 			{
 				queryStrBuf
 					.append("&")
-					.append(URL.encode(q.getName()))
-					.append("=")
-					.append(URL.encode(q.getValue()));
+					.append(q.toString());
 			}
 		}
 		
@@ -50,8 +48,6 @@ public abstract class EasyRequest
 			queryStrBuf.deleteCharAt(0);
 		
 		String queryStr = queryStrBuf == null ? null : queryStrBuf.toString();
-		
-		System.out.println(queryStr);
 		
 		try
 		{
@@ -102,6 +98,13 @@ public abstract class EasyRequest
     {
 	    return value;
     }
+		
+		public String toString(){
+		  if(getValue() == null)
+		    return URL.encode(getName());
+		  else
+		    return URL.encode(getName()) + "=" + URL.encode(getValue());
+		}
 	}
 	
 	// Given on each request to identify the reply
