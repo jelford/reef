@@ -192,7 +192,7 @@ def represent(value, type='*/*'):
     '''
     types = map(lambda x: x.lower(), re.split(r'[, \t]+', type))
     if '*/*' in types: types.append(defaultType)
-    for type, func in (('application/json', tojson), ('text/xml', xml), ('text/plain', str)):
+    for type, func in (('application/json', tojson), ('text/xml', xml), ('text/plain', str), ('application/x-gzip', lambda x : x)):
         if type in types: return (type, func(value))
     return (types[0], str(value))
 

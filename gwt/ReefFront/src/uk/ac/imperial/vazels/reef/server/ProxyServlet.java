@@ -36,6 +36,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -91,12 +99,8 @@ public class ProxyServlet extends HttpServlet {
     StringBuffer sb = new StringBuffer();
 
     sb.append(targetServer);
-    sb.append(req.getRequestURI().substring(srvMapping.length())); // The bit of
-                                                                   // the
-                                                                   // request
-                                                                   // after the
-                                                                   // proxy
-                                                                   // mapping
+    // The bit of the request after the proxy mapping
+    sb.append(req.getRequestURI().substring(srvMapping.length()));
 
     // Keep query string
     if (req.getQueryString() != null) {
