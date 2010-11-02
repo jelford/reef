@@ -14,7 +14,7 @@ def getRouting():
         (r'GET,POST /testing/', test_handler),
         (r'GET,POST /groups/$', group_batch_handler),
         (r'GET,POST /groups/', group_handler),
-        (r'GET,POST /', auth_page_handler),
+        (r'GET,POST /', auth_page_handler)
     ]
 
 
