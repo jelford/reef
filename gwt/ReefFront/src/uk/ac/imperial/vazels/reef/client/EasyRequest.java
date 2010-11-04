@@ -1,36 +1,31 @@
 package uk.ac.imperial.vazels.reef.client;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.http.client.URL;
-import com.google.gwt.user.client.Window;
 
 public abstract class EasyRequest
 {
-	private String proxyURL;
+	private AddressResolution addRes;
 	
 	public EasyRequest()
 	{
-		this(true);
+		addRes = new AddressResolution();
 	}
 	
 	public EasyRequest(boolean inTesting)
 	{
-		if(inTesting)
-			proxyURL = GWT.getModuleBaseURL() + "proxy";
-		else
-			proxyURL = "http://"+Window.Location.getHost();
+		addRes = new AddressResolution(inTesting);
 	}
 	
 	public RequestTicket request(RequestBuilder.Method method, String url, QueryArg[] query)
 	{
 	  final RequestTicket ticket = new RequestTicket();
 	  
-		RequestBuilder builder = new RequestBuilder(method, proxyURL + url);
+		RequestBuilder builder = new RequestBuilder(method, addRes.resolve(url));
 		builder.setHeader("Content-Type", "application/x-www-form-urlencoded");
 		
 		StringBuffer queryStrBuf = new StringBuffer();

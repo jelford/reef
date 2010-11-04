@@ -1,3 +1,4 @@
 .git
 *.pyc
 *.class
+*pages.bak*

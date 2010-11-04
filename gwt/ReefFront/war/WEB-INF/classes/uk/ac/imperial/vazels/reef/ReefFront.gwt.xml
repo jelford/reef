@@ -20,5 +20,6 @@
 
   <!-- Specify the paths for translatable code                    -->
   <source path='client'/>
+  <inherits name="uk.ac.imperial.vazels.reef.ReefFront"/>
 
 </module>
