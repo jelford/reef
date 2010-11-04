@@ -2,8 +2,6 @@ package uk.ac.imperial.vazels.reef.client.groups;
 
 import uk.ac.imperial.vazels.reef.client.MultipleRequester;
 import uk.ac.imperial.vazels.reef.client.RequestHandler;
-import uk.ac.imperial.vazels.reef.client.EasyRequest.QueryArg;
-import uk.ac.imperial.vazels.reef.client.EasyRequest.RequestTicket;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -24,6 +22,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AllocateGroups extends Composite {
+
   /**
    * Some constants incase we ever want to change the layout of the table.
    */
@@ -71,7 +70,7 @@ public class AllocateGroups extends Composite {
 
   public AllocateGroups() {
     // Method provided by Composite to initialize the widget from the XML
-    initWidget(uiBinder.createAndBindUi(this));s
+    initWidget(uiBinder.createAndBindUi(this));
 
     readyForInput();
 
@@ -142,7 +141,6 @@ public class AllocateGroups extends Composite {
     readyForInput();
 
     addGroup(newGroupName, newGroupSize);
-    
     batchUpdateServerGroups();
   }
 
@@ -213,12 +211,24 @@ public class AllocateGroups extends Composite {
     groupsFlexTable.setWidget(row, GROUP_REMOVE_COLUMN, removeGroupButton);
   }
 
-  private void removeGroup(String symbol) {
-    groupsFlexTable.removeRow(tableRows.get(symbol));
-    groups.put(symbol,new Integer(0));
-    tableRows.remove(symbol);
-    batchUpdateServerGroups();
-    refreshGroupInfoPanel();
+  /**
+   * Remove group named grpName and notify server.
+   */
+  private void removeGroup(final String grpName) {
+    removeGroup(grpName,true);
+  }
+
+  /**
+   * Remove group named grpName from map and table.
+   * Possibly notify server.
+   */
+  private void removeGroup(final String grpName, final boolean notifyServer) {
+    removeTableRow(grpName);
+    groups.put(grpName,0);
+    if (notifyServer) {
+      batchUpdateServerGroups();
+    }
+    refreshGroupsInfo();
   }
 
   /**
