@@ -41,6 +41,7 @@ def group_batch_handler():
   
   ## GET requests to this uri will return a summary of current groups
   def GET(request):
+<<<<<<< HEAD
     groups_summary = {}
     group_data = config.getSettings("groups")
     for group in group_data:
