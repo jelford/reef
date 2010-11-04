@@ -81,6 +81,4 @@ public class GroupSummary {
     }
     return groups.size() - numberOfEmptyGroups;
   }
-  
-  
 }
