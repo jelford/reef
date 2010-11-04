@@ -192,9 +192,9 @@ def represent(value, type='*/*'):
     '''
     types = map(lambda x: x.lower(), re.split(r'[, \t]+', type))
     if '*/*' in types: types.append(defaultType)
-    for type, func in (('application/json', tojson), ('text/xml', xml), ('text/plain', str), ('text/html', str)):
+    for type, func in (('application/json', tojson), ('text/xml', xml), ('text/plain', str)):
         if type in types: return (type, func(value))
-    return ('application/octet-stream', str(value))
+    return (types[0], str(value))
 
 #------------------------------------------------------------------------------
 # High Level API: @resources

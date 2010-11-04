@@ -61,7 +61,7 @@ show_break()
 if new_config:
 # Ask only if we're looking at a new file
     from getpass import getpass
-    config.getSettings("server")["passkey"] = getpass("Please give a passkey for accessing the interface: ")
+    config.getSettings("server")["passkey"] = getpass("Please give a passkey for accessing the interface (Blank for none): ")
     show_break()
 
 # Start server
@@ -73,8 +73,9 @@ myserver.getServer().setup()
 print "Now you can log on to the server with the following credentials:"
 print ""
 print "Location: http://localhost:" + str(config.getSettings("server")["port"])
-print "User: " + config.getSettings("server")["user"]
-print "Password: <You should know>"
+if config.getSettings("server")["passkey"]:
+    print "User: " + config.getSettings("server")["user"]
+    print "Password: <You should know>"
 print ""
 print "If I displayed the password back to you then the small amount of security during the input would be wasted."
 print "(You can just read it in the config file though, that's a problem.)"
