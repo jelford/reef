@@ -24,7 +24,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AllocateGroups extends Composite {
-
   /**
    * Some constants incase we ever want to change the layout of the table.
    */
@@ -72,7 +71,7 @@ public class AllocateGroups extends Composite {
 
   public AllocateGroups() {
     // Method provided by Composite to initialize the widget from the XML
-    initWidget(uiBinder.createAndBindUi(this));
+    initWidget(uiBinder.createAndBindUi(this));s
 
     readyForInput();
 
@@ -219,6 +218,7 @@ public class AllocateGroups extends Composite {
     groups.put(symbol,new Integer(0));
     tableRows.remove(symbol);
     batchUpdateServerGroups();
+    refreshGroupInfoPanel();
   }
 
   /**
