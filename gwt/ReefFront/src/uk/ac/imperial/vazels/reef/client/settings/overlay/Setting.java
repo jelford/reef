@@ -16,12 +16,17 @@ public class Setting
 	  return type;
 	}
 	
+	public Object getSetting()
+	{
+	  return setting;
+	}
+	
 	public String toString()
 	{
 		return setting.toString();
 	}
 	
-	public enum SettingType {
+	public static enum SettingType {
     STRING, INTEGER, DOUBLE,
   }
 }

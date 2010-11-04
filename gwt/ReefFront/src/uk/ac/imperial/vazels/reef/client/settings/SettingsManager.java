@@ -192,6 +192,7 @@ public class SettingsManager {
       return lastUpdate.getTime() < then.getTime();
     }
     
+    @SuppressWarnings("unused")
     public boolean olderThan(UpdateInfo<Type> then) {
       return olderThan(then.lastUpdate);
     }
@@ -301,7 +302,7 @@ public class SettingsManager {
 
     @Override
     public String getValue() {
-      return "";
+      return null;
     }
   }
 
@@ -352,7 +353,7 @@ public class SettingsManager {
 
     public PendingString(String setting, String value) {
       super(setting);
-      if (value == null || value == "")
+      if (value == null)
         throw new NullPointerException();
       this.value = value;
     }

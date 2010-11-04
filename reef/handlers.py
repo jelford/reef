@@ -120,7 +120,7 @@ def settings_editor():
 
         # Grab arguments
         import urlparse
-        parsed = urlparse.parse_qs(entity, True) # No value is ''
+        parsed = urlparse.parse_qs(entity, True) # Null value is kept as ''
         used_names = [] # Names used
         new_qs = {} # Values to add
         rem_qs = [] # Values to delete
