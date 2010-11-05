@@ -17,6 +17,7 @@ def scan_output(path_to_output):
 	
 	# if you do not provide the path to an Output_Folder, bad things might happen.
 	
+	print (path_to_output)
 	if os.path.exists(path_to_output):
 		result = scan_output_helper(path_to_output)
 	else:
