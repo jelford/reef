@@ -30,4 +30,22 @@ def getRouting():
         (r'GET /control/startexperiment/?$', startexperiment_handler),
         (r'GET,POST /workloads/?', workload_handler),
         (r'GET,POST /', auth_page_handler),
+        (r'GET,POST /output/$', output_full_handler),
     ]
+
+def output_full_handler():
+	global authmodel
+	import parser
+	import os
+	## requests will return the entire data available
+	
+	def GET(request):
+		path1 = config.getSettings("global")["projdir"]
+		path = os.path.join(path1, "Output_Folder")
+		print path
+		return request.response(parser.scan_output(path))
+		
+	def POST(request,entity):
+		pass
+		
+	return locals()
