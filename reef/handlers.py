@@ -1,5 +1,7 @@
 import restlite
 import config
+import os
+from vazelsmanager import runVazels
 
 authmodel = None
 
@@ -49,7 +51,13 @@ def start_handler():
   def POST(request, entity):
     if authmodel:
       authmodel.login(request)
-    return request.response("Got a start POST request")
+      
+    os_call_to_vazels = runVazels()
+      
+    if os_call_to_vazels == True :
+      return request.response("")
+    else :
+      raise restlite.Status("500 "+os_call_to_vazels)
     
   return locals()
 

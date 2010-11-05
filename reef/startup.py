@@ -20,7 +20,7 @@ show_break()
 
 # Set up base directories
 
-base_dir = os.path.dirname(sys.argv[0])
+base_dir = os.path.join(os.path.dirname(sys.argv[0]),os.path.pardir)
 base_dir = os.path.abspath(base_dir)
 
 proj_dir = os.path.abspath(os.curdir)
@@ -48,6 +48,8 @@ config.setConfig(config_file)
 new_config = not config.onDisk()
 
 config.getSettings("global")["basedir"] = base_dir
+
+config.getSettings("global")["certificate"] = os.path.expanduser("~/.ssh/id_rsa")
 
 if new_config:
     config.getSettings("global")["projdir"] = proj_dir

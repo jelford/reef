@@ -1,0 +1,2 @@
+currentDir=`pwd`
+java -Djava.security.policy=file://$currentDir/vazel_security.policy -cp vazels-client.jar:vazels-control.jar -Djava.rmi.server.codebase=file://$currentDir/vazels-control.jar uk.ac.imperial.vazels.cc.client.CommandLineClient "$@"
