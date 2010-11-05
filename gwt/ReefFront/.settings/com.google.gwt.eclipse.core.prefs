@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #Mon Nov 01 18:07:45 GMT 2010
 eclipse.preferences.version=1
 entryPointModules=
@@ -8,4 +9,10 @@ eclipse.preferences.version=1
 entryPointModules=
 filesCopiedToWebInfLib=gwt-servlet.jar
 >>>>>>> Resolved merge, added frontend functionality to display (simple) data on the page
+=======
+#Fri Nov 05 01:32:45 GMT 2010
+eclipse.preferences.version=1
+entryPointModules=
+filesCopiedToWebInfLib=gwt-servlet.jar
+>>>>>>> Re-imported all the files we managed to rid ourselves of on gwt
 gwtCompileSettings=PGd3dC1jb21waWxlLXNldHRpbmdzPjxsb2ctbGV2ZWw+SU5GTzwvbG9nLWxldmVsPjxvdXRwdXQtc3R5bGU+REVUQUlMRUQ8L291dHB1dC1zdHlsZT48ZXh0cmEtYXJncz48IVtDREFUQVtdXT48L2V4dHJhLWFyZ3M+PHZtLWFyZ3M+PCFbQ0RBVEFbLVhteDUxMm1dXT48L3ZtLWFyZ3M+PC9nd3QtY29tcGlsZS1zZXR0aW5ncz4\=
