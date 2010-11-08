@@ -21,7 +21,6 @@ def runVazels():
   command_line += " " + config.getSettings("command_centre")["siena"]
   
   # TODO: Change this so that it pipes its output to some handler!
-  print(command_line)
   os_return_value = os.system("sh " + command_line + " &")
    
   if os_return_value == 0:

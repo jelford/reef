@@ -150,9 +150,10 @@ def group_batch_handler():
       except KeyError:
         # If we haven't got the group already, create a new one
         # and add it to the list.
+        groups_before_this_one = len(filter(lambda g: g < group_name, groups))
         old_group = {
-          "group_number" : len(groups),
-          "workloads" : {}
+          "group_number" : groups_before_this_one,
+          "workloads" : {},
         }
         groups[group_name] = old_group
       
