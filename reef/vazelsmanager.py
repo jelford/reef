@@ -7,6 +7,8 @@ def getVazelsPath():
   
 def runVazels():
   experiment_path = os.path.join(config.getSettings("global")['projdir'], "experiment")
+  
+  # TODO: Build the groups string
   groups_string=""
     
     
@@ -15,10 +17,28 @@ def runVazels():
   command_line += " --root_dir="+experiment_path+"/"
   command_line += " --groups="+groups_string
   command_line += " --ssh_server_identity=" + config.getSettings("global")['certificate']
-  command_line += " -start_siena -start_rmi"
+  command_line += " " + config.getSettings("command_centre")["rmi"]
+  command_line += " " + config.getSettings("command_centre")["siena"]
   
+  # TODO: Change this so that it pipes its output to some handler!
+  os_return_value = os.system("sh " + command_line + " &")
+   
+  if os_return_value == 0:
+    return True
+  else:
+    return os_return_value
   
-  os_return_value = os.system(command_line)
+def stopVazels():
+  experiment_path = os.path.join(config.getSettings("global")['projdir'], "experiment")
+    
+  os.chdir(os.path.join(getVazelsPath(),"client"))
+  command_line =  "commandline_client.sh"
+  command_line += " --rmi_host=" + config.getSettings("command_centre")['rmi_host']
+  command_line += " --rmi_port=" + config.getSettings("command_centre")['rmi_port']
+  command_line += " stop"
+  
+  # TODO: Change this so that it pipes its output to some handler!
+  os_return_value = os.system("sh " + command_line)
    
   if os_return_value == 0:
     return True

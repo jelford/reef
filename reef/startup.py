@@ -49,7 +49,17 @@ new_config = not config.onDisk()
 
 config.getSettings("global")["basedir"] = base_dir
 
+''' DEFAULT SETTINGS FOR VAZELS - paths, certificates, ... '''
+
+# TODO: Update this to generate a new ssh certificate at startup!
 config.getSettings("global")["certificate"] = os.path.expanduser("~/.ssh/id_rsa")
+
+config.getSettings("command_centre")["rmi_port"] = "1099"
+config.getSettings("command_centre")["rmi_host"] = "localhost"
+config.getSettings("command_centre")["rmi"] = "-start_rmi"
+config.getSettings("command_centre")["siena"] = "-start_siena"
+
+### end default settings ###
 
 if new_config:
     config.getSettings("global")["projdir"] = proj_dir

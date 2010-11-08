@@ -1,7 +1,7 @@
 import restlite
 import config
 import os
-from vazelsmanager import runVazels
+from vazelsmanager import runVazels, stopVazels
 
 authmodel = None
 
@@ -54,13 +54,15 @@ def start_handler():
       
     os_call_to_vazels = runVazels()
       
-    if os_call_to_vazels == True :
+    if os_call_to_vazels is True :
+      # Need to upadate client to handle 204 as a successful response
       return request.response("")
     else :
-      raise restlite.Status("500 "+os_call_to_vazels)
+      raise restlite.Status("500 "+str(os_call_to_vazels))
     
   return locals()
 
+@restlite.resource
 def stop_handler():
   global authmodel
   def GET(request):
@@ -71,7 +73,15 @@ def stop_handler():
   def POST(request,entity):
     if authmodel:
       authmodel.login(request)
-    return request.response("Got a stop POST request")
+    
+    os_call_to_vazels = stopVazels()
+    
+    if os_call_to_vazels is True :
+      return request.response("")
+    else :
+      raise restlite.Status("500 "+str(os_call_to_vazels))
+      
+  return locals()
 
 ### Allows for submitting groups ###
 
