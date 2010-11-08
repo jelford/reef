@@ -29,38 +29,38 @@ public class AllocateGroups extends Composite {
   private static final int GROUP_NAME_COLUMN = 0;
   private static final int GROUP_HOSTS_COLUMN = GROUP_NAME_COLUMN+1;
   private static final int GROUP_REMOVE_COLUMN = GROUP_HOSTS_COLUMN+1;
-  
+
   /**
    * Table for holding the information on each group.
    */
   @UiField FlexTable groupsFlexTable;
-  
+
   /**
    * Label for information about groups as a whole (number of groups).
    */
   @UiField Label groupsInfo;
-  
+
   /**
    * Specify the name of a new group.
    */
   @UiField TextBox newGroupTextBox;
-  
+
   /**
    * Specify the number of hosts in a new group.
    */
   @UiField IntegerBox newHostsTextBox;
-  
+
   /**
    * Store a GroupSummary object containing summary information about all the
    * groups.
    */
   private GroupSummary groups;
-  
+
   /**
    * Generated code - gives us an interface to the XML-defined UI.
    */
   private static AllocateGroupsUiBinder uiBinder = GWT
-      .create(AllocateGroupsUiBinder.class);
+  .create(AllocateGroupsUiBinder.class);
 
   /**
    * Generated code. 
@@ -73,10 +73,10 @@ public class AllocateGroups extends Composite {
     initWidget(uiBinder.createAndBindUi(this));
 
     readyForInput();
-    
+
     // Init empty table & group summary.
     clearGroupData();
-    
+
     // Get new info
     refresh();
   }
@@ -89,7 +89,7 @@ public class AllocateGroups extends Composite {
     clearGroupData();
     batchUpdateServerGroups();
   }
-  
+
   /**
    * Add a new group to the datastructures from the input text fields.
    */
@@ -97,7 +97,7 @@ public class AllocateGroups extends Composite {
   void addGroupClicked(ClickEvent event) {
     addGroupFromInputBoxes();
   }
-  
+
   /**
    * Submit when the user hits return in an inputbox.
    */
@@ -116,7 +116,7 @@ public class AllocateGroups extends Composite {
     newGroupTextBox.setText("");
     newGroupTextBox.setFocus(true);
   }
-  
+
   /**
    * Helper function grabs and validates data from the input boxes then passes
    * the data to the addGroup function
@@ -131,7 +131,7 @@ public class AllocateGroups extends Composite {
     }
 
     final Integer newGroupSize = newHostsTextBox.getValue();
-    
+
     if(!validateNumHosts(newGroupSize)) {
       newHostsTextBox.selectAll();
       return;
@@ -160,7 +160,7 @@ public class AllocateGroups extends Composite {
       return true;
     }
   }
-  
+
   /**
    * Check that numHosts is a positive integer.
    */
@@ -183,13 +183,13 @@ public class AllocateGroups extends Composite {
   private void addGroup(final String newGroupName, final int numberOfHosts) {
     // Add to group map
     groups.put(newGroupName, numberOfHosts);
-    
+
     addGroupToTable(newGroupName, numberOfHosts);
-    
+
     // Update number of groups
     refreshGroupsInfo();
   }
-  
+
   /**
    * Update the table to reflect the fact that a new group has been added.
    * @param newGroupName
@@ -217,7 +217,7 @@ public class AllocateGroups extends Composite {
   private void removeGroup(final String grpName) {
     removeGroup(grpName,true);
   }
-  
+
   /**
    * Remove group named grpName from map and table.
    * Possibly notify server.
@@ -280,9 +280,15 @@ public class AllocateGroups extends Composite {
    * refreshGroupData with no data.
    */
   private void clearGroupData() {
-    refreshGroupData(new GroupSummary());
+    GroupSummary clearAllGroups = new GroupSummary();
+    if (groups != null) {
+      for (String groupName : groups.keySet()) {
+        clearAllGroups.put(groupName, 0);
+      }
+    }
+    refreshGroupData(clearAllGroups);
   }
-  
+
   private void refreshGroupData(final GroupSummary summary) {
     /*
      * No need to add groups individually; we'd just be re-building
@@ -290,19 +296,19 @@ public class AllocateGroups extends Composite {
      * table is up-to-date.
      */
     groups = summary;
-    
+
     groupsFlexTable.removeAllRows();
     // Column headers
     groupsFlexTable.setText(0, GROUP_NAME_COLUMN, "Group");
     groupsFlexTable.setText(0, GROUP_HOSTS_COLUMN, "Hosts");
     groupsFlexTable.setText(0, GROUP_REMOVE_COLUMN, "Remove");
-    
+
     for (String key : summary.keySet()) {
       String groupName = key;
       int groupSize = summary.get(key);
       addGroupToTable(groupName,groupSize);
     }
-    
+
     refreshGroupsInfo();
   }
 
@@ -337,7 +343,7 @@ public class AllocateGroups extends Composite {
         }
       });
     }
-    
+
     protected QueryArg[] getArgs() {
       // Construct an array of QueryArgs we'll use for our post request
       QueryArg[] queryArguments = new QueryArg[groups.keySet().size()];
@@ -347,7 +353,7 @@ public class AllocateGroups extends Composite {
             Integer.toString(groups.get(groupName)));
         index++;
       }
-      
+
       return queryArguments;
     }
 
@@ -357,7 +363,7 @@ public class AllocateGroups extends Composite {
         refreshGroupData(reply);
     }
   }
-  
+
   /**
    * Tell the server about the groups in our table
    */
