@@ -1,7 +1,7 @@
 import restlite
 import config
 import os
-from vazelsmanager import runVazels, stopVazels
+import vazelsmanager
 
 authmodel = None
 
@@ -19,6 +19,7 @@ def getRouting():
         (r'GET,POST /', auth_page_handler)
         (r'POST /control/start/?$', start_handler),
         (r'POST /control/stop/?$', stop_handler),
+        (r'GET,POST /control/?$', control_handler),
         (r'GET,POST /', auth_page_handler),
     ]
 
@@ -41,6 +42,20 @@ def generic_page_handler():
 ### Manage starting & stopping the server ###
 
 @restlite.resource
+def control_handler():
+  global authmodel
+  def GET(request):
+    if authmodel:
+      authmodel.login(request)
+    if vazelsmanager.vazelsRunning():
+      return request.response({"control_centre_status": "running"})
+    else:
+      return request.response({"control_centre_status": "stopped"})
+  
+  def POST(request, entity):
+    return GET(request)
+
+@restlite.resource
 def start_handler():
   global authmodel
   def GET(request):
@@ -52,13 +67,13 @@ def start_handler():
     if authmodel:
       authmodel.login(request)
       
-    os_call_to_vazels = runVazels()
+    os_call_to_vazels = vazelsmanager.runVazels()
       
-    if os_call_to_vazels is True :
+    if os_call_to_vazels :
       # Need to upadate client to handle 204 as a successful response
       return request.response("")
     else :
-      raise restlite.Status("500 "+str(os_call_to_vazels))
+      raise restlite.Status("500 Vazels Control Centre failed to start")
     
   return locals()
 
@@ -74,7 +89,7 @@ def stop_handler():
     if authmodel:
       authmodel.login(request)
     
-    os_call_to_vazels = stopVazels()
+    os_call_to_vazels = vazelsmanager.stopVazels()
     
     if os_call_to_vazels is True :
       return request.response("")

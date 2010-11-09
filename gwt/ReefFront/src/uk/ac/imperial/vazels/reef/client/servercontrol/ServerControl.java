@@ -2,6 +2,7 @@ package uk.ac.imperial.vazels.reef.client.servercontrol;
 
 import uk.ac.imperial.vazels.reef.client.MultipleRequester;
 import uk.ac.imperial.vazels.reef.client.RequestHandler;
+import uk.ac.imperial.vazels.reef.client.MultipleRequester.Converter;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -73,9 +74,6 @@ public class ServerControl extends Composite {
         });
       }
     });
-    
-    
-    
   }
   
   /**
@@ -94,11 +92,27 @@ public class ServerControl extends Composite {
    * @author james
    *
    */
-  private class SetServerRunningRequest extends MultipleRequester<Void>{
-    public SetServerRunningRequest(boolean start) {
-      super(RequestBuilder.POST, 
-          start ? SERVER_START_URI : SERVER_STOP_URI,
-          null);
+  private class ServerRunningRequest {
+    private MultipleRequester<Void> mStartRequest;
+    private MultipleRequester<Void> mStopRequest;
+    private MultipleRequester<Void> mStatusRequest;
+        
+    public ServerRunningRequest() {
+      mStartRequest = new MultipleRequester<Void>(RequestBuilder.POST, "/control/start", null);
+      mStopRequest = new MultipleRequester<Void>(RequestBuilder.POST, "/control/stop", null);
+      mStatusRequest = new MultipleRequester<Void>(RequestBuilder.GET, "/control/", null);
     }
+
+    public void startServer(){
+      
+    }
+    
+    private Converter<ServerStatus> mServerStatusConverter;
+    
+    
   }
+  
+  /**
+   * Get the running/stopped status of the server
+   */
 }
