@@ -50,10 +50,12 @@ def control_handler():
     if vazelsmanager.vazelsRunning():
       return request.response({"control_centre_status": "running"})
     else:
-      return request.response({"control_centre_status": "stopped"})
+      return request.response({"control_centre_status": "ready"})
   
   def POST(request, entity):
     return GET(request)
+  
+  return locals()
 
 @restlite.resource
 def start_handler():

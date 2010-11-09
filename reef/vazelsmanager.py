@@ -46,7 +46,6 @@ def runVazels():
   vazels_command_process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=getVazelsPath())
   
   # Oh dear this can only fail if the process dies!
-  time.sleep(1)
   vazels_command_process.poll()
   return vazels_command_process.returncode == None
   
@@ -54,14 +53,13 @@ def stopVazels():
   global vazels_control_process
   
   experiment_path = os.path.join(config.getSettings("global")['projdir'], "experiment")
-    
-  os.chdir(os.path.join(getVazelsPath(),"client"))
-  args = ['/bin/sh', 'command_line_client.sh']
+
+  args = ['/bin/sh', 'commandline_client.sh']
   args.append('--rmi_host='+config.getSettings('command_centre')['rmi_host'])
   args.append('--rmi_port='+config.getSettings('command_centre')['rmi_port'])
   args.append('stop')
   
-  vazels_control_process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+  vazels_control_process = subprocess.Popen(args, cwd=os.path.join(getVazelsPath(),'client'), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
   
   # Oh dear this can't fail!
   vazels_control_process.poll()
