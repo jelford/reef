@@ -42,7 +42,6 @@ def output_full_handler():
 	def GET(request):
 		path1 = config.getSettings("global")["projdir"]
 		path = os.path.join(path1, "Output_Folder")
-		print path
 		return request.response(parser.scan_output(path))
 		
 	def POST(request,entity):

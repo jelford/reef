@@ -92,10 +92,13 @@ def process_file(filepath):
 		# be one data. i guess i just need one field for this in python
 		
 		if snapshot.value.HasField('doubleValue'):
+			snapshot_dict['type'] = "Double"
 			snapshot_dict['value'] = snapshot.value.doubleValue
 		elif snapshot.value.HasField('stringValue'):
+			snapshot_dict['type'] = "String"
 			snapshot_dict['value'] = snapshot.value.stringValue
 		elif snapshot.value.HasField('customValue'):
+			snapshot_dict['type'] = "Byte"
 			snapshot_dict['value'] = snapshot.value.customValue
 		
 		# Index them by timestamp instead of order in file
