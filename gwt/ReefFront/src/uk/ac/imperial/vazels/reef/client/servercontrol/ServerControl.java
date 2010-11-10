@@ -4,84 +4,59 @@ import uk.ac.imperial.vazels.reef.client.MultipleRequester;
 import uk.ac.imperial.vazels.reef.client.RequestHandler;
 import uk.ac.imperial.vazels.reef.client.MultipleRequester.Converter;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
-/**
- * A widget with two buttons designed to allow the user to start the Control Centre
- * running, and stop the control centre when they are finished.
- * 
- * TODO: Make this update the rest of the UI (outside of this widget) when the Control
- * Centre is set to running; we're now in "Running Mode" instead of "Setup Mode."
- * Similarly we'll need to go back the other way.
- * 
- * TODO: Re-work the layout of this widget to be defined in XML instead of as hard
- * values here in generated code.
- * @author james
- *
- */
 public class ServerControl extends Composite {
-  /**
-   * Handler to talk to the server for us
-   */
-  private final ServerRunningRequest mServerRunningRequest;
-  
-  private Button btnStopServer;
-  private Button btnStartServer;
-  
+
+  private static ServerControlUiBinder uiBinder = GWT
+      .create(ServerControlUiBinder.class);
+
+  interface ServerControlUiBinder extends UiBinder<Widget, ServerControl> {
+  }
+
   /**
    * URIs to start and stop the server.
    */
   private static final String SERVER_START_URI="/control/start";
   private static final String SERVER_STOP_URI="/control/stop";
   private static final String SERVER_STATUS_URI="/control";
-
+  
+  private final ServerRunningRequest mServerRunningRequest;
+  
+  @UiField Button btnStartServer;
+  @UiField Button btnStopServer;
+  
   public ServerControl() {
-
+    initWidget(uiBinder.createAndBindUi(this));
+    
     mServerRunningRequest = new ServerRunningRequest();
     
-    /*
-     * Generated code
-     */
-    HorizontalPanel horizontalPanel = new HorizontalPanel();
-    initWidget(horizontalPanel);
-    horizontalPanel.setSize("176px", "22px");
-    
-    btnStartServer = new Button("Start Control Centre");
-    horizontalPanel.add(btnStartServer);
-    
-    btnStopServer = new Button("Stop Contrl Centre");
-    btnStopServer.setEnabled(false);
-    horizontalPanel.add(btnStopServer);
-    
-    
-    /*
-     * Add ClickHandlers for the buttons
-     */
-    btnStartServer.addClickHandler(new ClickHandler() {
-      public void onClick(ClickEvent event) {
-        btnStartServer.setEnabled(false);
-        mServerRunningRequest.startServer();
-      }
-    });
-    
-    btnStopServer.addClickHandler(new ClickHandler() {
-      public void onClick(ClickEvent event) {
-        btnStopServer.setEnabled(false);
-        mServerRunningRequest.stopServer();
-      }
-    });
-    
-    /*
-     * Make sure the UI reflects the current server status when the page is loaded.
-     */
     mServerRunningRequest.updateServerStatus();
+  }
+
+  /*
+   * Add ClickHandlers for the buttons
+   */
+  @UiHandler("btnStartServer")
+  void startClick(ClickEvent event) {
+    btnStartServer.setEnabled(false);
+    mServerRunningRequest.startServer();
+  }
+  
+  @UiHandler("btnStopServer")
+  void stopClick(ClickEvent event) {
+    btnStopServer.setEnabled(false);
+    mServerRunningRequest.stopServer();
   }
   
   /**
@@ -214,5 +189,4 @@ public class ServerControl extends Composite {
       }
     }
   }
-  
 }
