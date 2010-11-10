@@ -19,7 +19,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class ServerControl extends Composite {
 
   private static ServerControlUiBinder uiBinder = GWT
-      .create(ServerControlUiBinder.class);
+  .create(ServerControlUiBinder.class);
 
   interface ServerControlUiBinder extends UiBinder<Widget, ServerControl> {
   }
@@ -27,20 +27,20 @@ public class ServerControl extends Composite {
   /**
    * URIs to start and stop the server.
    */
-  private static final String SERVER_START_URI="/control/start";
-  private static final String SERVER_STOP_URI="/control/stop";
-  private static final String SERVER_STATUS_URI="/control";
-  
+  private static final String SERVER_START_URI_SUFFIX="/start";
+  private static final String SERVER_STOP_URI_SUFFIX="/stop";
+  private static final String SERVER_CONTROL_URI="/control";
+
   private final ServerRunningRequest mServerRunningRequest;
-  
+
   @UiField Button btnStartServer;
   @UiField Button btnStopServer;
-  
+
   public ServerControl() {
     initWidget(uiBinder.createAndBindUi(this));
-    
+
     mServerRunningRequest = new ServerRunningRequest();
-    
+
     mServerRunningRequest.updateServerStatus();
   }
 
@@ -52,13 +52,13 @@ public class ServerControl extends Composite {
     btnStartServer.setEnabled(false);
     mServerRunningRequest.startServer();
   }
-  
+
   @UiHandler("btnStopServer")
   void stopClick(ClickEvent event) {
     btnStopServer.setEnabled(false);
     mServerRunningRequest.stopServer();
   }
-  
+
   /**
    * Set the UI elements (buttons, ...) to reflect the new running state
    * of the control centre.
@@ -68,7 +68,7 @@ public class ServerControl extends Composite {
     btnStartServer.setEnabled(!running);
     btnStopServer.setEnabled(running);
   }
-  
+
   /**
    * Helper class to handle communicating with the server for us.
    * @author james
@@ -76,24 +76,11 @@ public class ServerControl extends Composite {
    */
   private class ServerRunningRequest {
     /**
-     * A request to start the control centre. Use the same one every time, and pass
-     * in mPostFinishedHandler to .go().
+     * Use the same request for start/stop/get status, but use different
+     * suffixes for the Go command
      */
-    private MultipleRequester<Void> mStartRequest;
-    
-    /**
-     * A request to stop the control centre. Use the same one every time, and pass
-     * in mPostFinishedHandler to .go().
-     */
-    private MultipleRequester<Void> mStopRequest;
-    
-    /**
-     * A request to get the running/ready status of the control centre. Called after
-     * any post request by mPostFinishedHandler, and any time the main class's code
-     * needs to know the status of the control centre.
-     */
-    private MultipleRequester<ServerStatus> mStatusRequest;
-    
+    private MultipleRequester<ServerStatus> mControlCommand;
+
     /**
      * Both start and stop requests handle returns in the same way;
      * they must update the UI according to the new control centre status.
@@ -107,16 +94,19 @@ public class ServerControl extends Composite {
      * private so it won't be instantiated elsewhere.
      */
     private ServerRunningRequest() {
-      mStartRequest = new MultipleRequester<Void>(RequestBuilder.POST, SERVER_START_URI, null);
-      mStopRequest = new MultipleRequester<Void>(RequestBuilder.POST, SERVER_STOP_URI, null);
-      mStatusRequest = new MultipleRequester<ServerStatus>(RequestBuilder.GET, SERVER_STATUS_URI,
+      mControlCommand = new MultipleRequester<ServerStatus>(RequestBuilder.GET, SERVER_CONTROL_URI,
           new Converter<ServerStatus>(){
 
         @Override
         public ServerStatus convert(String original) {
-          return new ServerStatus(original);
+          // Got to check that response wasn't empty
+          if ("".equals(original)) {
+            return null;
+          } else {
+            return new ServerStatus(original);
+          }
         }
-        
+
       });
       mPostFinishedHandler = new PostFinishedHandler();
     }
@@ -127,23 +117,23 @@ public class ServerControl extends Composite {
      * an accurate running state immediately, but won't block until it knows properly.
      */
     public void startServer(){
-      mStartRequest.go(mPostFinishedHandler);
+      mControlCommand.go(mPostFinishedHandler, SERVER_START_URI_SUFFIX);
     }
-    
+
     /**
      * Send an async call to stop the server, and when that finishes send another
      * to get the server running state. Necessary because the server can't return
      * an accurate running state immediately, but won't block until it knows properly.
      */
     public void stopServer(){
-      mStopRequest.go(mPostFinishedHandler);
+      mControlCommand.go(mPostFinishedHandler, SERVER_STOP_URI_SUFFIX);
     }
-    
+
     /**
      * Get the running/stopped status of the server
      */
     public void updateServerStatus(){
-      mStatusRequest.go(new RequestHandler<ServerStatus>(){
+      mControlCommand.go(new RequestHandler<ServerStatus>(){
         @Override
         public void handle(ServerStatus reply, boolean success, String message) {
           switch (reply.mServerState) {
@@ -160,7 +150,7 @@ public class ServerControl extends Composite {
         }
       });
     }
-    
+
     /**
      * Any POST requests to the server will need to update the UI status
      * afterwards, and can do so using this handler. They cannot get the
@@ -169,14 +159,14 @@ public class ServerControl extends Composite {
      * @author james
      *
      */
-    private class PostFinishedHandler extends RequestHandler<Void>{
+    private class PostFinishedHandler extends RequestHandler<ServerStatus>{
       /**
        * We introduce a delay to give the server time to work out
        * whether it's successfully launched the control centre.
        */
       private static final int SERVER_UPDATE_DELAY = 3000;
       @Override
-      public void handle(Void reply, boolean success, String message) {
+      public void handle(ServerStatus reply, boolean success, String message) {
         /*
          * Update the UI status after a delay.
          */
