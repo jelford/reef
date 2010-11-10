@@ -19,6 +19,8 @@ config.getSettings("command_centre").setdefault("siena", "-start_siena")
 
 def vazelsRunning():
   global vazels_command_process
+  if vazels_command_process is None:
+    return False
   vazels_command_process.poll()
   return vazels_command_process.returncode == None
   
