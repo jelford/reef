@@ -170,7 +170,7 @@ public class MultipleRequester<Type> extends EasyRequest {
    * 
    * @param <Type> The type to convert to.
    */
-  protected interface Converter<Type>{
+  public interface Converter<Type>{
     /**
      * Converts a {@link String} to the given type.
      * 
