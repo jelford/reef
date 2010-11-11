@@ -7,6 +7,7 @@ import uk.ac.imperial.vazels.reef.client.MultipleRequester.Converter;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestBuilder.Method;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -30,8 +31,9 @@ public class ServerControl extends Composite {
   private static final String SERVER_START_URI_SUFFIX="/start";
   private static final String SERVER_STOP_URI_SUFFIX="/stop";
   private static final String SERVER_CONTROL_URI="/control";
-
-  private final ServerRunningRequest mServerRunningRequest;
+  
+  private final ServerStatusRequest serverStatus;
+  private final ServerRunRequest serverRun;
 
   @UiField Button btnStartServer;
   @UiField Button btnStopServer;
@@ -39,9 +41,9 @@ public class ServerControl extends Composite {
   public ServerControl() {
     initWidget(uiBinder.createAndBindUi(this));
 
-    mServerRunningRequest = new ServerRunningRequest();
-
-    mServerRunningRequest.updateServerStatus();
+    serverRun = new ServerRunRequest();
+    serverStatus = new ServerStatusRequest();
+    serverStatus.update();
   }
 
   /*
@@ -50,13 +52,13 @@ public class ServerControl extends Composite {
   @UiHandler("btnStartServer")
   void startClick(ClickEvent event) {
     btnStartServer.setEnabled(false);
-    mServerRunningRequest.startServer();
+    serverRun.start();
   }
 
   @UiHandler("btnStopServer")
   void stopClick(ClickEvent event) {
     btnStopServer.setEnabled(false);
-    mServerRunningRequest.stopServer();
+    serverRun.stop();
   }
 
   /**
@@ -70,113 +72,87 @@ public class ServerControl extends Composite {
   }
 
   /**
-   * Helper class to handle communicating with the server for us.
-   * @author james
-   *
+   * Stock request to check the server status.
+   * <p>
+   * When a response is received the status in the outer class is updated.
+   * </p>
    */
-  private class ServerRunningRequest {
-    /**
-     * Use the same request for start/stop/get status, but use different
-     * suffixes for the Go command
-     */
-    private MultipleRequester<ServerStatus> mControlCommand;
-
-    /**
-     * Both start and stop requests handle returns in the same way;
-     * they must update the UI according to the new control centre status.
-     */
-    private PostFinishedHandler mPostFinishedHandler;
-
-    /**
-     * Initialise MultipleRequesters for all the different types of request we can do.
-     * This is potentially very expensive, so it's best if this is a singleton class.
-     * Cannot enforce singleton through a Factory design pattern, but have made this
-     * private so it won't be instantiated elsewhere.
-     */
-    private ServerRunningRequest() {
-      mControlCommand = new MultipleRequester<ServerStatus>(RequestBuilder.GET, SERVER_CONTROL_URI,
-          new Converter<ServerStatus>(){
-
-        @Override
+  private class ServerStatusRequest extends MultipleRequester<ServerStatus> {
+    public ServerStatusRequest() {
+      super(RequestBuilder.GET, SERVER_CONTROL_URI, new Converter<ServerStatus>() {
         public ServerStatus convert(String original) {
-          // Got to check that response wasn't empty
-          if ("".equals(original)) {
-            return null;
-          } else {
-            return new ServerStatus(original);
-          }
-        }
-
-      });
-      mPostFinishedHandler = new PostFinishedHandler();
-    }
-
-    /**
-     * Send an async call to start the server, and when that finishes send another
-     * to get the server running state. Necessary because the server can't return
-     * an accurate running state immediately, but won't block until it knows properly.
-     */
-    public void startServer(){
-      mControlCommand.go(mPostFinishedHandler, SERVER_START_URI_SUFFIX);
-    }
-
-    /**
-     * Send an async call to stop the server, and when that finishes send another
-     * to get the server running state. Necessary because the server can't return
-     * an accurate running state immediately, but won't block until it knows properly.
-     */
-    public void stopServer(){
-      mControlCommand.go(mPostFinishedHandler, SERVER_STOP_URI_SUFFIX);
-    }
-
-    /**
-     * Get the running/stopped status of the server
-     */
-    public void updateServerStatus(){
-      mControlCommand.go(new RequestHandler<ServerStatus>(){
-        @Override
-        public void handle(ServerStatus reply, boolean success, String message) {
-          switch (reply.mServerState) {
-          case RUNNING:
-            setRunningStateUI(true);
-            break;
-          case READY:
-            setRunningStateUI(false);
-            break;
-          default:
-            // TODO: Clean this up
-            Window.alert("Got unknown server state");
-          }
+          return new ServerStatus(original);
         }
       });
     }
-
-    /**
-     * Any POST requests to the server will need to update the UI status
-     * afterwards, and can do so using this handler. They cannot get the
-     * control centre's status from the return value of the post request
-     * as the server returns before it knows whether launching was successful.
-     * @author james
-     *
-     */
-    private class PostFinishedHandler extends RequestHandler<ServerStatus>{
-      /**
-       * We introduce a delay to give the server time to work out
-       * whether it's successfully launched the control centre.
-       */
-      private static final int SERVER_UPDATE_DELAY = 3000;
-      @Override
-      public void handle(ServerStatus reply, boolean success, String message) {
-        /*
-         * Update the UI status after a delay.
-         */
-        new Timer(){
-          @Override
-          public void run() {
-            updateServerStatus();
-          }
-        }.schedule(SERVER_UPDATE_DELAY);
+    
+    @Override
+    protected void received(ServerStatus reply, boolean success, String message) {
+      if(success) {
+        switch (reply.getState()) {
+        case RUNNING:
+          setRunningStateUI(true);
+          break;
+        case READY:
+          setRunningStateUI(false);
+          break;
+        default:
+          // TODO: Clean this up
+          Window.alert("Got unknown server state");
+        }
       }
+    }
+    
+    /**
+     * Send request to server to grab server status
+     * and update controls based on the result.
+     */
+    public void update() {
+      go(null);
+    }
+  }
+  
+  /**
+   * Stock request to update the server running state.
+   */
+  private class ServerRunRequest extends MultipleRequester<Void> {
+    private static final int SERVER_UPDATE_DELAY = 3000;
+    
+    public ServerRunRequest() {
+      super(RequestBuilder.POST, SERVER_CONTROL_URI, null);
+    }
+    
+    /**
+     * Send an async call to start the server.
+     */
+    public void start() {
+      go(null, SERVER_START_URI_SUFFIX);
+    }
+    
+    /**
+     * Send an async call to stop the server.
+     */
+    public void stop() {
+      go(null, SERVER_STOP_URI_SUFFIX);
+    }
+
+    /**
+     * Handle responses from the server after sending a start or stop request.
+     * <p>
+     * Needs to wait for a period of time and then send a request to the server to
+     * check the running state. This is necessary as the server cannot return an
+     * accurate running state immediately, but we do not want it to block while it
+     * waits for a clear answer.
+     * </p>
+     */
+    @Override
+    protected void received(Void reply, boolean success, String message) {
+      new Timer(){
+        @Override
+        public void run() {
+          serverStatus.update();
+        }
+      }.schedule(SERVER_UPDATE_DELAY);
     }
   }
 }

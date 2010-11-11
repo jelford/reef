@@ -1,5 +1,6 @@
 import sys, os
 import config
+import atexit
 import permanent_bits as pb
 
 # Stuff for writing messages easily
@@ -56,6 +57,23 @@ else:
 
 show_break()
 
+# Security Setup
+
+# Has to be imported after config is set up
+import security
+
+if not config.getSettings("security")["customkey"]:
+    print "Creating new SSH key..."
+    security.makeKey()
+
+print "Backing up and authorising custom key..."
+security.backup()
+security.authoriseKey()
+atexit.register(security.restore)
+print "Done."
+
+show_break()
+
 # Pre-Server Launch Setup
 
 if new_config:
@@ -85,6 +103,15 @@ show_break()
 config.saveConfig()
 print "Config written to disk"
 
+# Set automatic save on close
+atexit.register(config.saveConfig)
+
 show_break()
 
-myserver.getServer().start()
+print "Starting server...press CTRL+C to stop."
+
+# This lets the server be stopped with CTRL+C
+# As it runs to finish, exit handlers are called
+try:
+    myserver.getServer().start()
+except KeyboardInterrupt: pass

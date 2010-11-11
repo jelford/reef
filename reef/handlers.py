@@ -32,7 +32,7 @@ def getRouting():
         (r'GET,POST /groups/', group_handler),
         (r'POST /control/start/?$', start_handler),
         (r'POST /control/stop/?$', stop_handler),
-        (r'GET,POST /control/?$', control_handler),
+        (r'GET /control/?$', control_handler),
         (r'GET,POST /workloads/?', workload_handler),
         (r'GET,POST /', auth_page_handler),
     ]

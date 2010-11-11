@@ -7,10 +7,6 @@ vazels_command_process = None
 vazels_control_process = None
 
 ''' DEFAULT SETTINGS FOR VAZELS - paths, certificates, ... '''
-
-# TODO: Update this to generate a new ssh certificate at startup!
-config.getSettings("global")["certificate"] = os.path.expanduser("~/.ssh/id_rsa")
-
 config.getSettings("command_centre").setdefault("rmi_port", "1099")
 config.getSettings("command_centre").setdefault("rmi_host", "localhost")
 config.getSettings("command_centre").setdefault("rmi", "-start_rmi")
@@ -41,7 +37,7 @@ def runVazels():
   args = ['/bin/sh', 'vazels_control_centre.sh']
   args.append('--root_dir='+experiment_path+'/')
   args.append(groups_string)
-  args.append('--ssh_server_identity='+config.getSettings('global')['certificate'])
+  args.append('--ssh_server_identity='+config.getSettings('security')['certificate'])
   args.append(config.getSettings('command_centre')['rmi'])
   args.append(config.getSettings('command_centre')['siena'])
   

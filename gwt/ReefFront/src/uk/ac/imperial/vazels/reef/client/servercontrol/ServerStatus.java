@@ -2,8 +2,8 @@ package uk.ac.imperial.vazels.reef.client.servercontrol;
 
 
 public class ServerStatus {
-  ServerStatusOverlay data;
-  ServerState mServerState;
+  private ServerStatusOverlay data;
+  private ServerState mServerState;
 
   public ServerStatus(String original) {
     data = parseJSON(original);
@@ -17,6 +17,10 @@ public class ServerStatus {
   protected enum ServerState {
     RUNNING,
     READY;
+  }
+  
+  public ServerState getState(){
+    return mServerState;
   }
   
   private native final ServerStatusOverlay parseJSON(String json) /*-{

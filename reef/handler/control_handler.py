@@ -13,9 +13,6 @@ def control_handler():
     else:
       return request.response({"control_centre_status": "ready"})
   
-  def POST(request, entity):
-    return GET(request)
-  
   return locals()
 
 @restlite.resource
@@ -39,9 +36,6 @@ def start_handler():
 
 @restlite.resource
 def stop_handler():
-  def GET(request):
-    handlers.login(request)
-    return request.response("Got a stop GET request")
   
   def POST(request,entity):
     handlers.login(request)
