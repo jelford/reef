@@ -30,6 +30,14 @@ def runVazels():
   
   groups_string = "--groups="
   group_data = config.getSettings("groups")
+  
+  # Work out the physical group numbers. Can't do this earlier as they can
+  # change all the way up to the point when we start the server.
+  physical_group_number = 1
+  for group in group_data :
+    group_data[group]['group_number'] = physical_group_number
+    physical_group_number += 1
+  
   groups_string += ':'.join([str(group)+','+str(group_data[group]['size']) for group in group_data])
   
   os.chdir(getVazelsPath())
@@ -41,7 +49,7 @@ def runVazels():
   args.append(config.getSettings('command_centre')['rmi'])
   args.append(config.getSettings('command_centre')['siena'])
   
-  vazels_command_process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=getVazelsPath())
+  vazels_command_process = subprocess.Popen(args, cwd=getVazelsPath())#, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
   
   # Oh dear this can only fail if the process dies!
   vazels_command_process.poll()
@@ -57,7 +65,7 @@ def stopVazels():
   args.append('--rmi_port='+config.getSettings('command_centre')['rmi_port'])
   args.append('stop')
   
-  vazels_control_process = subprocess.Popen(args, cwd=os.path.join(getVazelsPath(),'client'), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+  vazels_control_process = subprocess.Popen(args, cwd=os.path.join(getVazelsPath(),'client'))#, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
   
   # Oh dear this can't fail!
   vazels_control_process.poll()
