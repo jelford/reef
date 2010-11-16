@@ -9,7 +9,7 @@ import urlparse
 those of the form /groups/somethingMore are used for individual groups'''
 
 # Blank newgroup with some values initialized
-NEW_GROUP = {"workloads" : {}, "filters" : []}
+NEW_GROUP = {"workloads" : [], "filters" : []}
 
 @restlite.resource
 def group_batch_handler():
@@ -39,7 +39,7 @@ def group_batch_handler():
     name <-- need to be given this by the post request
     size <-- need to be given this by the post request
     group_number <-- calculated when the server starts
-    workloads <-- default value: {}
+    workloads <-- default value: [] (a list of workload names applied to the group)
     filters <-- given to us in a specific call later, default value: []
     '''
     
