@@ -1,19 +1,19 @@
 import handlers
 import config
 import restlite
+import urlparse
 
 ### Allows for submitting groups ###
 
 ''' URIs of the form /groups/$ are used for batch handling, whereas
 those of the form /groups/somethingMore are used for individual groups'''
 
-### Allows for submitting groups ###
-
-''' URIs of the form /groups/$ are used for batch handling, whereas
-those of the form /groups/somethingMore are used for individual groups'''
+# Blank newgroup with some values initialized
+NEW_GROUP = {"workloads" : {}, "filters" : []}
 
 @restlite.resource
 def group_batch_handler():
+  global NEW_GROUP
 
   ## GET requests to this uri will return a summary of current groups
   def GET(request):
@@ -51,17 +51,23 @@ def group_batch_handler():
       try:
         name, size = variable.split("=")
         new_group = {"name" : name, "size": int(size)}
+        if int(size) == 0:
+          del(existing_groups[name])
+          continue
         if name in existing_groups:
           existing_groups[name].update(new_group)
         else:
-          new_group.update({"workloads" : {}, "filters" : []})
+          new_group.update(NEW_GROUP)
           existing_groups[name] = new_group
-        print existing_groups[name]
       except ValueError:
         print("Had a problem handling argument: " + variable + \
                ": Argument list may have been improperly formatted; should "\
                "be in the form '.../group_name=some_size&other_name=other_size&...'"\
                " where all size values are integers.")
+        continue
+      except KeyError:
+        # Probably we tried to delete a group we've already dealt with
+        print("Tried to delete a group that's already been deleted")
         continue
       
     # Tell them the new info
@@ -87,30 +93,28 @@ def group_handler():
   # POST requests will set up a group
   def POST(request,entity):
     handlers.login(request)
-      
-      existing_groups = config.getSettings("groups")
-      
-      try:
-        group_name, arguments = request['PATH_INFO'].split('/')[0]
-        if group_name in existing_groups:
-          group_settings = existing_groups[group_name]
-        else:
-          #TODO: must extract group name
-          #new_group.update({"workloads" : {}, "filters" : []})
-          #existing_groups[name] = new_group
-          pass
-      except ValueError:
-        raise restlite.Status, "400 Must specify some arguments when making " + \
-                                "POST requests on groups"
-      
-      for arg in arguments.split("&"):
-        try:
-          key, value = arg.split("=")
-        except ValueError:
-          raise restlite.Status, "400 When setting group attributes must give " + \
-                                  "a list in the form: arg1=val1&arg2=val2 ..."
-        
-        if key == "filter":
-          group_settings["filters"].append(value)
+
+    existing_groups = config.getSettings("groups")
+    try:
+      group_name, arg_string = request['PATH-INFO'].split('/')
+    except ValueError:
+      raise reslite.Status, "400 Group POST requests should be of the form:"+ \
+                              ".../group_name/args1=1&arg2=2&arg3=3..."
+    args = urlparse.parse_qs(arg_string)
+    
+    # Replace things that shouldn't be lists with non-lists
+    for arg in args:
+      if arg == 'filter' : continue # Actually, single filter lists are fine
+      if len(args[arg]) == 1:
+        args[arg] = args[arg][0]
+    
+    # Deal with the case that this is the first time we've accessed the group
+    existing_groups.setdefault(group_name, NEW_GROUP)
+    existing_groups[group_name]["name"] = group_name
   
+    # Update the group with all the information passed in by the client
+    existing_groups[group_name].update(args)
+    
+    return GET(request)
+
   return locals()
