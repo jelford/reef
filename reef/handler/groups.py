@@ -81,8 +81,10 @@ def group_handler():
   ## GET requests are for grabbing current info on a group
   def GET(request):
     handlers.login(request)
+   
     # To find info on a group call /groups/groupName
     group_name = request['PATH_INFO'].split('/')[0]
+
     try:
       group_settings = config.getSettings("groups",True)[group_name]
       return request.response(group_settings)
@@ -96,24 +98,38 @@ def group_handler():
 
     existing_groups = config.getSettings("groups")
     try:
-      group_name, arg_string = request['PATH-INFO'].split('/')
+      group_name, arg_string = request['PATH_INFO'].split('/')
     except ValueError:
       raise reslite.Status, "400 Group POST requests should be of the form:"+ \
                               ".../group_name/args1=1&arg2=2&arg3=3..."
     args = urlparse.parse_qs(arg_string)
     
-    # Replace things that shouldn't be lists with non-lists
+    ## Clear this up so it fits with server-side group representation
+    # Can't rename a group TODO: Or can we?
+    args["name"] = group_name
+    # Single-valued lists are single values
     for arg in args:
       if arg == 'filter' : continue # Actually, single filter lists are fine
       if len(args[arg]) == 1:
         args[arg] = args[arg][0]
+    # Size is an integer
+    if "size" in args:
+      args["size"] = int(args["size"])
+    
     
     # Deal with the case that this is the first time we've accessed the group
     existing_groups.setdefault(group_name, NEW_GROUP)
-    existing_groups[group_name]["name"] = group_name
   
     # Update the group with all the information passed in by the client
     existing_groups[group_name].update(args)
+    
+    # Let's compensate for bad design by clearing up at the end
+    try:
+      if existing_groups[group_name]["size"] == 0:
+        del(existing_groups[group_name])
+    except KeyError:
+      del(existing_groups[group_name])
+    
     
     return GET(request)
 
