@@ -29,6 +29,12 @@ public class ServerControl extends Composite {
   private static final String SERVER_STOP_URI_SUFFIX="/stop";
   private static final String SERVER_CONTROL_URI="/control";
   
+  /**
+   * How long to wait between making requests to the server and asking
+   * for its new status.
+   */
+  private static final int SERVER_UPDATE_DELAY = 2700;
+  
   private final ServerStatusRequest serverStatus;
   private final ServerRunRequest serverRun;
 
@@ -67,6 +73,13 @@ public class ServerControl extends Composite {
     btnStartServer.setEnabled(!running);
     btnStopServer.setEnabled(running);
   }
+  
+  protected Timer mScheduleStatusRequest = new Timer(){
+    @Override
+    public void run() {
+      serverStatus.update();
+    }
+  };
 
   /**
    * Stock request to check the server status.
@@ -93,8 +106,13 @@ public class ServerControl extends Composite {
         case READY:
           setRunningStateUI(false);
           break;
+        case STARTING:
+          mScheduleStatusRequest.schedule(SERVER_UPDATE_DELAY);
+          break;
+        case TIMEOUT:
+          // TODO: Figure out what we're going to do in this case (probably shut down the server)
+          break;
         default:
-          // TODO: Clean this up
           Window.alert("Got unknown server state");
         }
       }
@@ -113,7 +131,6 @@ public class ServerControl extends Composite {
    * Stock request to update the server running state.
    */
   private class ServerRunRequest extends MultipleRequester<Void> {
-    private static final int SERVER_UPDATE_DELAY = 3000;
     
     public ServerRunRequest() {
       super(RequestBuilder.POST, SERVER_CONTROL_URI, null);
@@ -144,12 +161,7 @@ public class ServerControl extends Composite {
      */
     @Override
     protected void received(Void reply, boolean success, String message) {
-      new Timer(){
-        @Override
-        public void run() {
-          serverStatus.update();
-        }
-      }.schedule(SERVER_UPDATE_DELAY);
+      mScheduleStatusRequest.schedule(SERVER_UPDATE_DELAY);
     }
   }
 }

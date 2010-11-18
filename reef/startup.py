@@ -3,12 +3,21 @@ import config
 import atexit
 import permanent_bits as pb
 
+
+# Don't even bother loading on Windows - there's no point.
+import platform
+
+if platform.system == 'Windows':
+  raise EnvironmentError('It looks like you\'re trying to run this program on' + \
+                         ' the "Microsoft Windows" operating system - Vazels' + \
+                         ' won\'t run there.')
+
 # Stuff for writing messages easily
 
 def show_break():
-    print ""
-    print "------------------"
-    print ""
+  print ""
+  print "------------------"
+  print ""
 
 # Welcome message
 
