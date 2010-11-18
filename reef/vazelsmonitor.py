@@ -2,6 +2,7 @@ import vazelsmanager
 import config
 import os
 import subprocess
+import tarfile
 from threading import Timer
 from time import sleep
 
@@ -29,6 +30,7 @@ def __applyWorkloadsToControlCentre(interval) :
       groups = config.getSettings("groups")
       # For each group, scan through its workloads & apply each one in turn
       for group in groups:
+        print("Managing group: " + group)
         for wkld in groups[group]["workloads"]:
           print ("Adding workload(" + wkld + ") to group("+group+")")
           __applyWorkload(workload_def=workloadDefs[wkld], target_group=groups[group])
@@ -41,7 +43,7 @@ def __applyWorkloadsToControlCentre(interval) :
       continue
     elif runningState == "timeout":
       # TODO: Do we really want to terminate it in this case? I'd say so.
-      print "Doing ssh stuff..."
+      print("Doing ssh stuff...")
       sleep(interval)
       continue
       vazelsmanager.vazels_control_process.terminate()
@@ -55,6 +57,7 @@ def __applyWorkloadsToControlCentre(interval) :
   print("Finished monitoring for startup")
   
 def __applyWorkload(workload_def, target_group):
+  print("Applying workload")
   wkld_dir = os.path.join(
         config.getSettings("global")["projdir"],
         config.getSettings("workloads")["dir"]
@@ -68,6 +71,18 @@ def __applyWorkload(workload_def, target_group):
   args.append(workload_def['file'])
   
   subprocess.Popen(args, cwd=vazelsmanager.getVazelsPath()+'/client')
+  print("Workload dispatched")
 
 def __extractActors(workload_def, target_group):
-  pass
+  print("Extracting actors")
+  group_number = target_group['group_number']
+  experiment_dir = config.getSettings("global")['expdir']
+  
+  print("workload_def: " + str(workload_def))
+  for actor_name in workload_def['actors']:
+    print("Extracting actor: " + actor_name)
+    actor = config.getSettings('actors')['defs'][actor_name]
+    type=actor['type'].capitalize()
+    actorTGZ = tarfile.open(actor['file'],'r:gz')
+    actorTGZ.extractall(path=experiment_dir+'/Group_'+str(group_number)+"/Vazels/"+type+"_launcher/")
+    

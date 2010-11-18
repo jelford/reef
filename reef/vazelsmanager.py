@@ -105,6 +105,7 @@ def runVazels():
   setupFiles();
   
   experiment_path = os.path.join(config.getSettings("global")['projdir'], "experiment")
+  config.getSettings("global")['expdir'] = experiment_path
   
   groups_string = "--groups="
   group_data = config.getSettings("groups")
