@@ -109,7 +109,8 @@ def group_handler():
     args["name"] = group_name
     # Single-valued lists are single values
     for arg in args:
-      if arg == 'filter' : continue # Actually, single filter lists are fine
+      if arg == 'filters' : continue # Actually, single filter lists are fine
+      elif arg == 'workloads' : continue # Likewise with workloads
       if len(args[arg]) == 1:
         args[arg] = args[arg][0]
     # Size is an integer
