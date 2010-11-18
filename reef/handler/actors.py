@@ -16,7 +16,7 @@ import authentication
 
 config.getSettings("actors").setdefault("dir","actors")
 config.getSettings("actors").setdefault("defs",{})
-allowed_types = ["java", "python"]
+allowed_types = ["java", "python", "sue"]
 
 @restlite.resource
 def actors_handler():

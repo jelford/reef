@@ -8,10 +8,13 @@ import vazelsmanager
 def control_handler():
   def GET(request):
     authentication.login(request)
-    if vazelsmanager.vazelsRunning():
+    runningState = vazelsmanager.vazelsRunning()
+    if runningState is True:
       return request.response({"control_centre_status": "running"})
-    else:
+    elif runningState is False:
       return request.response({"control_centre_status": "ready"})
+    else:
+      return request.response({"control_centre_status": runningState})
   
   return locals()
 
@@ -19,7 +22,7 @@ def control_handler():
 def start_handler():
   def GET(request):
     authentication.login(request)
-    return request.response("Got a start GET request")
+    raise restlite.Status("400 Invalid GET request to " + request["PATH_INFO"])
   
   def POST(request, entity):
     authentication.login(request)

@@ -49,7 +49,7 @@ def actorassign_handler():
 
         # Validate actor
         if actor not in config.getSettings("actors")["defs"]:
-            raise restlite.Status, "404 Actor Not Found"
+            raise restlite.Status, "404 Actor Not Found (" +actor+ ")"
 
         workload = config.getSettings("workloads")["defs"][workload]
 

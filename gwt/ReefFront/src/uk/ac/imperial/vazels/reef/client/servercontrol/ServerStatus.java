@@ -7,16 +7,23 @@ public class ServerStatus {
 
   public ServerStatus(String original) {
     data = parseJSON(original);
-    if ("ready".equals(data.getStatusString())) {
+    String statusString = data.getStatusString();
+    if ("ready".equals(statusString)) {
       mServerState = ServerState.READY;
-    } else if ("running".equals(data.getStatusString())) {
+    } else if ("running".equals(statusString)) {
       mServerState = ServerState.RUNNING;
+    } else if ("starting".equals(statusString)) {
+      mServerState = ServerState.STARTING;
+    } else if ("timeout".equals(statusString)) {
+      mServerState = ServerState.TIMEOUT;
     }
   }
 
   protected enum ServerState {
     RUNNING,
-    READY;
+    READY,
+    STARTING,
+    TIMEOUT;
   }
   
   public ServerState getState(){
