@@ -51,6 +51,7 @@ public class UploadActorWidget extends Composite {
     final ListBox actorLanguage = new ListBox();
     actorLanguage.addItem("JAVA");
     actorLanguage.addItem("PYTHON");
+    actorLanguage.addItem("SUE");
     uploadPanel.add(actorLanguage);
     
     final TextBox actorLang = new TextBox(); //for server

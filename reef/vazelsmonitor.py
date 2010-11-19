@@ -33,7 +33,7 @@ def __applyWorkloadsToControlCentre(interval) :
         print("Managing group: " + group)
         for wkld in groups[group]["workloads"]:
           print ("Adding workload(" + wkld + ") to group("+group+")")
-          __applyWorkload(workload_def=workloadDefs[wkld], target_group=groups[group])
+          if wkld != "SUE" : __applyWorkload(workload_def=workloadDefs[wkld], target_group=groups[group])
           __extractActors(workload_def=workloadDefs[wkld], target_group=groups[group])
 
     elif runningState == "starting":
@@ -84,5 +84,8 @@ def __extractActors(workload_def, target_group):
     actor = config.getSettings('actors')['defs'][actor_name]
     type=actor['type'].upper()
     actorTGZ = tarfile.open(actor['file'],'r:gz')
-    actorTGZ.extractall(path=experiment_dir+'/Group_'+str(group_number)+"/Vazels/"+type+"_launcher/")
+    if type.find("SUE") != -1 :
+      actorTGZ.extractall(path=experiment_dir+'/Group_'+str(group_number)+'/SUE/')
+    else :
+      actorTGZ.extractall(path=experiment_dir+'/Group_'+str(group_number)+"/Vazels/"+type+"_launcher/")
     
