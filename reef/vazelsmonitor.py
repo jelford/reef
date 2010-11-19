@@ -82,7 +82,7 @@ def __extractActors(workload_def, target_group):
   for actor_name in workload_def['actors']:
     print("Extracting actor: " + actor_name)
     actor = config.getSettings('actors')['defs'][actor_name]
-    type=actor['type'].capitalize()
+    type=actor['type'].upper()
     actorTGZ = tarfile.open(actor['file'],'r:gz')
     actorTGZ.extractall(path=experiment_dir+'/Group_'+str(group_number)+"/Vazels/"+type+"_launcher/")
     
