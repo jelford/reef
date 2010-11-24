@@ -15,7 +15,7 @@ def show_break():
 print ""
 print "Welcome to " + pb.appname_long + "! The web GUI for Vazels."
 print ""
-print "I would write a description here but that's a job for later..."
+print pb.app_desc
 
 show_break()
 
