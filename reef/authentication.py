@@ -50,7 +50,7 @@ def login(request):
     global authModel
     # If there are not users, don't ask for login
     if authModel is not None:
-        request.login(model)
+        authModel.login(request)
 
 
 # Clear all authentication (removes users and turns auth off)

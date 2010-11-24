@@ -2,7 +2,8 @@ import sys, os
 import config
 import atexit
 import permanent_bits as pb
-import authentication
+# Do not add things here that will set default
+# If do you, they will be overwritten when config is loaded
 
 # Stuff for writing messages easily
 
@@ -76,6 +77,8 @@ print "Done."
 show_break()
 
 # Pre-Server Launch Setup
+
+import authentication
 
 if new_config:
 # Ask only if we're looking at a new file
