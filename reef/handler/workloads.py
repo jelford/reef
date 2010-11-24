@@ -1,6 +1,6 @@
 import restlite
 import config
-import handlers
+import authentication
 import os
 
 ### Accepts workload files or text fields ###
@@ -20,7 +20,7 @@ config.getSettings("workloads").setdefault("defs",{})
 @restlite.resource
 def workload_handler():
     def GET(request):
-        handlers.login(request)
+        authentication.login(request)
 
         wkld = request['PATH_INFO']
         namemap = config.getSettings("workloads")["defs"]
@@ -59,7 +59,7 @@ def workload_handler():
         return request.response(wkld)
 
     def POST(request, entity):
-        handlers.login(request)
+        authentication.login(request)
 
         fields = parseMultipart(request, entity)
         if fields is None:

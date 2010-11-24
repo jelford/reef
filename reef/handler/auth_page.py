@@ -1,6 +1,6 @@
 import restlite
 import config
-import handlers
+import authentication
 import os
 
 ### Serves authorised pages from global.pagedir ###
@@ -8,7 +8,7 @@ import os
 @restlite.resource
 def auth_page_handler():
     def GET(request):
-        handlers.login(request)
+        authentication.login(request)
 
         if '..' in request['PATH_INFO']:
             raise restlite.Status, '400 Invalid Path'

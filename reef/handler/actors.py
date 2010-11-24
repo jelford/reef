@@ -1,7 +1,7 @@
 import restlite
 import config
-import handlers
 import os
+import authentication
 
 ### Accepts actor tar.gz files ###
 #
@@ -21,7 +21,7 @@ allowed_types = ["java", "python"]
 @restlite.resource
 def actors_handler():
     def GET(request):
-        handlers.login(request)
+        authentication.login(request)
 
         actor = request['PATH_INFO']
         namemap = config.getSettings("actors")["defs"]
@@ -44,7 +44,7 @@ def actors_handler():
         return request.response(actordata)
 
     def POST(request, entity):
-        handlers.login(request)
+        authentication.login(request)
 
         fields = parseMultipart(request, entity)
         if fields is None:

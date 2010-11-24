@@ -1,7 +1,7 @@
-import handlers
 import config
 import restlite
 import urlparse
+import authentication
 
 ### Allows for submitting groups ###
 
@@ -17,7 +17,7 @@ def group_batch_handler():
 
   ## GET requests to this uri will return a summary of current groups
   def GET(request):
-    handlers.login(request)
+    authentication.login(request)
     groups_summary = {}
     group_data = config.getSettings("groups")
     for group in group_data:
@@ -31,7 +31,7 @@ def group_batch_handler():
     return request.response(groups_summary)
     
   def POST(request,entity):
-    handlers.login(request)
+    authentication.login(request)
       
     '''
     Here the server must take care of setting up the group info.
@@ -80,7 +80,7 @@ def group_handler():
   
   ## GET requests are for grabbing current info on a group
   def GET(request):
-    handlers.login(request)
+    authentication.login(request)
    
     # To find info on a group call /groups/groupName
     group_name = request['PATH_INFO'].split('/')[0]
@@ -94,7 +94,7 @@ def group_handler():
     
   # POST requests will set up a group
   def POST(request,entity):
-    handlers.login(request)
+    authentication.login(request)
 
     existing_groups = config.getSettings("groups")
     try:

@@ -1,6 +1,6 @@
 import restlite
 import config
-import handlers
+import authentication
 
 ### Assigns actors to workloads ###
 #
@@ -16,7 +16,7 @@ import handler.workloads # to grab defaults
 @restlite.resource
 def actorassign_handler():
     def POST(request, entity):
-        handlers.login(request)
+        authentication.login(request)
 
         import urlparse
         args = urlparse.parse_qs(entity, True)

@@ -9,16 +9,6 @@ from handler.actorassign import actorassign_handler
 from handler.control_handler import control_handler, start_handler, stop_handler
 from handler.groups import group_handler, group_batch_handler
 
-config.getSettings("handlers").setdefault("auth", None)
-
-def setAuth(model):
-    config.getSettings("handlers")["auth"] = model
-
-def login(request):
-    auth = config.getSettings("handlers")["auth"]
-    if auth:
-        request.login(auth)
-
 def getRouting():
     return [
         #(r'GET,POST /settings$', 'GET,POST /settings/'),

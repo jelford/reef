@@ -1,6 +1,6 @@
 import restlite
 import config
-import handlers
+import authentication
 
 ### Allows Editing of config settings through /settings ###
 #
@@ -25,7 +25,7 @@ import handlers
 @restlite.resource
 def settings_editor():
     def GET(request):
-        handlers.login(request)
+        authentication.login(request)
         section = getSection(request['PATH_INFO'])
         if section:
             settings = config.getSettings(section, False)
@@ -37,7 +37,7 @@ def settings_editor():
             return request.response(config.getSections())
 
     def POST(request, entity):
-        handlers.login(request)
+        authentication.login(request)
         section = getSection(request['PATH_INFO'])
         # Uncomment below to disallow editing of new sections
         #if not section:

@@ -1,4 +1,4 @@
-import handlers
+import authentication
 import restlite
 import vazelsmanager
 
@@ -7,7 +7,7 @@ import vazelsmanager
 @restlite.resource
 def control_handler():
   def GET(request):
-    handlers.login(request)
+    authentication.login(request)
     if vazelsmanager.vazelsRunning():
       return request.response({"control_centre_status": "running"})
     else:
@@ -18,11 +18,11 @@ def control_handler():
 @restlite.resource
 def start_handler():
   def GET(request):
-    handlers.login(request)
+    authentication.login(request)
     return request.response("Got a start GET request")
   
   def POST(request, entity):
-    handlers.login(request)
+    authentication.login(request)
       
     os_call_to_vazels = vazelsmanager.runVazels()
       
@@ -38,7 +38,7 @@ def start_handler():
 def stop_handler():
   
   def POST(request,entity):
-    handlers.login(request)
+    authentication.login(request)
     
     os_call_to_vazels = vazelsmanager.stopVazels()
     
