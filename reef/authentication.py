@@ -46,3 +46,8 @@ def getModel():
     if authModel is None:
         refresh()
     return authModel
+
+
+# Login with the given request
+def login(request):
+    request.login(getModel())
