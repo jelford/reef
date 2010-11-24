@@ -9,8 +9,9 @@ import handlers
 # - workload is the name of the workload
 # - actor is the name of the actor
 
-config.getSettings("workloads").setdefault("dir","workloads")
-config.getSettings("workloads").setdefault("defs",{})
+import handler.workloads # to grab defaults
+#config.getSettings("workloads").setdefault("dir","workloads")
+#config.getSettings("workloads").setdefault("defs",{})
 
 @restlite.resource
 def actorassign_handler():
