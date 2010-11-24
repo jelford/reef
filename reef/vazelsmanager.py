@@ -7,8 +7,8 @@ vazels_command_process = None
 vazels_control_process = None
 
 ''' DEFAULT SETTINGS FOR VAZELS - paths, certificates, ... '''
-config.getSettigns("command_centre").setdefault("vazels_dir", "vazels")
-config.getSettigns("command_centre").setdefault("experiment_dir", "experiment")
+config.getSettings("command_centre").setdefault("vazels_dir", "vazels")
+config.getSettings("command_centre").setdefault("experiment_dir", "experiment")
 config.getSettings("command_centre").setdefault("rmi_port", "1099")
 config.getSettings("command_centre").setdefault("rmi_host", "localhost")
 config.getSettings("command_centre").setdefault("rmi", "-start_rmi")
