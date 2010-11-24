@@ -7,6 +7,8 @@ vazels_command_process = None
 vazels_control_process = None
 
 ''' DEFAULT SETTINGS FOR VAZELS - paths, certificates, ... '''
+config.getSettigns("command_centre").setdefault("vazels_dir", "vazels")
+config.getSettigns("command_centre").setdefault("experiment_dir", "experiment")
 config.getSettings("command_centre").setdefault("rmi_port", "1099")
 config.getSettings("command_centre").setdefault("rmi_host", "localhost")
 config.getSettings("command_centre").setdefault("rmi", "-start_rmi")
@@ -21,12 +23,22 @@ def vazelsRunning():
   return vazels_command_process.returncode == None
   
 def getVazelsPath():
-  return os.path.join(config.getSettings("global")['basedir'],"vazels")
+  return os.path.join(
+    config.getSettings("global")['basedir'],
+    config.getSettings("command_centre")["vazels_dir"],
+  )
+
+def getExperimentPath():
+  return os.path.join(
+    config.getSettings("global")['projdir'],
+    config.getSettings("command_centre")["experiment_dir"]
+  )
+  
   
 def runVazels():
   global vazels_command_process
   
-  experiment_path = os.path.join(config.getSettings("global")['projdir'], "experiment")
+  experiment_path = getExperimentPath()
   
   groups_string = "--groups="
   group_data = config.getSettings("groups")
@@ -58,7 +70,7 @@ def runVazels():
 def stopVazels():
   global vazels_control_process
   
-  experiment_path = os.path.join(config.getSettings("global")['projdir'], "experiment")
+  experiment_path = getExperimentPath()
 
   args = ['/bin/sh', 'commandline_client.sh']
   args.append('--rmi_host='+config.getSettings('command_centre')['rmi_host'])
