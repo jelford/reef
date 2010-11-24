@@ -2,6 +2,7 @@ import sys, os
 import config
 import atexit
 import permanent_bits as pb
+import authentication
 
 # Stuff for writing messages easily
 
@@ -79,7 +80,6 @@ show_break()
 if new_config:
 # Ask only if we're looking at a new file
     from getpass import getpass
-    import authentication
 
     password = getpass("Please give a passkey for accessing the interface (Blank for none): ")
     if password:
@@ -98,7 +98,7 @@ myserver.getServer().setup()
 print "Now you can log on to the server with the following credentials:"
 print ""
 print "Location: http://localhost:" + str(config.getSettings("server")["port"])
-if config.getSettings("server")["passkey"]:
+if authentication.active():
     print "User: " + pb.app_user
     print "Password: <You should know>"
 print ""

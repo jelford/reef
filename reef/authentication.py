@@ -59,5 +59,10 @@ def clear():
     refresh()
 
 
+# Is authentication being used?
+def active():
+    return authModel is not None
+
+
 # Set up here
 refresh()
