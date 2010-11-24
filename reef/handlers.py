@@ -12,7 +12,7 @@ from handler.groups import group_handler, group_batch_handler
 config.getSettings("handlers").setdefault("auth", None)
 
 def setAuth(model):
-    config.getSettings("handlers").setdefault("auth", None)
+    config.getSettings("handlers")["auth"] = model
 
 def login(request):
     auth = config.getSettings("handlers")["auth"]
