@@ -13,6 +13,7 @@ class ReefServer:
         config.getSettings("server").setdefault("pagedir", "./pages/")
 
     def setup(self):
+        import handlers
         self.routes = handlers.getRouting()
 
     def start(self):
