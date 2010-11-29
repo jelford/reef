@@ -1,23 +1,33 @@
 package uk.ac.imperial.vazels.reef.client.actors;
 
 //import java.awt.TextField;
-import uk.ac.imperial.vazels.reef.client.AddressResolution;
+import java.util.ArrayList;
 
+import uk.ac.imperial.vazels.reef.client.AddressResolution;
+import uk.ac.imperial.vazels.reef.client.MultipleRequester;
+import uk.ac.imperial.vazels.reef.client.RequestHandler;
+
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
+import com.google.gwt.user.client.ui.FormHandler;
 import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
+import com.google.gwt.user.client.ui.FormSubmitEvent;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TabLayoutPanel;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class UploadActorWidget extends Composite {
 
-  //private ActorSummary actors;
+  private ActorSummary actors;
 
   public UploadActorWidget() {
     initPanel();
@@ -62,7 +72,7 @@ public class UploadActorWidget extends Composite {
     formPanel.addSubmitHandler(new SubmitHandler() {
       public void onSubmit(SubmitEvent event) {
         actorLang.setText(actorLanguage.getValue(actorLanguage.getSelectedIndex()));
-        //Actors.add(actorLang.getText());
+        Actors.add(actorLang.getText());
       }
     });    
     
