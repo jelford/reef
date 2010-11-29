@@ -8,6 +8,7 @@ from handler.actors import actors_handler
 from handler.actorassign import actorassign_handler
 from handler.control_handler import control_handler, start_handler, stop_handler
 from handler.groups import group_handler, group_batch_handler
+from handler.groups import SUE_handler
 
 def getRouting():
     return [
@@ -24,5 +25,6 @@ def getRouting():
         (r'POST /control/stop/?$', stop_handler),
         (r'GET /control/?$', control_handler),
         (r'GET,POST /workloads/?', workload_handler),
+        (r'GET,POST /sue/?', SUE_handler),
         (r'GET,POST /', auth_page_handler),
     ]

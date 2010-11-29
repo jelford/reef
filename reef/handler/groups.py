@@ -9,11 +9,11 @@ import authentication
 those of the form /groups/somethingMore are used for individual groups'''
 
 # Blank newgroup with some values initialized
-NEW_GROUP = {"workloads" : [], "filters" : []}
+def __getNewGroup():
+  return {"workloads" : [], "filters" : [], "sue_components" : []}
 
 @restlite.resource
 def group_batch_handler():
-  global NEW_GROUP
 
   ## GET requests to this uri will return a summary of current groups
   def GET(request):
@@ -57,7 +57,7 @@ def group_batch_handler():
         if name in existing_groups:
           existing_groups[name].update(new_group)
         else:
-          new_group.update(NEW_GROUP)
+          new_group.update(__getNewGroup())
           existing_groups[name] = new_group
       except ValueError:
         print("Had a problem handling argument: " + variable + \
@@ -119,7 +119,7 @@ def group_handler():
     
     
     # Deal with the case that this is the first time we've accessed the group
-    existing_groups.setdefault(group_name, NEW_GROUP)
+    existing_groups.setdefault(group_name, getNewGroup())
   
     # Update the group with all the information passed in by the client
     existing_groups[group_name].update(args)
