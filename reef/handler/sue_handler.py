@@ -20,17 +20,18 @@ def SUE_handler():
         authentication.login(request)
         groups = config.getSettings("groups")
     
-        component_info = {}
+        #component_info = {}
     
         # For each component, build a list of groups to which it is assigned.
-        for component_name in config.getSettings("SUE")["defs"]:
-            assigned_groups = []
-            for group in groups:
-                if component_name in groups[group]["sue_components"]:
-                  assigned_groups.append(group)
-                component_info[component_name] = assigned_groups
+        #for component_name in config.getSettings("SUE")["defs"]:
+        #    assigned_groups = []
+        #    for group in groups:
+        #        if component_name in groups[group]["sue_components"]:
+        #          assigned_groups.append(group)
+        #        component_info[component_name] = assigned_groups
     
-        return request.response(component_info)
+        #return request.response(component_info)
+        return request.response(config.getSettings("SUE")["defs"].keys(), 'text/html')
       
     def POST(request,entity):
         authentication.login(request)

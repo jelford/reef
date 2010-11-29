@@ -13,10 +13,12 @@ import uk.ac.imperial.vazels.reef.client.MultipleRequester.Converter;
 public class JsArrayStringSetConverter implements Converter<Set<String>>{
   @Override
   public Set<String> convert(String original) {
-    JsArrayString array = parseJson(original);
     Set<String> set = new HashSet<String>();
-    for(int i=0; i<array.length(); i++) {
-      set.add(array.get(i));
+    if(original != null) {
+      JsArrayString array = parseJson(original);
+      for(int i=0; i<array.length(); i++) {
+        set.add(array.get(i));
+      }
     }
     return set;
   }

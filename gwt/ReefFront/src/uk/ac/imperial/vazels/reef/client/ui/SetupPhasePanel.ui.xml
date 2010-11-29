@@ -3,7 +3,8 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:groups="urn:import:uk.ac.imperial.vazels.reef.client.groups"
 	xmlns:actors="urn:import:uk.ac.imperial.vazels.reef.client.actors"
 	xmlns:workload="urn:import:uk.ac.imperial.vazels.reef.client.workloads"
-	xmlns:server="urn:import:uk.ac.imperial.vazels.reef.client.servercontrol">
+	xmlns:server="urn:import:uk.ac.imperial.vazels.reef.client.servercontrol"
+	xmlns:sue="urn:import:uk.ac.imperial.vazels.reef.client.sue">
 
 	<g:DecoratedTabPanel ui:field="tabPanel">
 		<g:Tab>
@@ -19,8 +20,15 @@
 			<actors:UploadActorWidget />
 		</g:Tab>
 		<g:Tab>
+			<g:TabHTML>4.Upload Sue Components</g:TabHTML>
+			<sue:UploadSueComponentWidget />
+		</g:Tab>
+		<g:Tab>
 			<g:TabHTML>4.Assign Workloads &amp; Actors</g:TabHTML>
-			<g:Label>I am waiting for chris. chriiiiiiiiis!</g:Label>
+			<g:StackPanel>
+				<workload:ActorWorkloadWidget g:StackPanel-text="5a Assign Actors to Workloads" />
+				<workload:WorkloadGroupsWidget g:StackPanel-text="5b Assign Workloads and Sue Components to Groups" />
+			</g:StackPanel>
 		</g:Tab>
 		<g:Tab>
 			<g:TabHTML>5.Start Experiment</g:TabHTML>

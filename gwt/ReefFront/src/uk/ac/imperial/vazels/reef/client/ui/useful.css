@@ -6,6 +6,10 @@
 	padding: 0em 0.5em;
 }
 
+.leftMargin {
+	margin-left: 0.5em;
+}
+
 .hStretch {
 	width: 100%;
 }
