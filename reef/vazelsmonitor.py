@@ -19,9 +19,9 @@ def applyWorkloads(pause=3) :
 def __applyWorkloadsToControlCentre(interval) :
   while(True): # Keep checking until we don't have to anymore
     runningState = vazelsmanager.vazelsRunning()
+    
+    #Don't use a dict/switch structure because we want to control flow
     if runningState is True:
-      # TODO: Actually apply actors and workloads
-      print("APPLYING WORKLOADS TO THE CONTROL CENTRE")
       
       #### Apply the workload files themselves ####
       workloads = config.getSettings("workloads")
@@ -47,7 +47,6 @@ def __applyWorkloadsToControlCentre(interval) :
       sleep(interval)
       continue
       vazelsmanager.vazels_control_process.terminate()
-      print("TERMINATED CONTROL CENTRE BECAUSE OF A TIMEOUT")
     else:
       # Workload application has failed; the CCentre isn't running.
       print("Workload application failed; the control centre isn't running")

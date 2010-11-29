@@ -43,6 +43,8 @@ def setupFiles():
   vazels_control_stdout_READ = open(tmpFile,"r")
   
 def shutdownFiles():
+  global vazels_control_stdout_WRITE
+  global vazels_control_stdout_READ
   # Close the files we opened up for communications with the Control Centre
   # Put them in separate try/catch blocks because it one fails we still
   # want to try the other. Two possible errors: the variables are set to None,
@@ -51,12 +53,10 @@ def shutdownFiles():
   try:
     vazels_control_stdout_WRITE.close()
   except AttributeError: pass
-  except UnboundLocalError: pass
   
   try:
     vazels_control_stdout_READ.close()    
   except AttributeError: pass
-  except UnboundLocalError: pass
   
   # In any case we want to set them to empty afterwards.
   vazels_control_stdout_WRITE = None
