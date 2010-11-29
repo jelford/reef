@@ -46,7 +46,6 @@ def __applyWorkloadsToControlCentre(interval) :
       print("Doing ssh stuff...")
       sleep(interval)
       continue
-      vazelsmanager.vazels_control_process.terminate()
     else:
       # Workload application has failed; the CCentre isn't running.
       print("Workload application failed; the control centre isn't running")
