@@ -18,7 +18,7 @@ PRONAME="pro_default"
 if [ $# -eq 0 ]; then
   echo "Current projects are:"
   echo ""
-  for file in $( find . -name pro_* -print )
+  for file in $( find . -name "pro_*" -print )
   do
     get_proname $file
   done
