@@ -9,7 +9,7 @@ import authentication
 those of the form /groups/somethingMore are used for individual groups'''
 
 # Blank newgroup with some values initialized
-NEW_GROUP = {"workloads" : [], "filters" : []}
+#NEW_GROUP = {"workloads" : [], "filters" : []}
 
 @restlite.resource
 def group_batch_handler():
@@ -77,6 +77,8 @@ def group_batch_handler():
           existing_groups[group] = {
             "name" : group,
             "size" : group_list[group]
+            "workloads" : [],
+            "filters" : [],
           }
 #    argument_list = {}
 #    variables = entity.split("&")
