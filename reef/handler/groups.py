@@ -45,30 +45,63 @@ def group_batch_handler():
     
     existing_groups = config.getSettings("groups")
     
-    argument_list = {}
-    variables = entity.split("&")
-    for variable in variables:
+    import urlparse
+    group_list = urlparse.parse_qs(entity)
+
+    # Validate all groups before we begin
+    for group in group_sizes:
+      # Make sure each group was only specified once
+      if len(group_sizes[group]) != 1:
+        raise restlite.Status, "400 Multiple actions for the same method"
+
+      # Get a correct integer from the size
       try:
-        name, size = variable.split("=")
-        new_group = {"name" : name, "size": int(size)}
-        if int(size) == 0:
-          del(existing_groups[name])
-          continue
-        if name in existing_groups:
-          existing_groups[name].update(new_group)
-        else:
-          new_group.update(NEW_GROUP)
-          existing_groups[name] = new_group
+        group_sizes[group] = int(group_sizes[group])
       except ValueError:
-        print("Had a problem handling argument: " + variable + \
-               ": Argument list may have been improperly formatted; should "\
-               "be in the form '.../group_name=some_size&other_name=other_size&...'"\
-               " where all size values are integers.")
-        continue
-      except KeyError:
-        # Probably we tried to delete a group we've already dealt with
-        print("Tried to delete a group that's already been deleted")
-        continue
+        raise restlite.Status, "400 Group size must be a positive integer"
+
+      if group_sizes < 0:
+        raise restlite.Status, "400 Group size must be a positive integer"
+
+      if group_size == 0 and group not in existing_groups:
+        raise restlite.Status, "400 Cannot delete non-existent group"
+
+    # Use the input now
+    for group in group_size:
+      if group_sizes[group] == 0:
+        del existing_groups[group]
+      else:
+        try:
+          existing_groups[group]['size'] = group_list[group]
+        except KeyError:
+          existing_groups[group] = {
+            "name" : group,
+            "size" : group_list[group]
+          }
+#    argument_list = {}
+#    variables = entity.split("&")
+#    for variable in variables:
+#      try:
+#        name, size = variable.split("=")
+#        new_group = {"name" : name, "size": int(size)}
+#        if int(size) == 0:
+#          del(existing_groups[name])
+#          continue
+#        if name in existing_groups:
+#          existing_groups[name].update(new_group)
+#        else:
+#          new_group.update(NEW_GROUP)
+#          existing_groups[name] = new_group
+#      except ValueError:
+#        print("Had a problem handling argument: " + variable + \
+#               ": Argument list may have been improperly formatted; should "\
+#               "be in the form '.../group_name=some_size&other_name=other_size&...'"\
+#               " where all size values are integers.")
+#        continue
+#      except KeyError:
+#        # Probably we tried to delete a group we've already dealt with
+#        print("Tried to delete a group that's already been deleted")
+#        continue
       
     # Tell them the new info
     return GET(request)
