@@ -168,7 +168,7 @@ public class AllocateGroups extends Composite {
     if (numHosts == null) {
       Window.alert("You need to enter a number of hosts (e.g. '10')");
       return false;
-    } else if (numHosts < 0) {
+    } else if (numHosts <= 0) {
       Window.alert("You must have at least one host in a group.");
       return false;
     }
