@@ -1,14 +1,13 @@
 package uk.ac.imperial.vazels.reef.client.groups;
 
-import uk.ac.imperial.vazels.reef.client.MultipleRequester;
 import uk.ac.imperial.vazels.reef.client.RequestHandler;
+import uk.ac.imperial.vazels.reef.client.managers.GroupManager;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -49,12 +48,6 @@ public class AllocateGroups extends Composite {
    * Specify the number of hosts in a new group.
    */
   @UiField IntegerBox newHostsTextBox;
-
-  /**
-   * Store a GroupSummary object containing summary information about all the
-   * groups.
-   */
-  private GroupSummary groups;
 
   /**
    * Generated code - gives us an interface to the XML-defined UI.
@@ -150,7 +143,7 @@ public class AllocateGroups extends Composite {
   private boolean validateGroupName(final String groupName) {
     // Don't add the group if it's already in the table.
     // TODO: Do we want to just update an existing entry?
-    if (groups.contains(groupName)) {
+    if (GroupManager.getManager().getNames().contains(groupName)) {
       Window.alert("You already have a group named '"+groupName+"'.");
       return false;
     } else if (!groupName.matches("^[0-9A-Za-z]{1,}$")){
@@ -182,7 +175,7 @@ public class AllocateGroups extends Composite {
    */
   private void addGroup(final String newGroupName, final int numberOfHosts) {
     // Add to group map
-    groups.put(newGroupName, numberOfHosts);
+    GroupManager.getManager().addGroup(newGroupName, numberOfHosts);
 
     addGroupToTable(newGroupName, numberOfHosts);
 
@@ -224,7 +217,7 @@ public class AllocateGroups extends Composite {
    */
   private void removeGroup(final String grpName, final boolean notifyServer) {
     removeTableRow(grpName);
-    groups.put(grpName,0);
+    GroupManager.getManager().deleteGroup(grpName);
     if (notifyServer) {
       batchUpdateServerGroups();
     }
@@ -248,7 +241,7 @@ public class AllocateGroups extends Composite {
    * Updates the displayed number of groups.
    */
   private void refreshGroupsInfo() {
-    int size = groups.size();
+    int size = GroupManager.getManager().getNames().size();
     String txt = size + " group";
     if(size != 1)
       txt += "s";
@@ -266,11 +259,11 @@ public class AllocateGroups extends Composite {
    * group info.
    */
   private void refresh() {
-    new GroupDataRequest().go(new RequestHandler<GroupSummary>(){
+    GroupManager.getManager().pull(new RequestHandler<GroupSummary>(){
       @Override
       public void handle(GroupSummary reply, boolean success, String message) {
         if (success) {
-          refreshGroupData(reply);
+          refreshGroupData();
         }
       }
     });
@@ -280,22 +273,16 @@ public class AllocateGroups extends Composite {
    * refreshGroupData with no data.
    */
   private void clearGroupData() {
-    GroupSummary clearAllGroups = new GroupSummary();
-    if (groups != null) {
-      for (String groupName : groups.keySet()) {
-        clearAllGroups.put(groupName, 0);
-      }
-    }
-    refreshGroupData(clearAllGroups);
+    GroupManager.getManager().deleteGroups();
+    refreshGroupData();
   }
 
-  private void refreshGroupData(final GroupSummary summary) {
+  private void refreshGroupData() {
     /*
      * No need to add groups individually; we'd just be re-building
      * the summary. Instead, update groups to match, then make sure the 
      * table is up-to-date.
      */
-    groups = summary;
 
     groupsFlexTable.removeAllRows();
     // Column headers
@@ -303,71 +290,26 @@ public class AllocateGroups extends Composite {
     groupsFlexTable.setText(0, GROUP_HOSTS_COLUMN, "Hosts");
     groupsFlexTable.setText(0, GROUP_REMOVE_COLUMN, "Remove");
 
-    for (String key : summary.keySet()) {
-      String groupName = key;
-      int groupSize = summary.get(key);
-      addGroupToTable(groupName,groupSize);
+    GroupManager man = GroupManager.getManager();
+    
+    for (String group : man.getNames()) {
+      addGroupToTable(group, man.getGroupManager(group).getSize());
     }
 
     refreshGroupsInfo();
-  }
-
-
-  /**
-   * Helper class to send requests to get group info (this will send a batch
-   * request to the server, and retrieve a summary of all group info).
-   */
-  private class GroupDataRequest extends MultipleRequester<GroupSummary>{
-    GroupDataRequest() {
-      super(RequestBuilder.GET, "/groups/", 
-          new Converter<GroupSummary>() {
-        @Override
-        public GroupSummary convert(String original) {
-          return new GroupSummary(original);
-        }
-      });
-    }
-  }
-
-  /**
-   * Post all the current group data to the server & update the local data with
-   * the returned info from the server (i.e. check that local and remote records
-   * are the same).
-   */
-  private class GroupDataUpdate extends MultipleRequester<GroupSummary>{
-    public GroupDataUpdate() {
-      super(RequestBuilder.POST, "/groups/", new Converter<GroupSummary>(){
-        @Override
-        public GroupSummary convert(String original) {
-          return new GroupSummary(original);
-        }
-      });
-    }
-
-    protected QueryArg[] getArgs() {
-      // Construct an array of QueryArgs we'll use for our post request
-      QueryArg[] queryArguments = new QueryArg[groups.keySet().size()];
-      int index = 0;
-      for (String groupName : groups.keySet()) {
-        queryArguments[index] = new QueryArg(groupName, 
-            Integer.toString(groups.get(groupName)));
-        index++;
-      }
-
-      return queryArguments;
-    }
-
-    @Override
-    protected void received(GroupSummary reply, boolean success, String message) {
-      if(success)
-        refreshGroupData(reply);
-    }
   }
 
   /**
    * Tell the server about the groups in our table
    */
   private void batchUpdateServerGroups() {
-    new GroupDataUpdate().go(null);
+    GroupManager.getManager().push(new RequestHandler<GroupSummary>(){
+      @Override
+      public void handle(GroupSummary reply, boolean success, String message) {
+        if (success) {
+          refreshGroupData();
+        }
+      }
+    });
   }
 }
