@@ -76,7 +76,7 @@ def group_batch_handler():
         except KeyError:
           existing_groups[group] = {
             "name" : group,
-            "size" : group_list[group]
+            "size" : group_list[group],
             "workloads" : [],
             "filters" : [],
           }
