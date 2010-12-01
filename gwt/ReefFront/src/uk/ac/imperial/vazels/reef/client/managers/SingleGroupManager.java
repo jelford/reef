@@ -2,6 +2,9 @@ package uk.ac.imperial.vazels.reef.client.managers;
 
 import uk.ac.imperial.vazels.reef.client.groups.Group;
 
+/**
+ * Manages a group object, deals with syncing to the server.
+ */
 public class SingleGroupManager {
   private Group group;
   private boolean synced;
