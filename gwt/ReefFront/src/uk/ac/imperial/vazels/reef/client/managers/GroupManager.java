@@ -37,8 +37,8 @@ public class GroupManager {
    * Gets the singleton instance of the manager
    * @return singleton group manager
    */
-  protected static GroupManager getManager() {
-    if(manager != null) {
+  public static GroupManager getManager() {
+    if(manager == null) {
       manager = new GroupManager();
     }
     return manager;
@@ -100,10 +100,17 @@ public class GroupManager {
   
   /**
    * Clear the group map.
+   * This does not actually delete the groups, just forgets they were ever here.
    */
-  public void clearGroups() {
+  private void clearGroups() {
     groups = new HashMap<String, SingleGroupManager>();
     synced = false;
+  }
+  
+  public void deleteGroups() {
+    for(String group : groups.keySet()) {
+      deleteGroup(group);
+    }
   }
   
   /**
@@ -128,7 +135,7 @@ public class GroupManager {
    * @return {@code true} if the group existed and was deleted.
    */
   public boolean deleteGroup(String name) {
-    if(groups.containsKey(name)) {
+    if(!groups.containsKey(name)) {
       return false;
     }
     groups.get(name).setSize(0);
@@ -239,7 +246,7 @@ public class GroupManager {
     
     protected class DeleteQuery extends QueryArg {
       public DeleteQuery(String name) {
-        super(name, null);
+        super(name, "0");
       }
     }
   }

@@ -46,13 +46,15 @@ def group_batch_handler():
     existing_groups = config.getSettings("groups")
     
     import urlparse
-    group_list = urlparse.parse_qs(entity)
+    group_sizes = urlparse.parse_qs(entity)
 
     # Validate all groups before we begin
     for group in group_sizes:
       # Make sure each group was only specified once
       if len(group_sizes[group]) != 1:
         raise restlite.Status, "400 Multiple actions for the same method"
+      else:
+        group_sizes[group] = group_sizes[group][0]
 
       # Get a correct integer from the size
       try:
@@ -60,23 +62,23 @@ def group_batch_handler():
       except ValueError:
         raise restlite.Status, "400 Group size must be a positive integer"
 
-      if group_sizes < 0:
+      if group_sizes[group] < 0:
         raise restlite.Status, "400 Group size must be a positive integer"
 
-      if group_size == 0 and group not in existing_groups:
+      if group_sizes[group] == 0 and group not in existing_groups:
         raise restlite.Status, "400 Cannot delete non-existent group"
 
     # Use the input now
-    for group in group_size:
+    for group in group_sizes:
       if group_sizes[group] == 0:
         del existing_groups[group]
       else:
         try:
-          existing_groups[group]['size'] = group_list[group]
+          existing_groups[group]['size'] = group_sizes[group]
         except KeyError:
           existing_groups[group] = {
             "name" : group,
-            "size" : group_list[group],
+            "size" : group_sizes[group],
             "workloads" : [],
             "filters" : [],
           }
