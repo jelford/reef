@@ -14,5 +14,11 @@ public abstract class SingleTypeManager<Type> extends Manager<Type, Type> {
     return true;
   }
 
+  /**
+   * Should grab the received data and update itself accordingly.
+   * 
+   * @param data The data that has been received.
+   * @return {@code true} if processing the pulled data wiped any local changes.
+   */
   protected abstract boolean receiveData(Type data);
 }
