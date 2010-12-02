@@ -9,6 +9,7 @@ from handler.actorassign import actorassign_handler
 from handler.control_handler import control_handler, start_handler, stop_handler, getallstatus_handler, getalloutput_handler, startexperiment_handler
 from handler.groups import group_handler, group_batch_handler
 from handler.status import status_handler
+from handler.output_full import output_full_handler
 
 def getRouting():
     return [
@@ -29,22 +30,8 @@ def getRouting():
         (r'GET /control/getalloutput/?$', getalloutput_handler),
         (r'GET /control/startexperiment/?$', startexperiment_handler),
         (r'GET,POST /workloads/?', workload_handler),
+        (r'GET /output/$', output_full_handler),
         (r'GET,POST /', auth_page_handler),
-        (r'GET,POST /output/$', output_full_handler),
     ]
 
-def output_full_handler():
-	global authmodel
-	import parser
-	import os
-	## requests will return the entire data available
-	
-	def GET(request):
-		path1 = config.getSettings("global")["projdir"]
-		path = os.path.join(path1, "Output_Folder")
-		return request.response(parser.scan_output(path))
-		
-	def POST(request,entity):
-		pass
-		
-	return locals()
+
