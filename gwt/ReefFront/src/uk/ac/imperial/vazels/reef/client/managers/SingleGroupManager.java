@@ -1,13 +1,15 @@
 package uk.ac.imperial.vazels.reef.client.managers;
 
+import com.google.gwt.http.client.RequestBuilder;
+
+import uk.ac.imperial.vazels.reef.client.MultipleRequester;
 import uk.ac.imperial.vazels.reef.client.groups.Group;
 
 /**
  * Manages a group object, deals with syncing to the server.
  */
-public class SingleGroupManager {
+public class SingleGroupManager extends SingleTypeManager<Group> {
   private Group group;
-  private boolean synced;
   
   /**
    * This should only ever be used inside group manager.
@@ -15,13 +17,11 @@ public class SingleGroupManager {
    * @param g Group that this manager controls.
    */
   SingleGroupManager(String name, int size) {
+    setRequesters(new GroupRequest(name), new GroupUpdate(name));
     this.group = new Group(name, size);
-    this.synced = false;
   }
   
-  public boolean isSynced() {
-    return synced;
-  }
+  // Getters/Setters
   
   /**
    * Get the size of this group
@@ -36,7 +36,7 @@ public class SingleGroupManager {
    * @param size group size
    */
   public void setSize(int size) {
-    synced = false;
+    change();
     group.setSize(size);
   }
 
@@ -54,7 +54,7 @@ public class SingleGroupManager {
    * @return {@code true} if the workload was newly added
    */
   public boolean addWorkload(String wkld) {
-    synced = false;
+    change();
     return group.addWorkload(wkld);
   }
   
@@ -64,7 +64,60 @@ public class SingleGroupManager {
    * @return {@code true} if the workload used to be attached to this group.
    */
   public boolean remWorkload(String wkld) {
-    synced = false;
+    change();
     return group.remWorkload(wkld);
+  }
+  
+  /**
+   * Returns an editable array of workloads for this group.
+   * @return array of workloads.
+   */
+  public String[] getWorkloads() {
+    return group.getWorkloads();
+  }
+  
+  // Data processing
+  
+  @Override
+  protected boolean receiveData(Group data) {
+    // TODO If the group returned has a different name we break things currently
+    group = data;
+    return true;
+  }
+  
+  // Requests
+  
+  protected class GroupRequest extends MultipleRequester<Group> {
+    public GroupRequest(String ext) {
+      super(RequestBuilder.GET, "/groups/"+ext, new Converter<Group>() {
+        @Override
+        public Group convert(String original) {
+          return new Group(original);
+        }
+      });
+    }
+  }
+  
+  protected class GroupUpdate extends MultipleRequester<Group> {
+    public GroupUpdate(String ext) {
+      super(RequestBuilder.POST, "/groups/"+ext, new Converter<Group>() {
+        @Override
+        public Group convert(String original) {
+          return new Group(original);
+        }
+      });
+    }
+
+    @Override
+    protected QueryArg[] getArgs() {
+      QueryArg[] args = new QueryArg[1+getWorkloads().length];
+      args[0] = new QueryArg("size", Integer.toString(getSize()));
+      int index = 1;
+      for(String wkld : getWorkloads()) {
+        args[index] = new QueryArg("workloads", wkld);
+        index++;
+      }
+      return args;
+    }
   }
 }

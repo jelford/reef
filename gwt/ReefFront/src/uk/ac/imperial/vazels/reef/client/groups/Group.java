@@ -77,6 +77,17 @@ public class Group {
   }
   
   /**
+   * Get an array of all workloads.
+   * This array does not hold any references to the data in the array.
+   * Hence it can be edited.
+   * @return An array of workloads.
+   */
+  public String[] getWorkloads() {
+    String[] workloadArray = new String[workloads.size()];
+    return workloads.toArray(workloadArray);
+  }
+  
+  /**
    * Get the size of this group
    * @return group size
    */
