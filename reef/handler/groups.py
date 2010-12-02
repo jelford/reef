@@ -9,30 +9,26 @@ import authentication
 those of the form /groups/somethingMore are used for individual groups'''
 
 # Blank newgroup with some values initialized
-NEW_GROUP = {
-  "name" : None,
-  "size" : 0,
-  "workloads" : [],
-  "filters" : [],
-}
+def __newGroup() :
+  return { "name" : None, "size" : 0, "workloads" : [], "filters" : []}
 
 @restlite.resource
 def group_batch_handler():
-  global NEW_GROUP
 
   ## GET requests to this uri will return a summary of current groups
   def GET(request):
     authentication.login(request)
     groups_summary = {}
     group_data = config.getSettings("groups")
+    
+    print group_data
+    
     for group in group_data:
       try:
         groups_summary[group] = group_data[group]['size']
       except KeyError:
         pass
-  
-    #print("Returning a dummy groups content dictionary")
-    #groups_summary = {"group1":1,"group2":3}
+      
     return request.response(groups_summary)
     
   def POST(request,entity):
@@ -81,9 +77,9 @@ def group_batch_handler():
         try:
           existing_groups[group]['size'] = group_sizes[group]
         except KeyError:
-          existing_groups[group] = NEW_GROUP.copy()
-          existing_groups["name"] = group
-          existing_groups["size"] = group_sizes[group]
+          existing_groups[group] = __newGroup()
+          existing_groups[group]["name"] = group
+          existing_groups[group]["size"] = group_sizes[group]
       
     # Tell them the new info
     return GET(request)
@@ -126,7 +122,7 @@ def group_handler():
         existing_groups[group_name].update(g_data)
     else:
       # New group
-      n_group = NEW_GROUP.copy()
+      n_group = __newGroup()
       n_group["name"] = group_name
       n_group.update(g_data)
       if n_group["size"] != 0:
