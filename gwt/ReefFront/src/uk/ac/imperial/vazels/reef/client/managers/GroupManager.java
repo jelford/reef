@@ -128,7 +128,8 @@ public class GroupManager extends SingleTypeManager<GroupSummary> {
       } 
       else {
         // Add new group
-        addGroup(group, pulled.get(group));
+        SingleGroupManager gm = new SingleGroupManager(group, pulled.get(group));
+        groups.put(group, gm);
       }
     }
     
