@@ -15,7 +15,7 @@ import uk.ac.imperial.vazels.reef.client.groups.GroupSummary;
  * 
  * Caches results to make everything behave pleasantly.
  */
-public class GroupManager extends Manager<GroupSummary, GroupSummary> {
+public class GroupManager extends SingleTypeManager<GroupSummary> {
   private static GroupManager manager = null;
   
   private Map<String, SingleGroupManager> groups = null;
@@ -110,7 +110,7 @@ public class GroupManager extends Manager<GroupSummary, GroupSummary> {
     return true;
   }
 
-  protected boolean receivePullData(GroupSummary pulled){
+  protected boolean receiveData(GroupSummary pulled){
     // Create a new group map, move only the old groups
     // that are needed into the new map.
     
@@ -132,11 +132,6 @@ public class GroupManager extends Manager<GroupSummary, GroupSummary> {
       }
     }
     
-    return true;
-  }
-  
-  @Override
-  protected boolean receivePushData(GroupSummary pushed) {
     return true;
   }
   
