@@ -9,7 +9,12 @@ import authentication
 those of the form /groups/somethingMore are used for individual groups'''
 
 # Blank newgroup with some values initialized
-#NEW_GROUP = {"workloads" : [], "filters" : []}
+NEW_GROUP = {
+  "name" : None,
+  "size" : 0,
+  "workloads" : [],
+  "filters" : [],
+}
 
 @restlite.resource
 def group_batch_handler():
@@ -45,7 +50,6 @@ def group_batch_handler():
     
     existing_groups = config.getSettings("groups")
     
-    import urlparse
     group_sizes = urlparse.parse_qs(entity)
 
     # Validate all groups before we begin
@@ -71,41 +75,15 @@ def group_batch_handler():
     # Use the input now
     for group in group_sizes:
       if group_sizes[group] == 0:
+        # Already checked this exists
         del existing_groups[group]
       else:
         try:
           existing_groups[group]['size'] = group_sizes[group]
         except KeyError:
-          existing_groups[group] = {
-            "name" : group,
-            "size" : group_sizes[group],
-            "workloads" : [],
-            "filters" : [],
-          }
-#    argument_list = {}
-#    variables = entity.split("&")
-#    for variable in variables:
-#      try:
-#        name, size = variable.split("=")
-#        new_group = {"name" : name, "size": int(size)}
-#        if int(size) == 0:
-#          del(existing_groups[name])
-#          continue
-#        if name in existing_groups:
-#          existing_groups[name].update(new_group)
-#        else:
-#          new_group.update(NEW_GROUP)
-#          existing_groups[name] = new_group
-#      except ValueError:
-#        print("Had a problem handling argument: " + variable + \
-#               ": Argument list may have been improperly formatted; should "\
-#               "be in the form '.../group_name=some_size&other_name=other_size&...'"\
-#               " where all size values are integers.")
-#        continue
-#      except KeyError:
-#        # Probably we tried to delete a group we've already dealt with
-#        print("Tried to delete a group that's already been deleted")
-#        continue
+          existing_groups[group] = NEW_GROUP.copy()
+          existing_groups["name"] = group
+          existing_groups["size"] = group_sizes[group]
       
     # Tell them the new info
     return GET(request)
@@ -120,7 +98,7 @@ def group_handler():
     authentication.login(request)
    
     # To find info on a group call /groups/groupName
-    group_name = request['PATH_INFO'].split('/')[0]
+    group_name = request['PATH_INFO']
 
     try:
       group_settings = config.getSettings("groups",True)[group_name]
@@ -134,41 +112,55 @@ def group_handler():
     authentication.login(request)
 
     existing_groups = config.getSettings("groups")
-    try:
-      group_name, arg_string = request['PATH_INFO'].split('/')
-    except ValueError:
-      raise reslite.Status, "400 Group POST requests should be of the form:"+ \
-                              ".../group_name/args1=1&arg2=2&arg3=3..."
-    args = urlparse.parse_qs(arg_string)
-    
-    ## Clear this up so it fits with server-side group representation
-    # Can't rename a group TODO: Or can we?
-    args["name"] = group_name
-    # Single-valued lists are single values
-    for arg in args:
-      if arg == 'filters' : continue # Actually, single filter lists are fine
-      elif arg == 'workloads' : continue # Likewise with workloads
-      if len(args[arg]) == 1:
-        args[arg] = args[arg][0]
-    # Size is an integer
-    if "size" in args:
-      args["size"] = int(args["size"])
-    
-    
-    # Deal with the case that this is the first time we've accessed the group
-    existing_groups.setdefault(group_name, NEW_GROUP)
-  
-    # Update the group with all the information passed in by the client
-    existing_groups[group_name].update(args)
-    
-    # Let's compensate for bad design by clearing up at the end
-    try:
-      if existing_groups[group_name]["size"] == 0:
-        del(existing_groups[group_name])
-    except KeyError:
-      del(existing_groups[group_name])
-    
+    group_name = request['PATH_INFO']
+
+    args = urlparse.parse_qs(request['QUERY_STRING'])
+
+    g_data = _getGroupDataFromArgs(args)
+
+    if group_name in existing_groups:
+      if "size" in g_data and g_data == 0:
+        # Delete the group
+        del existing_groups[group_name]
+      else:
+        existing_groups[group_name].update(g_data)
+    else:
+      # New group
+      n_group = NEW_GROUP.copy()
+      n_group["name"] = group_name
+      n_group.update(g_data)
+      if n_group["size"] != 0:
+        existing_groups[group_name] = n_group
     
     return GET(request)
 
   return locals()
+
+
+# Returns a dict of new data gotten from the given args
+# Raises a status exception if args are incorrect
+def _getGroupDataFromArgs(args):
+  group = {}
+
+  # Get a size value
+  if "size" in args:
+    try:
+      group["size"] = int(args["size"][0])
+    except ValueError:
+      raise restlite.Status, "400 Size must be integer"
+    del args["size"]
+
+  # Add workload list
+  if "workloads" in args:
+    group["workloads"] = args["workloads"]
+    del args["workloads"]
+
+  # Add filter list
+  if "filters" in args:
+    group["workloads"] = args["filters"]
+    del args["filters"]
+
+  if len(args) > 0:
+    raise restlite.Status, "400 Unrecognised Arguments"
+
+  return group
