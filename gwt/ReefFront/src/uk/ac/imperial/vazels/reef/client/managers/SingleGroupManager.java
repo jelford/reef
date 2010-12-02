@@ -14,7 +14,7 @@ public class SingleGroupManager {
    * We do not ever want to manually create an instance of this class.
    * @param g Group that this manager controls.
    */
-  public SingleGroupManager(String name, int size) {
+  SingleGroupManager(String name, int size) {
     this.group = new Group(name, size);
     this.synced = false;
   }
