@@ -28,13 +28,16 @@ def __applyWorkloadsToControlCentre(interval) :
       workloadDefs = workloads["defs"]
       
       groups = config.getSettings("groups")
+      sue_components = config.getSettings("SUE")
       # For each group, scan through its workloads & apply each one in turn
       for group in groups:
         print("Managing group: " + group)
         for wkld in groups[group]["workloads"]:
-          print ("Adding workload(" + wkld + ") to group("+group+")")
-          if wkld != "SUE" : __applyWorkload(workload_def=workloadDefs[wkld], target_group=groups[group])
+          __applyWorkload(workload_def=workloadDefs[wkld], target_group=groups[group])
           __extractActors(workload_def=workloadDefs[wkld], target_group=groups[group])
+        for component in groups[group]["sue_components"]:
+          __extractSueComponents(sue_component_def=sue_components[component],
+                                 target_group=groups[group])
 
     elif runningState == "starting":
       # Go round again, after a quick pause
@@ -55,11 +58,6 @@ def __applyWorkloadsToControlCentre(interval) :
   print("Finished monitoring for startup")
   
 def __applyWorkload(workload_def, target_group):
-  print("Applying workload")
-  wkld_dir = os.path.join(
-        config.getSettings("global")["projdir"],
-        config.getSettings("workloads")["dir"]
-    )
   
   args = ['/bin/sh', 'commandline_client.sh']
   args.append('--rmi_host='+config.getSettings('command_centre')['rmi_host'])
@@ -69,21 +67,25 @@ def __applyWorkload(workload_def, target_group):
   args.append(workload_def['file'])
   
   subprocess.Popen(args, cwd=vazelsmanager.getVazelsPath()+'/client')
-  print("Workload dispatched")
+  return
+  
 
 def __extractActors(workload_def, target_group):
-  print("Extracting actors")
   group_number = target_group['group_number']
   experiment_dir = config.getSettings("global")['expdir']
   
-  print("workload_def: " + str(workload_def))
   for actor_name in workload_def['actors']:
-    print("Extracting actor: " + actor_name)
     actor = config.getSettings('actors')['defs'][actor_name]
     type=actor['type'].upper()
     actorTGZ = tarfile.open(actor['file'],'r:gz')
-    if type.find("SUE") != -1 :
-      actorTGZ.extractall(path=experiment_dir+'/Group_'+str(group_number)+'/SUE/')
-    else :
-      actorTGZ.extractall(path=experiment_dir+'/Group_'+str(group_number)+"/Vazels/"+type+"_launcher/")
-    
+    actorTGZ.extractall(path=experiment_dir+'/Group_'+str(group_number)+"/Vazels/"+type+"_launcher/")
+  return
+
+def __extractSueComponents(sue_component_def, target_group):
+  print "Extracting SUE component"
+  group_number = target_group['group_number']
+  experiment_dir = config.getSettings("global")['expdir']
+  
+  sueTGZ = tarfile.open(sue_component_def['file'],'r:gz')
+  sueTGZ.extractall(path=experiment_dir+'/Group_'+str(group_number)+'/SUE/')
+  return

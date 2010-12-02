@@ -12,6 +12,16 @@ those of the form /groups/somethingMore are used for individual groups'''
 def __getNewGroup():
   return {"workloads" : [], "filters" : [], "sue_components" : []}
 
+# The basic structure of a group
+'''What do we need to know?
+    name <-- need to be given this by the post request
+    size <-- need to be given this by the post request
+    group_number <-- calculated when the server starts
+    workloads <-- default value: [] (a list of workload names applied to the group)
+    filters <-- given to us in a specific call later, default value: []
+    sue_components <-- bits of the SUE'''
+SETTABLE_GROUP_ATTRIBUTES = ['name', 'size', 'workloads', 'filters', 'sue_components']
+
 @restlite.resource
 def group_batch_handler():
 
@@ -31,20 +41,13 @@ def group_batch_handler():
     return request.response(groups_summary)
     
   def POST(request,entity):
+    # Here the server must take care of setting up the group info.
     authentication.login(request)
-      
-    '''
-    Here the server must take care of setting up the group info.
-    What do we need to know?
-    name <-- need to be given this by the post request
-    size <-- need to be given this by the post request
-    group_number <-- calculated when the server starts
-    workloads <-- default value: [] (a list of workload names applied to the group)
-    filters <-- given to us in a specific call later, default value: []
-    '''
-    
+    global SETTABLE_GROUP_ATTRIBUTES
+
+
     existing_groups = config.getSettings("groups")
-    
+
     argument_list = {}
     variables = entity.split("&")
     for variable in variables:
@@ -95,6 +98,7 @@ def group_handler():
   # POST requests will set up a group
   def POST(request,entity):
     authentication.login(request)
+    global SETTABLE_GROUP_ATTRIBUTES
 
     existing_groups = config.getSettings("groups")
     try:
@@ -109,6 +113,8 @@ def group_handler():
     args["name"] = group_name
     # Single-valued lists are single values
     for arg in args:
+      if arg not in SETTABLE_GROUP_ATTRIBUTES:
+        raise restlite.Status, "400 Tried to set invalid group property"
       if arg == 'filters' : continue # Actually, single filter lists are fine
       elif arg == 'workloads' : continue # Likewise with workloads
       if len(args[arg]) == 1:
@@ -117,9 +123,8 @@ def group_handler():
     if "size" in args:
       args["size"] = int(args["size"])
     
-    
     # Deal with the case that this is the first time we've accessed the group
-    existing_groups.setdefault(group_name, getNewGroup())
+    existing_groups.setdefault(group_name, __getNewGroup())
   
     # Update the group with all the information passed in by the client
     existing_groups[group_name].update(args)
