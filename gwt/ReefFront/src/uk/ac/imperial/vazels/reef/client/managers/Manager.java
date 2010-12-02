@@ -180,12 +180,16 @@ public abstract class Manager<PullData, PushData> {
             remoteSync = false;
           }
           
-          callback.go();
+          if(callback != null) {
+            callback.go();
+          }
         }
         else {
           // Didn't get a successful response
           remoteSync = false; // We don't know what happened
-          callback.failed();
+          if(callback != null) {
+            callback.failed();
+          }
         }
       }
     });
