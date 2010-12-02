@@ -1,6 +1,7 @@
 import string
 import os
 import sys
+import restlite
 
 # all protocol buffer scripts are stored in the includes folder
 # hopefully this should deal with the issue that lab machines don't
@@ -22,7 +23,7 @@ def scan_output(path_to_output):
 		result = scan_output_helper(path_to_output)
 	else:
 		print "Folder provided did not exist"
-		sys.exit(-1)
+		raise restlite.Status, "404 Output Folder Not Found"
 
 	return result
 	
@@ -39,29 +40,20 @@ def scan_output_helper(path):
 	
 	'''If any of the files in this directory are files, then they all are,
 		and they contain snapshots'''
-	if os.path.isfile(file_paths[0]) :
+	if len(file_paths) > 0 and os.path.isfile(file_paths[0]) :
 		snapshots_list = [process_file(name) for name in file_paths]
 		snapshots_dict = {}
 		# Join all the dictionaries together as one
 		for snapshot in snapshots_list :
 			snapshots_dict.update(snapshot)
 		return snapshots_dict
-	else :
+	elif len(file_paths) > 0 :
 		for name in file_paths:
 			# Recurse through each folder building up a tree
-			folder_dict[name] = scan_output_helper(name)
+			folder_dict[os.path.basename(name)] = scan_output_helper(name)
 		return folder_dict
-
-	for name in os.listdir(path):
-		fullpath = os.path.join(path, name)
-		if os.path.isfile(fullpath):
-			data = process_file(fullpath)
-		elif os.path.isdir(fullpath):
-			data = scan_output_helper(fullpath)
-			
-		folder_dict[name] = data
-	
-	return folder_dict
+	else :
+		return {}
 	
 def process_file(filepath):
 
