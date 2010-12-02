@@ -22,16 +22,25 @@ public abstract class Manager<PullData, PushData> {
   private MultipleRequester<PushData> pusher;
   
   /**
-   * Creates a manager with the pull and push request builders given.
+   * Init the manager.
+   * You still need to call {@code Manager#setRequesters}
+   * before using the class.
+   */
+  public Manager() {
+    remoteSync = false;
+    localChange = false;
+  }
+  
+  /**
+   * Set the requesters used in this class.
+   * This is expected to be called before any other methods (other than the constructor).
    * 
    * Do not give {@code null} requests - you'll blow everything up.
    * 
    * @param pull Request builder for pull requests.
    * @param push Request builder for push requests.
    */
-  public Manager(MultipleRequester<PullData> pull, MultipleRequester<PushData> push) {
-    remoteSync = false;
-    localChange = false;
+  public void setRequesters(MultipleRequester<PullData> pull, MultipleRequester<PushData> push) {
     this.puller = pull;
     this.pusher = push;
     syncNow();
@@ -74,6 +83,8 @@ public abstract class Manager<PullData, PushData> {
    * @param pushed The response from the pushed data.
    * @return {@code true} if the push response is the same as the pull data.
    * In this case {@code Manager#receivePullData(Object)} will do any processing.
+   * You should make <strong>absolutely sure</strong> here that {@code PushData}
+   * can be cast to {@code PullData}, as this is unchecked. I'm relying on you here!
    */
   protected abstract boolean receivePushData(PushData pushed);
   
