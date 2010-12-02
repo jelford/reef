@@ -2,6 +2,7 @@ package uk.ac.imperial.vazels.reef.client.groups;
 
 import uk.ac.imperial.vazels.reef.client.RequestHandler;
 import uk.ac.imperial.vazels.reef.client.managers.GroupManager;
+import uk.ac.imperial.vazels.reef.client.managers.GroupManager.SyncCallback;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -259,14 +260,18 @@ public class AllocateGroups extends Composite {
    * group info.
    */
   private void refresh() {
-    GroupManager.getManager().pull(new RequestHandler<GroupSummary>(){
-      @Override
-      public void handle(GroupSummary reply, boolean success, String message) {
-        if (success) {
+    GroupManager man = GroupManager.getManager();
+    if(man.isInitialised()) {
+      refreshGroupData();
+    }
+    else {
+      GroupManager.getManager().doWhenInited(new SyncCallback() {
+        @Override
+        public void go() {
           refreshGroupData();
         }
-      }
-    });
+      });
+    }
   }
 
   /**
