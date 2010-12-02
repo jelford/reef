@@ -1,15 +1,12 @@
 package uk.ac.imperial.vazels.reef.client.managers;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.user.client.Timer;
 
 import uk.ac.imperial.vazels.reef.client.MultipleRequester;
-import uk.ac.imperial.vazels.reef.client.RequestHandler;
 import uk.ac.imperial.vazels.reef.client.groups.Group;
 import uk.ac.imperial.vazels.reef.client.groups.GroupSummary;
 
@@ -18,28 +15,16 @@ import uk.ac.imperial.vazels.reef.client.groups.GroupSummary;
  * 
  * Caches results to make everything behave pleasantly.
  */
-public class GroupManager {
+public class GroupManager extends Manager<GroupSummary, GroupSummary> {
   private static GroupManager manager = null;
   
   private Map<String, SingleGroupManager> groups = null;
   
-  // Not using interface list so we keep the removeFirst method
-  private LinkedList<SyncCallback> syncWaitList = null;
-  
-  private GroupSummaryRequest summaryRequest;
-  private GroupSummaryUpdate summaryUpdater;
-  private boolean remoteInit;
-  private boolean localChange;
-  
   //Singleton stuff
   
   private GroupManager() {
+    setRequesters(new GroupSummaryRequest(), new GroupSummaryUpdate());
     clearGroups();
-    summaryRequest = new GroupSummaryRequest();
-    summaryUpdater = new GroupSummaryUpdate();
-    remoteInit = false;
-    localChange = false;
-    doWhenInited();
   }
   
   /**
@@ -54,23 +39,6 @@ public class GroupManager {
   }
   
   // Data getters
-  
-  /**
-   * Is the group summary in sync with the server.
-   * This includes the group names and sizes.
-   * @return is the server synced.
-   */
-  public boolean isInitialised() {
-    return remoteInit;
-  }
-  
-  /**
-   * Has the local representation changed since data was retrieved from the server?
-   * @return true if the local data has changed.
-   */
-  public boolean hasLocalChange() {
-    return localChange;
-  }
   
   /**
    * Get a set of group names, this can be iterated over.
@@ -91,116 +59,6 @@ public class GroupManager {
     return groups.get(name);
   }
   
-  // Server interaction
-  
-  /**
-   * Get the newest info from the server.
-   * It is safer to use the {@link GroupManager#doWhenInited(SyncCallback)} method.
-   * 
-   * @param handler handles the response of the pull.
-   * On success, data is automatically cached.
-   */
-  public void pull(RequestHandler<GroupSummary> handler) {
-    summaryRequest.go(handler);
-  }
-  
-  /**
-   * As in {@link GroupManager#pull(RequestHandler)} but with no handler.
-   */
-  public void pull() {
-    pull(null);
-  }
-  
-  /**
-   * Send all current info to the server.
-   * 
-   * @param handler handles the response of the push.
-   * The response is handled exactly as in {@link GroupManager#pull}.
-   */
-  public void push(RequestHandler<GroupSummary> handler) {
-    summaryUpdater.go(handler);
-  }
-  
-  /**
-   * As in {@link GroupManager#push(RequestHandler)} but with no handler.
-   */
-  public void push() {
-    push(null);
-  }
-  
-  /**
-   * Try to pull data from the server and call this callback when done.
-   * This method ensures that only one request (from this method) is pending at any time.
-   * 
-   * If the server data has already been pulled then just run.
-   * 
-   * @param callback The callback to run when the request returns successfully.
-   */
-  public void doWhenInited(SyncCallback callback) {
-    // If we are inited then just run it.
-    if(remoteInit) {
-      if(callback != null) {
-        callback.go();
-      }
-      return;
-    }
-    
-    if(syncWaitList == null) {
-      // Need to create the list and send a sync request
-      syncWaitList = new LinkedList<GroupManager.SyncCallback>();
-      syncWaitList.add(callback);
-      
-      pull(new RequestHandler<GroupSummary>() {
-        @Override
-        public void handle(GroupSummary reply, boolean success, String message) {
-          if(success) {
-            justSynced();
-          }
-          else {
-            // Wait 5 seconds and try sending the request again
-            new Timer() {
-              @Override
-              public void run() {
-                doWhenInited();
-              }
-            }.schedule(5000);
-          }
-        }
-      });
-    }
-    else {
-      syncWaitList.add(callback);
-    }
-  }
-  
-  /**
-   * Exactly as {@link GroupManager#doWhenInited(SyncCallback)} but with no handler.
-   * This just means only one pull request will be pending at a time.
-   */
-  public void doWhenInited() {
-    doWhenInited(null);
-  }
-  
-  /**
-   * Callback for {@link GroupManager#doWhenInited(SyncCallback)}
-   */
-  public interface SyncCallback {
-    public void go();
-  }
-  
-  /**
-   * Called when doWhenSynced has finished syncing
-   */
-  private void justSynced() {
-    while(!syncWaitList.isEmpty()) {
-      SyncCallback cb = syncWaitList.removeFirst();
-      if(cb != null) {
-        cb.go();
-      }
-    }
-    syncWaitList = null;
-  }
-  
   // User interaction
   
   /**
@@ -209,8 +67,8 @@ public class GroupManager {
    */
   private void clearGroups() {
     groups = new HashMap<String, SingleGroupManager>();
-    // localChange = true;
-    // Assume no local change as we haven't deleted
+    // change();
+    // Assume no local change as we haven't actually deleted the groups
   }
   
   /**
@@ -234,7 +92,7 @@ public class GroupManager {
     }
     SingleGroupManager gm = new SingleGroupManager(name, size);
     groups.put(name, gm);
-    localChange = true;
+    change();
     return true;
   }
   
@@ -248,17 +106,11 @@ public class GroupManager {
       return false;
     }
     groups.get(name).setSize(0);
-    localChange = true;
+    change();
     return true;
   }
-  
-  /**
-   * Called on receipt of a new group summary object.
-   * It is used for any processing or caching.
-   * 
-   * @param summary the group summary
-   */
-  protected void gotGroupSummary(GroupSummary summary){
+
+  protected boolean receivePullData(GroupSummary pulled){
     // Create a new group map, move only the old groups
     // that are needed into the new map.
     
@@ -267,21 +119,25 @@ public class GroupManager {
     final Map<String, SingleGroupManager> oldGroups = groups;
     clearGroups();
     
-    for(String group : summary.keySet()) {
+    for(String group : pulled.keySet()) {
       if(oldGroups.containsKey(group)) {
         // Move group from old map to new
         SingleGroupManager g = oldGroups.get(group);
-        g.setSize(summary.get(group));
+        g.setSize(pulled.get(group));
         groups.put(group, g);
       } 
       else {
         // Add new group
-        addGroup(group, summary.get(group));
+        addGroup(group, pulled.get(group));
       }
     }
     
-    localChange = false;
-    remoteInit = true;
+    return true;
+  }
+  
+  @Override
+  protected boolean receivePushData(GroupSummary pushed) {
+    return true;
   }
   
   /**
@@ -297,13 +153,6 @@ public class GroupManager {
           return new GroupSummary(original);
         }
       });
-    }
-
-    @Override
-    protected void received(GroupSummary reply, boolean success, String message) {
-      if(success) {
-        gotGroupSummary(reply);
-      }
     }
   }
   
@@ -339,17 +188,6 @@ public class GroupManager {
       }
 
       return queryArguments;
-    }
-
-    @Override
-    protected void received(GroupSummary reply, boolean success, String message) {
-      if(success) {
-        gotGroupSummary(reply);
-      }
-      else {
-        // We don't know what the server state is now...
-        remoteInit = false;
-      }
     }
     
     protected class AddEditQuery extends QueryArg {
