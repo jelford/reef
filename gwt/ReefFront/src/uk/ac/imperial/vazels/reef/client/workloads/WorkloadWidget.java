@@ -1,22 +1,14 @@
 package uk.ac.imperial.vazels.reef.client.workloads;
 
-import java.util.ArrayList;
-
 import uk.ac.imperial.vazels.reef.client.AddressResolution;
-import uk.ac.imperial.vazels.reef.client.MultipleRequester;
-import uk.ac.imperial.vazels.reef.client.RequestHandler;
 
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -24,9 +16,10 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 //also when 2 wklds given same name
 
 public class WorkloadWidget extends Composite {
-
+  
   public WorkloadWidget() {
-    initPanel();
+    //initPanel();
+    new WorkloadGroupsWidget();
   }
 
   void initPanel() {
@@ -62,12 +55,12 @@ public class WorkloadWidget extends Composite {
     Button button = new Button ("Submit", new ClickHandler() {
       public void onClick(ClickEvent event) {
         formPanel.submit();
-        Workloads.add(wkld_name.getText());
+//assuming success, give new workload to workloads class
+        WorkloadsManager.put(new Workload(wkld_name.getText()));
         listWklds.addItem(wkld_name.getText());
         wkld_name.setText("");
       }
     });
     uploadPanel.add(button);  
-    
   }
 }

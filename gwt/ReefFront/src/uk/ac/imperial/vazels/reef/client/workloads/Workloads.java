@@ -2,6 +2,7 @@ package uk.ac.imperial.vazels.reef.client.workloads;
 
 import java.util.LinkedList;
 
+//REDUNDANT CLASS: delete
 public class Workloads {
   static LinkedList <String> workloads = null;
 
