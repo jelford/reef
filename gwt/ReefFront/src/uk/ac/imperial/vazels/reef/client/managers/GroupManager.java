@@ -1,10 +1,12 @@
 package uk.ac.imperial.vazels.reef.client.managers;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.user.client.Timer;
 
 import uk.ac.imperial.vazels.reef.client.MultipleRequester;
 import uk.ac.imperial.vazels.reef.client.RequestHandler;
@@ -21,9 +23,13 @@ public class GroupManager {
   
   private Map<String, SingleGroupManager> groups = null;
   
+  // Not using interface list so we keep the removeFirst method
+  private LinkedList<SyncCallback> syncWaitList = null;
+  
   private GroupSummaryRequest summaryRequest;
   private GroupSummaryUpdate summaryUpdater;
-  private boolean synced = false;
+  private boolean remoteInit;
+  private boolean localChange;
   
   //Singleton stuff
   
@@ -31,6 +37,9 @@ public class GroupManager {
     clearGroups();
     summaryRequest = new GroupSummaryRequest();
     summaryUpdater = new GroupSummaryUpdate();
+    remoteInit = false;
+    localChange = false;
+    doWhenInited();
   }
   
   /**
@@ -51,8 +60,16 @@ public class GroupManager {
    * This includes the group names and sizes.
    * @return is the server synced.
    */
-  public boolean isSynched() {
-    return synced;
+  public boolean isInitialised() {
+    return remoteInit;
+  }
+  
+  /**
+   * Has the local representation changed since data was retrieved from the server?
+   * @return true if the local data has changed.
+   */
+  public boolean hasLocalChange() {
+    return localChange;
   }
   
   /**
@@ -78,12 +95,20 @@ public class GroupManager {
   
   /**
    * Get the newest info from the server.
+   * It is safer to use the {@link GroupManager#doWhenInited(SyncCallback)} method.
    * 
    * @param handler handles the response of the pull.
    * On success, data is automatically cached.
    */
   public void pull(RequestHandler<GroupSummary> handler) {
     summaryRequest.go(handler);
+  }
+  
+  /**
+   * As in {@link GroupManager#pull(RequestHandler)} but with no handler.
+   */
+  public void pull() {
+    pull(null);
   }
   
   /**
@@ -96,6 +121,86 @@ public class GroupManager {
     summaryUpdater.go(handler);
   }
   
+  /**
+   * As in {@link GroupManager#push(RequestHandler)} but with no handler.
+   */
+  public void push() {
+    push(null);
+  }
+  
+  /**
+   * Try to pull data from the server and call this callback when done.
+   * This method ensures that only one request (from this method) is pending at any time.
+   * 
+   * If the server data has already been pulled then just run.
+   * 
+   * @param callback The callback to run when the request returns successfully.
+   */
+  public void doWhenInited(SyncCallback callback) {
+    // If we are inited then just run it.
+    if(remoteInit) {
+      if(callback != null) {
+        callback.go();
+      }
+      return;
+    }
+    
+    if(syncWaitList == null) {
+      // Need to create the list and send a sync request
+      syncWaitList = new LinkedList<GroupManager.SyncCallback>();
+      syncWaitList.add(callback);
+      
+      pull(new RequestHandler<GroupSummary>() {
+        @Override
+        public void handle(GroupSummary reply, boolean success, String message) {
+          if(success) {
+            justSynced();
+          }
+          else {
+            // Wait 5 seconds and try sending the request again
+            new Timer() {
+              @Override
+              public void run() {
+                doWhenInited();
+              }
+            }.schedule(5000);
+          }
+        }
+      });
+    }
+    else {
+      syncWaitList.add(callback);
+    }
+  }
+  
+  /**
+   * Exactly as {@link GroupManager#doWhenInited(SyncCallback)} but with no handler.
+   * This just means only one pull request will be pending at a time.
+   */
+  public void doWhenInited() {
+    doWhenInited(null);
+  }
+  
+  /**
+   * Callback for {@link GroupManager#doWhenInited(SyncCallback)}
+   */
+  public interface SyncCallback {
+    public void go();
+  }
+  
+  /**
+   * Called when doWhenSynced has finished syncing
+   */
+  private void justSynced() {
+    while(!syncWaitList.isEmpty()) {
+      SyncCallback cb = syncWaitList.removeFirst();
+      if(cb != null) {
+        cb.go();
+      }
+    }
+    syncWaitList = null;
+  }
+  
   // User interaction
   
   /**
@@ -104,9 +209,13 @@ public class GroupManager {
    */
   private void clearGroups() {
     groups = new HashMap<String, SingleGroupManager>();
-    synced = false;
+    // localChange = true;
+    // Assume no local change as we haven't deleted
   }
   
+  /**
+   * Delete each individual group (currently by setting their size to 0)
+   */
   public void deleteGroups() {
     for(String group : groups.keySet()) {
       deleteGroup(group);
@@ -125,7 +234,7 @@ public class GroupManager {
     }
     SingleGroupManager gm = new SingleGroupManager(name, size);
     groups.put(name, gm);
-    synced = false;
+    localChange = true;
     return true;
   }
   
@@ -139,7 +248,7 @@ public class GroupManager {
       return false;
     }
     groups.get(name).setSize(0);
-    synced = false;
+    localChange = true;
     return true;
   }
   
@@ -171,7 +280,8 @@ public class GroupManager {
       }
     }
     
-    synced = true;
+    localChange = false;
+    remoteInit = true;
   }
   
   /**
@@ -235,6 +345,10 @@ public class GroupManager {
     protected void received(GroupSummary reply, boolean success, String message) {
       if(success) {
         gotGroupSummary(reply);
+      }
+      else {
+        // We don't know what the server state is now...
+        remoteInit = false;
       }
     }
     
