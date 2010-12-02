@@ -1,8 +1,7 @@
 package uk.ac.imperial.vazels.reef.client.groups;
 
-import uk.ac.imperial.vazels.reef.client.RequestHandler;
 import uk.ac.imperial.vazels.reef.client.managers.GroupManager;
-import uk.ac.imperial.vazels.reef.client.managers.GroupManager.SyncCallback;
+import uk.ac.imperial.vazels.reef.client.managers.Manager.PushCallback;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -30,6 +29,8 @@ public class AllocateGroups extends Composite {
   private static final int GROUP_HOSTS_COLUMN = GROUP_NAME_COLUMN+1;
   private static final int GROUP_REMOVE_COLUMN = GROUP_HOSTS_COLUMN+1;
 
+  private PushCallback localUpdate;
+  
   /**
    * Table for holding the information on each group.
    */
@@ -71,6 +72,19 @@ public class AllocateGroups extends Composite {
     // Init empty table & group summary.
     clearGroupData();
 
+    // Create a local update callback
+    localUpdate = new PushCallback() {
+      @Override
+      public void go() {
+        refreshGroupData();
+      }
+
+      @Override
+      public void failed() {
+        Window.alert("Failed to save changes to server");
+      }
+    };
+    
     // Get new info
     refresh();
   }
@@ -260,18 +274,7 @@ public class AllocateGroups extends Composite {
    * group info.
    */
   private void refresh() {
-    GroupManager man = GroupManager.getManager();
-    if(man.isInitialised()) {
-      refreshGroupData();
-    }
-    else {
-      GroupManager.getManager().doWhenInited(new SyncCallback() {
-        @Override
-        public void go() {
-          refreshGroupData();
-        }
-      });
-    }
+    GroupManager.getManager().afterRemoteSync(localUpdate);
   }
 
   /**
@@ -308,13 +311,6 @@ public class AllocateGroups extends Composite {
    * Tell the server about the groups in our table
    */
   private void batchUpdateServerGroups() {
-    GroupManager.getManager().push(new RequestHandler<GroupSummary>(){
-      @Override
-      public void handle(GroupSummary reply, boolean success, String message) {
-        if (success) {
-          refreshGroupData();
-        }
-      }
-    });
+    GroupManager.getManager().pushToServer(localUpdate);
   }
 }
