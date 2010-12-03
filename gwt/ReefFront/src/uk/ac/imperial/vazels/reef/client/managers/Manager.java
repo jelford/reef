@@ -61,6 +61,13 @@ public abstract class Manager<PullData, PushData> implements IManager {
     return syncTracker.hasLocalChanges();
   }
 
+  /**
+   * To be called internally whenever a local change occurs
+   */
+  public void change() {
+    syncTracker.change();
+  }
+  
   @Override
   public void withServerData(PullCallback callback)
       throws MissingRequesterException {
