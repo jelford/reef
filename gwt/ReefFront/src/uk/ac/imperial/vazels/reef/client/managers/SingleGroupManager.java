@@ -16,12 +16,30 @@ public class SingleGroupManager extends SingleTypeManager<Group> {
    * We do not ever want to manually create an instance of this class.
    * @param g Group that this manager controls.
    */
-  SingleGroupManager(String name, int size) {
-    setRequesters(new GroupRequest(name), new GroupUpdate(name));
-    this.group = new Group(name, size);
+  SingleGroupManager(String name) {
+    setPuller(new GroupRequest(name));
+    setPusher(new GroupUpdate(name));
+    this.group = new Group(name, 0);
   }
   
   // Getters/Setters
+  
+  /**
+   * Delete this group.
+   */
+  public void delete() {
+    setSize(0);
+  }
+  
+  /**
+   * Is the group to be deleted.
+   * If this is false then other methods will be unreliable.
+   * @return {@code true} if the group is definitely to be deleted.
+   * (possibly no info is available yet).
+   */
+  public boolean isDeleted() {
+    return hasServerData() && getSize() == 0;
+  }
   
   /**
    * Get the size of this group
