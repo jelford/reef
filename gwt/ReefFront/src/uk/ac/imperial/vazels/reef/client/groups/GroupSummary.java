@@ -51,9 +51,27 @@ public class GroupSummary implements Iterable<String>{
   public int length() {
     return groups.size();
   }
+  
+  /**
+   * Add a group to the list.
+   * @param group Name of the group to add.
+   * @return {@code true} this group did not already exist.
+   */
+  public boolean add(String group) {
+    return groups.add(group);
+  }
+  
+  /**
+   * Remove a group from the list.
+   * @param group The group to remove.
+   * @return {@code true} if the group existed.
+   */
+  public boolean remove(String group) {
+    return groups.remove(group);
+  }
 
   /**
-   * Get an iterator, DO NOT REMOVE!
+   * Get an iterator over the group names.
    * @return an iterator...
    */
   @Override
