@@ -26,10 +26,9 @@ public interface IManager {
   /**
    * Keeps trying to pull server data until it works.
    * This will return immediately if we already have the server data and force is {@code false}.
-   * @param force {@code true} to force a fresh server pull before returning.
    * @throws MissingRequesterException when there is no puller.
    */
-  public void getServerData(boolean force) throws MissingRequesterException;
+  public void getServerData() throws MissingRequesterException;
   
   /**
    * Send a push request to the server.
