@@ -43,7 +43,6 @@ public abstract class Manager<PullData, PushData> {
   public void setRequesters(MultipleRequester<PullData> pull, MultipleRequester<PushData> push) {
     this.puller = pull;
     this.pusher = push;
-    syncNow();
   }
   
   /**
