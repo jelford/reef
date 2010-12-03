@@ -2,8 +2,9 @@ package uk.ac.imperial.vazels.reef.client.workloads;
 
 import java.util.Set;
 
-import uk.ac.imperial.vazels.reef.client.groups.GroupsManager;
-import uk.ac.imperial.vazels.reef.client.groups.Manager;
+import uk.ac.imperial.vazels.reef.client.managers.GroupManager;
+import uk.ac.imperial.vazels.reef.client.managers.Manager;
+import uk.ac.imperial.vazels.reef.client.managers.SingleGroupManager;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -11,13 +12,14 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class WorkloadGroupsWidget extends Composite {
 
-//  private WorkloadSummary workloads;
+  //  private WorkloadSummary workloads;
   ListBox wkldsBox, groupsBox;
   TextBox attachedWklds; //make this non static?
 
@@ -30,55 +32,63 @@ public class WorkloadGroupsWidget extends Composite {
   void initPanel() {
     VerticalPanel assignmentTab = new VerticalPanel();
     initWidget(assignmentTab);
-
+    
+    assignmentTab.add(new Label("Workloads: "));
+    
     wkldsBox = new ListBox();
     assignmentTab.add(wkldsBox);
-    groupsBox = new ListBox(true);
     
+    assignmentTab.add(new Label("Groups: "));
+    
+    groupsBox = new ListBox();
+
     ChangeHandler handler = new CHandler();
     groupsBox.addChangeHandler(handler);
-    
     assignmentTab.add(groupsBox);
 
-    attachedWklds = new TextBox();
-    updateAttachedWklds();
+    assignmentTab.add(new Label("Currently attached workloads: "));
     
-    for(String wkld: WorkloadsManager.getWorkloadNames()) {
+    attachedWklds = new TextBox();
+    attachedWklds.setReadOnly(true);
+    assignmentTab.add(attachedWklds);
+    updateAttachedWklds();
+    for(String wkld: Workloads.returnWorkloads()) {
       wkldsBox.addItem(wkld);
     }
-    
-    Manager man = Manager.getManager();
-    Set<String> groups = man.getNames(); //returns Set<String>
-    for(String group: groups) {
-      groupsBox.addItem(group);
-    }
+
+    final GroupManager man = GroupManager.getManager();
+    man.afterRemoteSync(new Manager.SyncCallback() {
+      public void go() {
+        Set<String> groups = man.getNames(); //returns Set<String>
+        for(String group: groups) {
+          groupsBox.addItem(group);
+        }
+      }
+    });
 
     //need groups and workloads info input into box
     //need choose which workloads to attach workload to?
     Button submitWtoG = new Button ("Submit", new ClickHandler() {
       public void onClick(ClickEvent event) {
-              addWorkload();
-              showSubmission();
+        addWorkload();
+        showSubmission();
       }
     });
     assignmentTab.add(submitWtoG);    
-    //is this automatic already?
-    /*    Button refreshOptions = new Button ("Refresh", new ClickHandler() {
-      public void onClick(ClickEvent event) {
-        //   refresh();
-      }
-    });     
-    assignmentTab.add(refreshOptions);*/
   }
+
+  //update attached workloads for the current 
   private void updateAttachedWklds() {
-    String groupWklds = "";
-    Manager manager = Manager.getManager();
-    Manager gpManager = manager.getGroup(groupsBox.getItemText(groupsBox.getSelectedIndex()));
-    String [] theAttachedWklds = gpManager.getWorkloads();
-    for(String wkld: theAttachedWklds) {
-      groupWklds += (wkld + "\n");
+    if(groupsBox.getItemCount() > 0) {
+      String groupWklds = "";
+      GroupManager manager = GroupManager.getManager();
+      SingleGroupManager gpManager = manager.getGroupManager(groupsBox.getItemText(groupsBox.getSelectedIndex()));
+      String [] theAttachedWklds = gpManager.getWorkloads();
+      for(String wkld: theAttachedWklds) {
+        groupWklds += (wkld + "\n");
+      }
+      attachedWklds.setText(groupWklds);
     }
-    attachedWklds.setText(groupWklds);
   }
   private class CHandler implements ChangeHandler {
     public void onChange(ChangeEvent event) {
@@ -86,8 +96,8 @@ public class WorkloadGroupsWidget extends Composite {
     }    
   }
   public void addWorkload() {
-    Manager manager = Manager.getManager();
-    Manager gpManager = manager.getGroup(groupsBox.getItemText(groupsBox.getSelectedIndex()));
+    GroupManager manager = GroupManager.getManager();
+    SingleGroupManager gpManager = manager.getGroupManager(groupsBox.getItemText(groupsBox.getSelectedIndex()));
     gpManager.addWorkload(wkldsBox.getItemText(wkldsBox.getSelectedIndex()));
     gpManager.pushToServer(null);
   }

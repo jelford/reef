@@ -18,8 +18,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class WorkloadWidget extends Composite {
   
   public WorkloadWidget() {
-    //initPanel();
-    new WorkloadGroupsWidget();
+    initPanel();
   }
 
   void initPanel() {

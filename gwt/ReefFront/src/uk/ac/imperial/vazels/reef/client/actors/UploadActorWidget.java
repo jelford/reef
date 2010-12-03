@@ -1,33 +1,24 @@
 package uk.ac.imperial.vazels.reef.client.actors;
 
 //import java.awt.TextField;
-import java.util.ArrayList;
 
 import uk.ac.imperial.vazels.reef.client.AddressResolution;
-import uk.ac.imperial.vazels.reef.client.MultipleRequester;
-import uk.ac.imperial.vazels.reef.client.RequestHandler;
 
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
-import com.google.gwt.user.client.ui.FormHandler;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
-import com.google.gwt.user.client.ui.FormSubmitEvent;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class UploadActorWidget extends Composite {
 
-  private ActorSummary actors;
+//  private ActorSummary actors;
 
   public UploadActorWidget() {
     initPanel();
@@ -83,85 +74,4 @@ public class UploadActorWidget extends Composite {
     });
     uploadPanel.add(button);
   }
-
-  /* The below is the code required to get workload information from the server.*/
-  /**
-   * Dispatch a request to the server letting it know we'd like to hear about
-   * workload info.
-   */
-/*  private void refresh() {
-    new WorkloadDataRequest().go(new RequestHandler<ActorSummary>(){
-      @Override
-      public void handle(ActorSummary reply, boolean success, String message) {
-        if (success) {
-          refreshWorkloadListBox(reply);
-        }
-      }
-    });
-  }*/
-
-/*  private void refreshWorkloadListBox(final ActorSummary summary) {
-    actorsBox.clear();
-    actors = summary;    
-    for(int i = 0; i < actors.size(); i++) {
-      actorsBox.addItem(actors.get(i));
-    }
-    //    refreshWorkloadsInfo();
-  }
-*/
-  /**
-   * Helper class to send requests to get workload info (this will send a batch
-   * request to the server, and retrieve a summary of all workload info).
-   */
-/*  private class WorkloadDataRequest extends MultipleRequester<ActorSummary>{
-    WorkloadDataRequest() {
-      super(RequestBuilder.GET, "/workloads/", 
-          new Converter<ActorSummary>() {
-        @Override
-        public ActorSummary convert(String original) {
-          return new ActorSummary(original);
-        }
-      });
-    }
-  }*/
 }
-/**
- * refreshWorkloadData with no data.
- */
-//  private void clearWorkloadData() {
-//    WorkloadSummary clearAllWorkloads = new WorkloadSummary();
-//    if (workloads != null) {
-//      for (String workloadName : workloads.keySet()) {
-//        clearAllWorkloads.put(workloadName, 0);
-//     }
-//   }
-//    refreshWorkloadData(clearAllWorkloads);
-//}
-  /** no group updating here
-   * Post all the current workload data to the server & update the local data with
-   * the returned info from the server (i.e. check that local and remote records
-   * are the same).
-   */ 
-  /* 
-  private class WorkloadDataUpdate extends MultipleRequester<WorkloadSummary>{
-    /*  public WorkloadDataUpdate() {
-      super(RequestBuilder.GET, "/workloads/", new Converter<WorkloadSummary>(){
-        @Override
-        public WorkloadSummary convert(String original) {
-          return new WorkloadSummary(original);
-        }
-      });
-    }*/
-/*
-    @Override
-    protected void received(WorkloadSummary reply, boolean success, String message) {
-      if(success)
-        refreshWorkloadData(reply);
-    }
-  }*/
-
-  /**
-   * Tell the server about the workloads in our table
-   */
-  //  private void batchUpdateServerWorkloads() {
-  /*      protected QueryArg[] getArgs() {deleted     */
