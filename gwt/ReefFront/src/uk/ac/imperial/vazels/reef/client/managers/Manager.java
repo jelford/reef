@@ -35,8 +35,6 @@ public abstract class Manager<PullData, PushData> {
    * Set the requesters used in this class.
    * This is expected to be called before any other methods (other than the constructor).
    * 
-   * Do not give {@code null} requests - you'll blow everything up.
-   * 
    * @param pull Request builder for pull requests.
    * @param push Request builder for push requests.
    */
@@ -89,9 +87,15 @@ public abstract class Manager<PullData, PushData> {
   
   /**
    * Perform callback as soon as we are synchronised with the server.
+   * If we have a {@code null} puller, then the callback will be call
    * @param callback Callback to run.
+   * @throws MissingRequesterException when there is a {@code null} puller.
    */
-  public void afterRemoteSync(SyncCallback callback) {
+  public void afterRemoteSync(SyncCallback callback) throws MissingRequesterException {
+    if(puller == null) {
+      throw new MissingRequesterException();
+    }
+    
     if(remoteSync()) {
       // Run immediately if in sync
       if(callback != null) {
@@ -117,7 +121,13 @@ public abstract class Manager<PullData, PushData> {
               new Timer() {
                 @Override
                 public void run() {
-                  syncNow();
+                  try {
+                    syncNow();
+                  }
+                  catch(MissingRequesterException e) {
+                    // We shouldn't ever get here...unless
+                    // someone changed the requesters after the first request
+                  }
                 }
               }.schedule(5000);
             }
@@ -133,8 +143,9 @@ public abstract class Manager<PullData, PushData> {
   
   /**
    * Keeps trying to pull server data until it works.
+   * @throws MissingRequesterException when there is a {@code null} puller.
    */
-  public void syncNow() {
+  public void syncNow() throws MissingRequesterException {
     afterRemoteSync(null);
   }
   
@@ -159,8 +170,13 @@ public abstract class Manager<PullData, PushData> {
   /**
    * Send a push request to the server.
    * @param callback The callback to handle the response.
+   * @throws MissingRequesterException when there is a {@code null} pusher.
    */
-  public void pushToServer(final PushCallback callback) {
+  public void pushToServer(final PushCallback callback) throws MissingRequesterException {
+    if(pusher == null) {
+      throw new MissingRequesterException();
+    }
+    
     pusher.go(new RequestHandler<PushData>() {
       @Override
       @SuppressWarnings("unchecked") // For pull data cast
@@ -206,7 +222,14 @@ public abstract class Manager<PullData, PushData> {
    * so that if push and pull return the same data, this interface
    * can be used for both.
    */
-  public interface PushCallback extends SyncCallback {
+  public static interface PushCallback extends SyncCallback {
     public void failed();
+  }
+  
+  /**
+   * Raised when trying to push or pull without the requesters.
+   */
+  public static class MissingRequesterException extends Exception {
+    private static final long serialVersionUID = 1L;
   }
 }
