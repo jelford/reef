@@ -8,7 +8,7 @@ import uk.ac.imperial.vazels.reef.client.groups.Group;
 /**
  * Manages a group object, deals with syncing to the server.
  */
-public class SingleGroupManager extends SingleTypeManager<Group> {
+public class SingleGroupManager extends SingleTypeManager<Group> implements DeletableManager {
   private Group group;
   
   /**
@@ -16,12 +16,21 @@ public class SingleGroupManager extends SingleTypeManager<Group> {
    * We do not ever want to manually create an instance of this class.
    * @param g Group that this manager controls.
    */
-  SingleGroupManager(String name, int size) {
-    setRequesters(new GroupRequest(name), new GroupUpdate(name));
-    this.group = new Group(name, size);
+  SingleGroupManager(String name) {
+    setPuller(new GroupRequest(name));
+    setPusher(new GroupUpdate(name));
+    this.group = new Group(name, 0);
   }
   
   // Getters/Setters
+  
+  public void requestDeletion() {
+    setSize(0);
+  }
+  
+  public boolean pendingDelete() {
+    return getSize() == 0;
+  }
   
   /**
    * Get the size of this group

@@ -18,71 +18,9 @@ def group_batch_handler():
   ## GET requests to this uri will return a summary of current groups
   def GET(request):
     authentication.login(request)
-    groups_summary = {}
-    group_data = config.getSettings("groups")
+    group_data = config.getSettings("groups").keys()
     
-    print group_data
-    
-    for group in group_data:
-      try:
-        groups_summary[group] = group_data[group]['size']
-      except KeyError:
-        pass
-      
-    return request.response(groups_summary)
-    
-  def POST(request,entity):
-    authentication.login(request)
-      
-    '''
-    Here the server must take care of setting up the group info.
-    What do we need to know?
-    name <-- need to be given this by the post request
-    size <-- need to be given this by the post request
-    group_number <-- calculated when the server starts
-    workloads <-- default value: [] (a list of workload names applied to the group)
-    filters <-- given to us in a specific call later, default value: []
-    '''
-    
-    existing_groups = config.getSettings("groups")
-    
-    group_sizes = urlparse.parse_qs(entity)
-
-    # Validate all groups before we begin
-    for group in group_sizes:
-      # Make sure each group was only specified once
-      if len(group_sizes[group]) != 1:
-        raise restlite.Status, "400 Multiple actions for the same method"
-      else:
-        group_sizes[group] = group_sizes[group][0]
-
-      # Get a correct integer from the size
-      try:
-        group_sizes[group] = int(group_sizes[group])
-      except ValueError:
-        raise restlite.Status, "400 Group size must be a positive integer"
-
-      if group_sizes[group] < 0:
-        raise restlite.Status, "400 Group size must be a positive integer"
-
-      if group_sizes[group] == 0 and group not in existing_groups:
-        raise restlite.Status, "400 Cannot delete non-existent group"
-
-    # Use the input now
-    for group in group_sizes:
-      if group_sizes[group] == 0:
-        # Already checked this exists
-        del existing_groups[group]
-      else:
-        try:
-          existing_groups[group]['size'] = group_sizes[group]
-        except KeyError:
-          existing_groups[group] = __newGroup()
-          existing_groups[group]["name"] = group
-          existing_groups[group]["size"] = group_sizes[group]
-      
-    # Tell them the new info
-    return GET(request)
+    return request.response(group_data)
     
   return locals()
 
@@ -110,7 +48,7 @@ def group_handler():
     existing_groups = config.getSettings("groups")
     group_name = request['PATH_INFO']
 
-    args = urlparse.parse_qs(request['QUERY_STRING'])
+    args = urlparse.parse_qs(entity)
 
     g_data = _getGroupDataFromArgs(args)
 
@@ -137,6 +75,7 @@ def group_handler():
 # Raises a status exception if args are incorrect
 def _getGroupDataFromArgs(args):
   group = {}
+  n_args = len(args)
 
   # Get a size value
   if "size" in args:
@@ -144,19 +83,19 @@ def _getGroupDataFromArgs(args):
       group["size"] = int(args["size"][0])
     except ValueError:
       raise restlite.Status, "400 Size must be integer"
-    del args["size"]
+    n_args = n_args - 1
 
   # Add workload list
   if "workloads" in args:
     group["workloads"] = args["workloads"]
-    del args["workloads"]
+    n_args = n_args - 1
 
   # Add filter list
   if "filters" in args:
     group["workloads"] = args["filters"]
-    del args["filters"]
+    n_args = n_args - 1
 
-  if len(args) > 0:
+  if n_args > 0:
     raise restlite.Status, "400 Unrecognised Arguments"
 
   return group

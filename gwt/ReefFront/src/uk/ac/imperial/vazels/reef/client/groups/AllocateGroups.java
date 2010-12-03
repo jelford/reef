@@ -1,7 +1,9 @@
 package uk.ac.imperial.vazels.reef.client.groups;
 
 import uk.ac.imperial.vazels.reef.client.managers.GroupManager;
-import uk.ac.imperial.vazels.reef.client.managers.Manager.PushCallback;
+import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
+import uk.ac.imperial.vazels.reef.client.managers.PushCallback;
+import uk.ac.imperial.vazels.reef.client.managers.SingleGroupManager;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -75,7 +77,7 @@ public class AllocateGroups extends Composite {
     // Create a local update callback
     localUpdate = new PushCallback() {
       @Override
-      public void go() {
+      public void got() {
         refreshGroupData();
       }
 
@@ -99,7 +101,7 @@ public class AllocateGroups extends Composite {
   }
 
   /**
-   * Add a new group to the datastructures from the input text fields.
+   * Add a new group to the data structures from the input text fields.
    */
   @UiHandler("addGroupButton")
   void addGroupClicked(ClickEvent event) {
@@ -190,7 +192,9 @@ public class AllocateGroups extends Composite {
    */
   private void addGroup(final String newGroupName, final int numberOfHosts) {
     // Add to group map
-    GroupManager.getManager().addGroup(newGroupName, numberOfHosts);
+    GroupManager man = GroupManager.getManager();
+    SingleGroupManager gMan = man.addGroup(newGroupName);
+    gMan.setSize(numberOfHosts);
 
     addGroupToTable(newGroupName, numberOfHosts);
 
@@ -274,7 +278,12 @@ public class AllocateGroups extends Composite {
    * group info.
    */
   private void refresh() {
-    GroupManager.getManager().afterRemoteSync(localUpdate);
+    try {
+      GroupManager.getManager().withServerData(localUpdate);
+    }
+    catch(MissingRequesterException e) {
+      // Ignore, this would be a problem in GroupManager
+    }
   }
 
   /**
@@ -311,6 +320,11 @@ public class AllocateGroups extends Composite {
    * Tell the server about the groups in our table
    */
   private void batchUpdateServerGroups() {
-    GroupManager.getManager().pushToServer(localUpdate);
+    try {
+      GroupManager.getManager().pushLocalData(localUpdate);
+    }
+    catch(MissingRequesterException e) {
+      // Again ignore as this would be a problem with group manager.
+    }
   }
 }
