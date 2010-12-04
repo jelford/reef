@@ -36,9 +36,10 @@ public class CollectionManager<Id, Man extends DeletableManager> implements IMan
   }
   
   /**
-   * Try to delete a manager.
+   * Try to delete a manager (but don't forget about it).
    * @param id The id of the manager to remove.
    * @return {@code true} if the manager existed and was removed.
+   * @see CollectionManager#forgetManager(Object)
    */
   public boolean deleteManager(Id id) {
     Man man = managers.get(id);
@@ -48,6 +49,21 @@ public class CollectionManager<Id, Man extends DeletableManager> implements IMan
       return true;
     }
 
+    return false;
+  }
+  
+  /**
+   * Forget the manager is here, but don't delete it.
+   * @param id The id of the manager to remove.
+   * @return {@code true} if the manager existed and was removed.
+   * @see CollectionManager#deleteManager(Object)
+   */
+  public boolean forgetManager(Id id) {
+    Man man = managers.get(id);
+    if(man != null) {
+      managers.remove(man);
+      return true;
+    }
     return false;
   }
   
@@ -66,6 +82,14 @@ public class CollectionManager<Id, Man extends DeletableManager> implements IMan
     }
     
     return liveManagers;
+  }
+  
+  /**
+   * Like {@link CollectionManager#getManagers()} but returns even deleted managers.
+   * @return List of managers.
+   */
+  public Set<Id> getAllManagers() {
+    return managers.keySet();
   }
   
   /**
