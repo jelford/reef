@@ -1,14 +1,10 @@
 package uk.ac.imperial.vazels.reef.client.managers;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.http.client.RequestBuilder;
 
 import uk.ac.imperial.vazels.reef.client.MultipleRequester;
-import uk.ac.imperial.vazels.reef.client.groups.Group;
 import uk.ac.imperial.vazels.reef.client.groups.GroupSummary;
 
 /**
