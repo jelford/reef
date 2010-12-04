@@ -64,8 +64,15 @@ public abstract class Manager<PullData, PushData> implements IManager {
   /**
    * To be called internally whenever a local change occurs
    */
-  public void change() {
+  protected void change() {
     syncTracker.change();
+  }
+  
+  /**
+   * Called internally if we know the server data could have changed.
+   */
+  protected void serverChange() {
+    syncTracker.serverChange();
   }
   
   @Override
