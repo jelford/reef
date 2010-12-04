@@ -78,4 +78,13 @@ public class GroupSummary implements Iterable<String>{
   public Iterator<String> iterator() {
     return groups.iterator();
   }
+  
+  /**
+   * Get the summary as a set of group names.
+   * Best not to change the returned value.
+   * @return set of group names.
+   */
+  public Set<String> getSet() {
+    return groups;
+  }
 }
