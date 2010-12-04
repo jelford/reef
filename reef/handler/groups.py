@@ -20,7 +20,7 @@ def group_batch_handler():
     authentication.login(request)
     group_data = config.getSettings("groups").keys()
     
-    return request.response(groups_data)
+    return request.response(group_data)
     
   return locals()
 
@@ -48,7 +48,7 @@ def group_handler():
     existing_groups = config.getSettings("groups")
     group_name = request['PATH_INFO']
 
-    args = urlparse.parse_qs(request['QUERY_STRING'])
+    args = urlparse.parse_qs(entity)
 
     g_data = _getGroupDataFromArgs(args)
 
@@ -75,6 +75,7 @@ def group_handler():
 # Raises a status exception if args are incorrect
 def _getGroupDataFromArgs(args):
   group = {}
+  n_args = len(args)
 
   # Get a size value
   if "size" in args:
@@ -82,19 +83,19 @@ def _getGroupDataFromArgs(args):
       group["size"] = int(args["size"][0])
     except ValueError:
       raise restlite.Status, "400 Size must be integer"
-    del args["size"]
+    n_args = n_args - 1
 
   # Add workload list
   if "workloads" in args:
     group["workloads"] = args["workloads"]
-    del args["workloads"]
+    n_args = n_args - 1
 
   # Add filter list
   if "filters" in args:
     group["workloads"] = args["filters"]
-    del args["filters"]
+    n_args = n_args - 1
 
-  if len(args) > 0:
+  if n_args > 0:
     raise restlite.Status, "400 Unrecognised Arguments"
 
   return group
