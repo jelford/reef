@@ -8,7 +8,7 @@ import uk.ac.imperial.vazels.reef.client.groups.Group;
 /**
  * Manages a group object, deals with syncing to the server.
  */
-public class SingleGroupManager extends SingleTypeManager<Group> {
+public class SingleGroupManager extends SingleTypeManager<Group> implements DeletableManager {
   private Group group;
   
   /**
@@ -24,21 +24,12 @@ public class SingleGroupManager extends SingleTypeManager<Group> {
   
   // Getters/Setters
   
-  /**
-   * Delete this group.
-   */
-  public void delete() {
+  public void requestDeletion() {
     setSize(0);
   }
   
-  /**
-   * Is the group to be deleted.
-   * If this is false then other methods will be unreliable.
-   * @return {@code true} if the group is definitely to be deleted.
-   * (possibly no info is available yet).
-   */
-  public boolean isDeleted() {
-    return hasServerData() && getSize() == 0;
+  public boolean pendingDelete() {
+    return getSize() == 0;
   }
   
   /**
