@@ -3,19 +3,23 @@ package uk.ac.imperial.vazels.reef.client.workloads;
 import java.util.Set;
 
 import uk.ac.imperial.vazels.reef.client.managers.GroupManager;
-import uk.ac.imperial.vazels.reef.client.managers.Manager;
+import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
+import uk.ac.imperial.vazels.reef.client.managers.PullCallback;
 import uk.ac.imperial.vazels.reef.client.managers.SingleGroupManager;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 public class WorkloadGroupsWidget extends Composite {
 
@@ -24,7 +28,6 @@ public class WorkloadGroupsWidget extends Composite {
   TextBox attachedWklds; //make this non static?
 
   public WorkloadGroupsWidget() {
-    //initialise group and workloads global object
     initPanel();
     //    refresh();
   }
@@ -32,22 +35,32 @@ public class WorkloadGroupsWidget extends Composite {
   void initPanel() {
     VerticalPanel assignmentTab = new VerticalPanel();
     initWidget(assignmentTab);
-    
+
     assignmentTab.add(new Label("Workloads: "));
-    
+
     wkldsBox = new ListBox();
     assignmentTab.add(wkldsBox);
-    
-    assignmentTab.add(new Label("Groups: "));
-    
-    groupsBox = new ListBox();
 
-    ChangeHandler handler = new CHandler();
-    groupsBox.addChangeHandler(handler);
+    assignmentTab.add(new Label("Groups: "));
+
+    groupsBox = new ListBox();
+/*    ChangeHandler handler = new ChangeHandler() {
+      public void onChange(ChangeEvent event) {
+        updateAttachedWklds();
+      }
+    };*/
+    ClickHandler updateGroupList = new ClickHandler(){
+      @Override
+      public void onClick(ClickEvent event) {
+        updateGroupsBox();
+      }
+    };
+    groupsBox.addClickHandler(updateGroupList);
+//    groupsBox.addChangeHandler(handler);
     assignmentTab.add(groupsBox);
 
     assignmentTab.add(new Label("Currently attached workloads: "));
-    
+
     attachedWklds = new TextBox();
     attachedWklds.setReadOnly(true);
     assignmentTab.add(attachedWklds);
@@ -56,15 +69,7 @@ public class WorkloadGroupsWidget extends Composite {
       wkldsBox.addItem(wkld);
     }
 
-    final GroupManager man = GroupManager.getManager();
-    man.afterRemoteSync(new Manager.SyncCallback() {
-      public void go() {
-        Set<String> groups = man.getNames(); //returns Set<String>
-        for(String group: groups) {
-          groupsBox.addItem(group);
-        }
-      }
-    });
+    updateGroupsBox();
 
     //need groups and workloads info input into box
     //need choose which workloads to attach workload to?
@@ -74,7 +79,7 @@ public class WorkloadGroupsWidget extends Composite {
         showSubmission();
       }
     });
-    assignmentTab.add(submitWtoG);    
+    assignmentTab.add(submitWtoG);
   }
 
   //update attached workloads for the current 
@@ -90,16 +95,32 @@ public class WorkloadGroupsWidget extends Composite {
       attachedWklds.setText(groupWklds);
     }
   }
-  private class CHandler implements ChangeHandler {
-    public void onChange(ChangeEvent event) {
-      updateAttachedWklds();
-    }    
+  private void updateGroupsBox() {
+    final GroupManager man = GroupManager.getManager();
+    try {
+      man.withServerData(new PullCallback() {
+        public void got() {
+          Set<String> groups = man.getNames(); //returns Set<String>
+          for(String group: groups) {
+            groupsBox.addItem(group);
+          }
+        }
+      });
+    } catch (MissingRequesterException e) {
+      e.printStackTrace();
+    }
+
   }
   public void addWorkload() {
     GroupManager manager = GroupManager.getManager();
     SingleGroupManager gpManager = manager.getGroupManager(groupsBox.getItemText(groupsBox.getSelectedIndex()));
     gpManager.addWorkload(wkldsBox.getItemText(wkldsBox.getSelectedIndex()));
-    gpManager.pushToServer(null);
+    try {
+      gpManager.pushLocalData(null);
+    }
+    catch(MissingRequesterException e) {
+      e.printStackTrace();
+    }
   }
   private void showSubmission() {
     updateAttachedWklds(); 
