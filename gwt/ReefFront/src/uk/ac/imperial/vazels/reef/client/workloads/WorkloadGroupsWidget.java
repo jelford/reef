@@ -13,7 +13,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -25,7 +24,7 @@ public class WorkloadGroupsWidget extends Composite {
 
   //  private WorkloadSummary workloads;
   ListBox wkldsBox, groupsBox;
-  TextBox attachedWklds; //make this non static?
+  ListBox attachedWklds; //make this non static?
 
   public WorkloadGroupsWidget() {
     initPanel();
@@ -39,6 +38,11 @@ public class WorkloadGroupsWidget extends Composite {
     assignmentTab.add(new Label("Workloads: "));
 
     wkldsBox = new ListBox();
+    wkldsBox.addClickHandler(new ClickHandler() {
+      public void onClick(ClickEvent event) {
+        updateWorkloadList();
+      }
+      });
     assignmentTab.add(wkldsBox);
 
     assignmentTab.add(new Label("Groups: "));
@@ -61,14 +65,10 @@ public class WorkloadGroupsWidget extends Composite {
 
     assignmentTab.add(new Label("Currently attached workloads: "));
 
-    attachedWklds = new TextBox();
-    attachedWklds.setReadOnly(true);
+    attachedWklds = new ListBox();
     assignmentTab.add(attachedWklds);
     updateAttachedWklds();
-    for(String wkld: Workloads.returnWorkloads()) {
-      wkldsBox.addItem(wkld);
-    }
-
+    
     updateGroupsBox();
 
     //need groups and workloads info input into box
@@ -82,17 +82,23 @@ public class WorkloadGroupsWidget extends Composite {
     assignmentTab.add(submitWtoG);
   }
 
+  private void updateWorkloadList() {
+    wkldsBox.clear();
+    for(String wkld: Workloads.returnWorkloads()) {
+      wkldsBox.addItem(wkld);
+    }
+  }
+
   //update attached workloads for the current 
   private void updateAttachedWklds() {
+    attachedWklds.clear();
     if(groupsBox.getItemCount() > 0) {
-      String groupWklds = "";
       GroupManager manager = GroupManager.getManager();
       SingleGroupManager gpManager = manager.getGroupManager(groupsBox.getItemText(groupsBox.getSelectedIndex()));
       String [] theAttachedWklds = gpManager.getWorkloads();
       for(String wkld: theAttachedWklds) {
-        groupWklds += (wkld + "\n");
+        attachedWklds.addItem(wkld);
       }
-      attachedWklds.setText(groupWklds);
     }
   }
   private void updateGroupsBox() {
@@ -101,6 +107,14 @@ public class WorkloadGroupsWidget extends Composite {
       man.withServerData(new PullCallback() {
         public void got() {
           Set<String> groups = man.getNames(); //returns Set<String>
+          for(int i = 0; i < groupsBox.getItemCount() ; i++) {
+            if(!groups.contains(groupsBox.getItemText(i))) {
+              groupsBox.removeItem(i);
+            }
+            else {
+              groups.remove(groupsBox.getItemText(i));
+            }
+          }
           for(String group: groups) {
             groupsBox.addItem(group);
           }
