@@ -61,7 +61,7 @@ public class CollectionManager<Id, Man extends DeletableManager> implements IMan
   public boolean forgetManager(Id id) {
     Man man = managers.get(id);
     if(man != null) {
-      managers.remove(man);
+      managers.remove(id);
       return true;
     }
     return false;
@@ -149,7 +149,7 @@ public class CollectionManager<Id, Man extends DeletableManager> implements IMan
           throws MissingRequesterException {
         man.withServerData(generatedCb);
       }
-    };
+    }.start();
   }
 
   @Override
@@ -200,6 +200,11 @@ public class CollectionManager<Id, Man extends DeletableManager> implements IMan
      * Fire off all of the requests, only call callback once all have returned
      */
     public void start() throws MissingRequesterException {
+      if(toCall.isEmpty()) {
+        cb();
+        return;
+      }
+      
       for(final Man man : toCall) {
         call(man, new PushCallback() {
           @Override
@@ -222,7 +227,13 @@ public class CollectionManager<Id, Man extends DeletableManager> implements IMan
      */
     private void checkOff(Man man) {
       toCall.remove(man);
-      if(toCall.isEmpty() && callback != null) {
+      if(toCall.isEmpty()) {
+        cb();
+      }
+    }
+    
+    private void cb() {
+      if(callback != null) {
         if(failed) {
           callback.failed();
         }
