@@ -1,7 +1,11 @@
 package uk.ac.imperial.vazels.reef.client.groups;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import uk.ac.imperial.vazels.reef.client.managers.GroupManager;
 import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
+import uk.ac.imperial.vazels.reef.client.managers.PullCallback;
 import uk.ac.imperial.vazels.reef.client.managers.PushCallback;
 import uk.ac.imperial.vazels.reef.client.managers.SingleGroupManager;
 
@@ -13,10 +17,12 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.IntegerBox;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
@@ -25,13 +31,11 @@ import com.google.gwt.user.client.ui.Widget;
 public class AllocateGroups extends Composite {
 
   /**
-   * Some constants incase we ever want to change the layout of the table.
+   * Some constants in case we ever want to change the layout of the table.
    */
   private static final int GROUP_NAME_COLUMN = 0;
   private static final int GROUP_HOSTS_COLUMN = GROUP_NAME_COLUMN+1;
   private static final int GROUP_REMOVE_COLUMN = GROUP_HOSTS_COLUMN+1;
-
-  private PushCallback localUpdate;
   
   /**
    * Table for holding the information on each group.
@@ -54,6 +58,21 @@ public class AllocateGroups extends Composite {
   @UiField IntegerBox newHostsTextBox;
 
   /**
+   * Button to add a new group
+   */
+  @UiField Button addGroupButton;
+  
+  /**
+   * Button to remove all groups
+   */
+  @UiField Button btnReset;
+  
+  /**
+   * List of widgets that should be disabled to avoid user interaction
+   */
+  protected Set<FocusWidget> userInteractionWidgets;
+  
+  /**
    * Generated code - gives us an interface to the XML-defined UI.
    */
   private static AllocateGroupsUiBinder uiBinder = GWT
@@ -69,26 +88,13 @@ public class AllocateGroups extends Composite {
     // Method provided by Composite to initialize the widget from the XML
     initWidget(uiBinder.createAndBindUi(this));
 
-    readyForInput();
-
-    // Init empty table & group summary.
-    clearGroupData();
-
-    // Create a local update callback
-    localUpdate = new PushCallback() {
-      @Override
-      public void got() {
-        refreshGroupData();
-      }
-
-      @Override
-      public void failed() {
-        Window.alert("Failed to save changes to server");
-      }
-    };
+    userInteractionWidgets = new HashSet<FocusWidget>();
+    userInteractionWidgets.add(addGroupButton);
+    userInteractionWidgets.add(btnReset);
+    userInteractionWidgets.add(newGroupTextBox);
+    userInteractionWidgets.add(newHostsTextBox);
     
-    // Get new info
-    refresh();
+    refreshData();
   }
 
   /**
@@ -96,8 +102,8 @@ public class AllocateGroups extends Composite {
    */
   @UiHandler("btnReset")
   void resetClicked(ClickEvent event) {
-    clearGroupData();
-    batchUpdateServerGroups();
+    removeAllGroups();
+    refreshData();
   }
 
   /**
@@ -118,6 +124,18 @@ public class AllocateGroups extends Composite {
     }
   }
 
+  // UI
+  
+  /**
+   * Enable or disable this widget (just blocks user interaction)
+   * @param enabled What to do.
+   */
+  protected void setEnabled(boolean enabled){
+    for(FocusWidget wgt : userInteractionWidgets) {
+      wgt.setEnabled(enabled);
+    }
+  }
+  
   /**
    * Initialize UI elements to a fresh state & set user focus.
    */
@@ -128,8 +146,8 @@ public class AllocateGroups extends Composite {
   }
 
   /**
-   * Helper function grabs and validates data from the input boxes then passes
-   * the data to the addGroup function
+   * Grabs and validates data from the input boxes,
+   * then adds group to the local store and refreshes.
    */
   private void addGroupFromInputBoxes() {
     final String newGroupName = 
@@ -146,14 +164,13 @@ public class AllocateGroups extends Composite {
       newHostsTextBox.selectAll();
       return;
     }
-
-    /* We're done with these values; clear them */
-    readyForInput();
-
-    addGroup(newGroupName, newGroupSize);
-    batchUpdateServerGroups();
+    
+    addGroup(newGroupName, newGroupSize.intValue());
+    refreshData();
   }
 
+  // Validation
+  
   /**
    * Check that groupName is an alphanumeric string.
    */
@@ -184,24 +201,113 @@ public class AllocateGroups extends Composite {
     }
     return true;
   }
-
+  
+  // Server communication
   /**
-   * Add group to FlexTable. Expects inputs to already be validated.
-   * This will add the group to the group map and update a single table entry.
-   * The server will not be notified.
+   * Get new data and update display.
+   * If we have previously got server data then push and then retrieve.
+   * Otherwise we get new server data.
    */
-  private void addGroup(final String newGroupName, final int numberOfHosts) {
-    // Add to group map
-    GroupManager man = GroupManager.getManager();
-    SingleGroupManager gMan = man.addGroup(newGroupName);
-    gMan.setSize(numberOfHosts);
-
-    addGroupToTable(newGroupName, numberOfHosts);
-
-    // Update number of groups
-    refreshGroupsInfo();
+  private void refreshData() {
+    setEnabled(false);
+    
+    final GroupManager man = GroupManager.getManager();
+    final PullCallback callback = new PullCallback() {
+      @Override
+      public void got() {
+        updateTable();
+        setEnabled(true);
+        readyForInput();
+      }
+    };
+    
+    if(man.hasServerData()) {
+      try {
+        man.pushLocalData(new PushCallback() {
+          @Override
+          public void got() {
+            try {
+              man.withServerData(callback);
+            } catch (MissingRequesterException e) {
+              e.printStackTrace();
+            }
+          }
+          
+          @Override
+          public void failed() {
+            new Timer() {
+              @Override
+              public void run() {
+                refreshData();
+              }
+            };
+          }
+        });
+      } catch (MissingRequesterException e) {
+        e.printStackTrace();
+      }
+    }
+    else {
+      try {
+        man.withServerData(callback);
+      } catch (MissingRequesterException e) {
+        e.printStackTrace();
+      }
+    }
   }
-
+  
+  // Local data
+  /**
+   * Update the table using the locally stored data.
+   */
+  private void updateTable() {
+    clearTable();
+    final GroupManager man = GroupManager.getManager();
+    for(String group : man.getNames()) {
+      addGroupToTable(group, man.getGroupManager(group).getSize());
+    }
+    setNumGroups(man.getNames().size());
+  }
+  
+  /**
+   * Add group to the local store.
+   * @param name Name of the group.
+   * @param size Size of the group.
+   */
+  private void addGroup(String name, int size) {
+    SingleGroupManager man = GroupManager.getManager().addGroup(name);
+    if(man != null) {
+      man.setSize(size);
+    }
+  }
+  
+  /**
+   * Remove a group from the local store.
+   * @param name Name of the group to remove.
+   */
+  private void removeGroup(String name) {
+    GroupManager.getManager().removeItem(name);
+  }
+  
+  /**
+   * Remove all the groups in the local store.
+   */
+  private void removeAllGroups() {
+    GroupManager.getManager().deleteGroups();
+  }
+  
+  // Display methods
+  /**
+   * Wipe the table.
+   */
+  private void clearTable() {
+    groupsFlexTable.removeAllRows();
+    // Column headers
+    groupsFlexTable.setText(0, GROUP_NAME_COLUMN, "Group");
+    groupsFlexTable.setText(0, GROUP_HOSTS_COLUMN, "Hosts");
+    groupsFlexTable.setText(0, GROUP_REMOVE_COLUMN, "Remove");
+  }
+  
   /**
    * Update the table to reflect the fact that a new group has been added.
    * @param newGroupName
@@ -215,116 +321,24 @@ public class AllocateGroups extends Composite {
 
     // Add a button to remove this group from the table.
     Button removeGroupButton = new Button("x");
+    userInteractionWidgets.add(removeGroupButton);
     removeGroupButton.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent event) {
         removeGroup(newGroupName);
+        refreshData();
       }
     });
     groupsFlexTable.setWidget(row, GROUP_REMOVE_COLUMN, removeGroupButton);
   }
-
-  /**
-   * Remove group named grpName and notify server.
-   */
-  private void removeGroup(final String grpName) {
-    removeGroup(grpName,true);
-  }
-
-  /**
-   * Remove group named grpName from map and table.
-   * Possibly notify server.
-   */
-  private void removeGroup(final String grpName, final boolean notifyServer) {
-    removeTableRow(grpName);
-    GroupManager.getManager().deleteGroup(grpName);
-    if (notifyServer) {
-      batchUpdateServerGroups();
-    }
-    refreshGroupsInfo();
-  }
-
-  /**
-   * Remove the first row from the table with the group name groupName
-   */
-  private void removeTableRow(String groupName) {
-    for (int i=0; i<groupsFlexTable.getRowCount(); i++) {
-      String currentGroup = groupsFlexTable.getText(i, GROUP_NAME_COLUMN);
-      if (currentGroup.equals(groupName)) {
-        groupsFlexTable.removeRow(i);
-        break;
-      }
-    }
-  }
-
+  
   /**
    * Updates the displayed number of groups.
    */
-  private void refreshGroupsInfo() {
-    int size = GroupManager.getManager().getNames().size();
-    String txt = size + " group";
-    if(size != 1)
+  private void setNumGroups(int groups) {
+    String txt = groups + " group";
+    if(groups != 1)
       txt += "s";
     txt += " added to the system.";
     groupsInfo.setText(txt);
-  }
-
-
-  /*
-   * The below is the code required to get group information from the server.
-   */
-
-  /**
-   * Dispatch a request to the server letting it know we'd like to hear about
-   * group info.
-   */
-  private void refresh() {
-    try {
-      GroupManager.getManager().withServerData(localUpdate);
-    }
-    catch(MissingRequesterException e) {
-      // Ignore, this would be a problem in GroupManager
-    }
-  }
-
-  /**
-   * refreshGroupData with no data.
-   */
-  private void clearGroupData() {
-    GroupManager.getManager().deleteGroups();
-    refreshGroupData();
-  }
-
-  private void refreshGroupData() {
-    /*
-     * No need to add groups individually; we'd just be re-building
-     * the summary. Instead, update groups to match, then make sure the 
-     * table is up-to-date.
-     */
-
-    groupsFlexTable.removeAllRows();
-    // Column headers
-    groupsFlexTable.setText(0, GROUP_NAME_COLUMN, "Group");
-    groupsFlexTable.setText(0, GROUP_HOSTS_COLUMN, "Hosts");
-    groupsFlexTable.setText(0, GROUP_REMOVE_COLUMN, "Remove");
-
-    GroupManager man = GroupManager.getManager();
-    
-    for (String group : man.getNames()) {
-      addGroupToTable(group, man.getGroupManager(group).getSize());
-    }
-
-    refreshGroupsInfo();
-  }
-
-  /**
-   * Tell the server about the groups in our table
-   */
-  private void batchUpdateServerGroups() {
-    try {
-      GroupManager.getManager().pushLocalData(localUpdate);
-    }
-    catch(MissingRequesterException e) {
-      // Again ignore as this would be a problem with group manager.
-    }
   }
 }
