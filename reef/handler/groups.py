@@ -53,7 +53,7 @@ def group_handler():
     g_data = _getGroupDataFromArgs(args)
 
     if group_name in existing_groups:
-      if "size" in g_data and g_data == 0:
+      if "size" in g_data and g_data["size"] == 0:
         # Delete the group
         del existing_groups[group_name]
       else:
@@ -66,7 +66,15 @@ def group_handler():
       if n_group["size"] != 0:
         existing_groups[group_name] = n_group
     
-    return GET(request)
+    #print config.getSettings
+
+    try:
+      return request.response(existing_groups[group_name])
+    except KeyError:
+      return request.response({"name":group_name, "size":0})
+
+    # Cannot do as we are not sure the group exists
+    #return GET(request)
 
   return locals()
 
