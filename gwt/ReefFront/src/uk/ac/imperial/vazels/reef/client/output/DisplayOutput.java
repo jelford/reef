@@ -16,14 +16,14 @@ public class DisplayOutput extends Composite {
   
   private final Label testLabel = new Label("Hello World");
   private final Button refreshButton = new Button("Refresh");
-  private final HorizontalPanel temp = new HorizontalPanel();
+  private HorizontalPanel temp = new HorizontalPanel();
   private HTML html = new HTML();
-  
+  private VerticalPanel mainPanel;
   private OutputData outputData = new OutputData("{}");
   
   public DisplayOutput() {
     
-    VerticalPanel mainPanel = new VerticalPanel();
+    mainPanel = new VerticalPanel();
     
     initWidget(mainPanel);
     mainPanel.setSize("521px", "100px");
@@ -42,18 +42,13 @@ public class DisplayOutput extends Composite {
         }
     });
     
-    
     mainPanel.add(temp);
   }
 
   public void loadData() {
-     html.setHTML(outputData.getData());
-     temp.add(html);
-  }
-  
-  private void dataReceived(OutputData reply) {
-    outputData = reply;
-    loadData();
+    System.out.println(outputData.getData());
+    
+     mainPanel.add(outputData.getPanel());
   }
   
   private void refresh() {
@@ -62,7 +57,9 @@ public class DisplayOutput extends Composite {
       @Override
       public void handle(OutputData reply, boolean success, String message) {
         if (success) {
-          dataReceived(reply);
+          System.out.println(reply.getData());
+          outputData.setData(reply.getData());
+          loadData();
         }
       }
     });
@@ -75,7 +72,7 @@ public class DisplayOutput extends Composite {
 
         @Override
         public OutputData convert(String original) {
-          return new OutputData(original);
+            return new OutputData(original);
         }
 
       });
