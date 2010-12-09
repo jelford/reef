@@ -14,9 +14,11 @@ public class SingleGroupManager extends SingleTypeManager<Group> implements Dele
   /**
    * This should only ever be used inside group manager.
    * We do not ever want to manually create an instance of this class.
-   * @param g Group that this manager controls.
+   * @param name Group that this manager controls.
+   * @param nGroup Is this a manager for a new group or an already created one?
    */
-  SingleGroupManager(String name) {
+  SingleGroupManager(String name, boolean nGroup) {
+    super(nGroup);
     setPuller(new GroupRequest(name));
     setPusher(new GroupUpdate(name));
     this.group = new Group(name, 0);

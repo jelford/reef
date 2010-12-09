@@ -26,13 +26,21 @@ public abstract class Manager<PullData, PushData> implements IManager {
    * You still need to call {@link Manager#setPuller(MultipleRequester)}
    * and {@link Manager#setPusher(MultipleRequester)}
    * before using the class.
+   * @param nManager Is this a newly created manager or does it already exist on the server?
    */
-  public Manager() {
-    syncTracker = new SyncTracker();
+  public Manager(boolean nManager) {
+    syncTracker = new SyncTracker(nManager, !nManager);
     puller = null;
     pendingPull = false;
     pullHandler = new RepeatPullHandler();
     pusher = null;
+  }
+  
+  /**
+   * As in {@link Manager#Manager(boolean)} but for things that are permanently on the server.
+   */
+  public Manager() {
+    this(false);
   }
   
   /**
@@ -95,6 +103,7 @@ public abstract class Manager<PullData, PushData> implements IManager {
       return;
     
     if(!pendingPull) {
+      pendingPull = true;
       puller.go(pullHandler);
     }
   }
@@ -160,12 +169,12 @@ public abstract class Manager<PullData, PushData> implements IManager {
   private class RepeatPullHandler extends RequestHandler<PullData>{
     @Override
     public void handle(PullData reply, boolean success, String message) {
+      pendingPull = false;
       if(success) {
         if(receivePullData(reply)) {
           syncTracker.wipedLocalChanges();
         }
         syncTracker.gotServerData();
-        pendingPull = false;
       }
       else {
         new Timer() {

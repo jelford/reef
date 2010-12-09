@@ -109,7 +109,7 @@ public class SyncTracker {
    */
   protected void processWaitingList() {
     if(pullWaitList != null) {
-      while(pullWaitList.isEmpty()) {
+      while(!pullWaitList.isEmpty()) {
         PullCallback cb = pullWaitList.removeFirst();
         cb.got(); // We don't have nulls
       }

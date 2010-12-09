@@ -66,7 +66,7 @@ public class GroupManager extends ListedCollectionManager<String, SingleGroupMan
   
   /**
    * Try to add a group to the list on the client side.
-   * @param g The group to add.
+   * @param name The group to add.
    * @return The new manager if the add was successfull...
    * ({@code null} indicates the group already existed)
    */
@@ -84,8 +84,8 @@ public class GroupManager extends ListedCollectionManager<String, SingleGroupMan
   }
 
   @Override
-  protected SingleGroupManager createManager(String id) {
-    return new SingleGroupManager(id);
+  protected SingleGroupManager createManager(String id, boolean nMan) {
+    return new SingleGroupManager(id, nMan);
   }
   
   /**

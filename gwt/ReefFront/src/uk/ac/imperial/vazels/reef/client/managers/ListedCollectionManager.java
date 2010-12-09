@@ -31,7 +31,7 @@ public abstract class ListedCollectionManager<Id, Man extends DeletableManager> 
   }
 
   /**
-   * Add a new item to the list.
+   * Add a new item to the list and push changes on the item manager.
    * Warning: if the new manager thinks the item is already deleted,
    * your returned manager will be your only link to it.
    * @param id Id for the new manager.
@@ -43,17 +43,8 @@ public abstract class ListedCollectionManager<Id, Man extends DeletableManager> 
     if(curMan != null)
       return null;
     
-    Man man = createManager(id);
+    Man man = createManager(id, true);
     collectionManager.addManager(id, man);
-    // Push immediately to stop requests failing
-    try {
-      man.pushLocalData(null);
-    }
-    catch(MissingRequesterException e) {
-      // Ignore this
-    }
-    
-    listManager.serverChange();
     
     return man;
   }
@@ -64,7 +55,6 @@ public abstract class ListedCollectionManager<Id, Man extends DeletableManager> 
    * @return {@code true} if the manager existed and was removed.
    */
   public boolean removeItem(Id id) {
-    listManager.serverChange();
     return collectionManager.deleteManager(id);
   }
   
@@ -98,7 +88,6 @@ public abstract class ListedCollectionManager<Id, Man extends DeletableManager> 
   @Override
   public void withServerData(final PullCallback callback)
       throws MissingRequesterException {
-    
     listManager.withServerData(new PullCallback() {
       @Override
       public void got() {
@@ -134,6 +123,7 @@ public abstract class ListedCollectionManager<Id, Man extends DeletableManager> 
   public void pushLocalData(PushCallback callback)
       throws MissingRequesterException {
     collectionManager.pushLocalData(callback);
+    listManager.serverChange();
   }
   
   /**
@@ -166,15 +156,16 @@ public abstract class ListedCollectionManager<Id, Man extends DeletableManager> 
     
     // Now add all the things left to add
     for(Id id : add) {
-      collectionManager.addManager(id, createManager(id));
+      collectionManager.addManager(id, createManager(id, false));
     }
   }
   
   /**
    * Creates a manager for the given id.
    * @param id Id for the object to be managed.
+   * @param nMan Is this a manager for a new item or one that maps to an existing one?
    */
-  protected abstract Man createManager(Id id);
+  protected abstract Man createManager(Id id, boolean nMan);
   
   /**
    * Manages the receipt of the list data.
@@ -190,10 +181,6 @@ public abstract class ListedCollectionManager<Id, Man extends DeletableManager> 
     protected boolean receivePushData(Void pushed) {
       // Unused
       return false;
-    }
-    
-    public void itemAdded() {
-      serverChange();
     }
   }
 }
