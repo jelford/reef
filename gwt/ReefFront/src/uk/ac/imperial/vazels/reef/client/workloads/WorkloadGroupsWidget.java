@@ -82,6 +82,7 @@ public class WorkloadGroupsWidget extends Composite {
     assignmentTab.add(submitWtoG);
   }
 
+  //this may need to become more like updateGroupsBox
   private void updateWorkloadList() {
     wkldsBox.clear();
     for(String wkld: Workloads.returnWorkloads()) {
@@ -94,10 +95,19 @@ public class WorkloadGroupsWidget extends Composite {
     attachedWklds.clear();
     if(groupsBox.getItemCount() > 0) {
       GroupManager manager = GroupManager.getManager();
-      SingleGroupManager gpManager = manager.getGroupManager(groupsBox.getItemText(groupsBox.getSelectedIndex()));
-      String [] theAttachedWklds = gpManager.getWorkloads();
-      for(String wkld: theAttachedWklds) {
-        attachedWklds.addItem(wkld);
+      final SingleGroupManager gpManager = manager.getGroupManager(groupsBox.getItemText(groupsBox.getSelectedIndex()));
+      try {
+        gpManager.withServerData(new PullCallback() {
+          public void got() {
+            String [] theAttachedWklds = gpManager.getWorkloads();
+            for(String wkld: theAttachedWklds) {
+              attachedWklds.addItem(wkld);
+            }            
+          }          
+        });
+      }
+      catch (MissingRequesterException e) {
+        e.printStackTrace();
       }
     }
   }
