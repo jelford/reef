@@ -55,7 +55,7 @@ public class WorkloadWidget extends Composite {
       public void onClick(ClickEvent event) {
         formPanel.submit();
 //assuming success, give new workload to workloads class
-        WorkloadsManager.put(new Workload(wkld_name.getText()));
+        Workloads.add(wkld_name.getText());
         listWklds.addItem(wkld_name.getText());
         wkld_name.setText("");
       }
