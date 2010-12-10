@@ -1,5 +1,6 @@
 package uk.ac.imperial.vazels.reef.client.output;
 
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
@@ -40,34 +41,24 @@ public class OutputData {
   public Panel getPanel() {
     
     FlowPanel outputPanel = new FlowPanel();
+    outputPanel.setSize("50%", "50%");
     System.out.println(getData());
-    JSONArray groups = JSONParser.parse(getData()).isArray();
-    
-    /*if(groups == null) {
-        return outputPanel;
-    }*/
-    System.out.println("foo");
-    for(int i = 0; i < groups.size(); i++) {
-        outputPanel.add(new Label("Group " + i));
-        outputPanel.add(groupHTMLHelper(groups.get(i)));
+    OutputDataOverlay groups = parseData(getData());
+    JsArrayString keys = groups.keys();
+    for(int i = 0; i < keys.length(); i++) {
+      outputPanel.add(new Label("Group " + keys.get(i)));
+      outputPanel.add(groupHTMLHelper(groups.get(keys.get(i))));
     }
+    
     
     return outputPanel;
   }
   
-  Panel groupHTMLHelper(JSONValue group) {
+  Panel groupHTMLHelper(String groupData) {
     FlowPanel groupPanel = new FlowPanel();
     
-    JSONArray hosts = group.isArray();
-    if(hosts == null) {
-      return groupPanel;
-    }
-    for(int i = 0; i < hosts.size(); i++) {
-      
-      groupPanel.add(new Label("Host " + i));
-      groupPanel.add(hostHTMLHelper(hosts.get(i)));
-      
-    }
+    OutputDataOverlay hosts = parseData(groupData);
+    System.out.println(hosts.keys().get(0));
     
     return groupPanel;
   }
@@ -84,5 +75,11 @@ public class OutputData {
     }
     return hostPanel;
   }
+  
+  native OutputDataOverlay parseData(String data) /*-{
+    
+    return JSON.parse(data);
+    
+  }-*/;
   
 }
