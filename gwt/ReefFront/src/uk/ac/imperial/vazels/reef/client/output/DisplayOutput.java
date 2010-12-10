@@ -7,19 +7,19 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class DisplayOutput extends Composite {
   
   private final Label testLabel = new Label("Hello World");
   private final Button refreshButton = new Button("Refresh");
-  private HorizontalPanel temp = new HorizontalPanel();
-  private HTML html = new HTML();
+  private Panel temp = new HorizontalPanel();
   private VerticalPanel mainPanel;
   private OutputData outputData = new OutputData("{}");
+  private Panel placeholder;
   
   public DisplayOutput() {
     
@@ -42,13 +42,20 @@ public class DisplayOutput extends Composite {
         }
     });
     
+    placeholder = new HorizontalPanel();
+    
     mainPanel.add(temp);
+    mainPanel.add(placeholder); //placeholder for data to be put into
   }
 
   public void loadData() {
     System.out.println(outputData.getData());
     
-     mainPanel.add(outputData.getPanel());
+     temp = outputData.getPanel();
+     mainPanel.remove(placeholder); // changing the panel doesn't seem to update it.
+     placeholder = outputData.getPanel();
+     mainPanel.add(placeholder);
+
   }
   
   private void refresh() {
