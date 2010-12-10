@@ -1,20 +1,49 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
 	<ui:style>
-		.spaced{
+		.gwt-Button {
+			margin: 5;
+			padding: 3px 5px;
+			text-decoration: none;
+			font-size: small;
+			cursor: pointer;
+			cursor: hand;
+			background: url("images/hborder.png") repeat-x 0px -27px;
+			border: 1px outset #ccc;
+		}
+		
+		.gwt-Button:active {
+			border: 1px inset #ccc;
+		}
+		
+		.gwt-Button:hover {
+			border-color: #9cf #69e #69e #7af;
+		}
+		
+		.gwt-Button[disabled] {
+			cursor: default;
+			color: #888;
+		}
+		
+		.gwt-Button[disabled]:hover {
+			border: 1px outset #ccc;
+		}
+		
+		.spaced {
 			padding: 0.5em;
 		}
 		
-		.hStretch{
+		.hStretch {
 			width: 100%;
 		}
 		
-		.expel{
+		.expel {
 			margin: 0.5em;
 		}
 	</ui:style>
-	
+
 	<g:DecoratorPanel addStyleNames="{style.spaced}">
 		<g:VerticalPanel>
 			<g:DecoratorPanel addStyleNames="{style.spaced}">
@@ -23,13 +52,14 @@
 					<g:TextBox ui:field="newGroupTextBox" />
 					<g:Label text="Hosts Number" addStyleNames="{style.spaced}" />
 					<g:IntegerBox ui:field="newHostsTextBox" />
-					<g:Button ui:field="addGroupButton" text="Add" />
+					<g:Button ui:field="addGroupButton" text="Add" addStyleNames="{style.gwt-Button}"/>
 				</g:HorizontalPanel>
 			</g:DecoratorPanel>
 			<g:FlexTable ui:field="groupsFlexTable" addStyleNames="{style.hStretch} {style.spaced}" />
 			<g:Label ui:field="groupsInfo" addStyleNames="{style.spaced}" />
 			<g:cell horizontalAlignment="right">
-				<g:Button ui:field="btnReset" text="Clear Groups" addStyleNames="{style.expel}" />
+				<g:Button ui:field="btnReset" text="Clear Groups"
+					addStyleNames="{style.expel}" />
 			</g:cell>
 		</g:VerticalPanel>
 	</g:DecoratorPanel>
