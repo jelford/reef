@@ -32,12 +32,4 @@ public class GroupOverlay extends JavaScriptObject{
   public native final JsArrayString getWorkloads() /*-{
     return this.workloads;
   }-*/;
-  
-  /**
-   * Get the array of filters.
-   * @return array of filters.
-   */
-  public native final JsArrayString getFilters() /*-{
-    return this.filters;
-  }-*/;
 }

@@ -1,0 +1,53 @@
+.spaced {
+	padding: 0.5em;
+}
+
+.lrSpaced {
+	padding: 0em 0.5em;
+}
+
+.hStretch {
+	width: 100%;
+}
+
+.mostlyHStretch {
+	width: 95%;
+}
+
+.important {
+	font-weight: bold;
+}
+
+.header {
+	font-size: 1.65em;
+	font-weight: bold;
+}
+
+.greentext {
+	color: #4b6901;
+}
+
+.greentext a {
+	color: #4b6901;
+	text-decoration: underline;
+}
+
+.infoText {
+	color: #a11010;
+}
+
+.noWrap {
+	white-space: nowrap;
+}
+
+.shortInput {
+	min-width: 99px;
+}
+
+.majorComponentWidth {
+	min-width: 400px;
+}
+
+.alignRight {
+	text-align: right;
+}

@@ -34,7 +34,7 @@ public class AllocateGroups extends Composite {
   private static final int GROUP_NAME_COLUMN = 0;
   private static final int GROUP_HOSTS_COLUMN = GROUP_NAME_COLUMN+1;
   private static final int GROUP_REMOVE_COLUMN = GROUP_HOSTS_COLUMN+1;
-  
+
   /**
    * Table for holding the information on each group.
    */
@@ -74,7 +74,7 @@ public class AllocateGroups extends Composite {
    * Generated code - gives us an interface to the XML-defined UI.
    */
   private static AllocateGroupsUiBinder uiBinder = GWT
-  .create(AllocateGroupsUiBinder.class);
+    .create(AllocateGroupsUiBinder.class);
 
   /**
    * Generated code. 
@@ -86,6 +86,17 @@ public class AllocateGroups extends Composite {
     // Method provided by Composite to initialize the widget from the XML
     initWidget(uiBinder.createAndBindUi(this));
 
+    groupsFlexTable.setText(0, GROUP_NAME_COLUMN, "Group");
+    groupsFlexTable.setText(0, GROUP_HOSTS_COLUMN, "Hosts");
+    groupsFlexTable.setText(0, GROUP_REMOVE_COLUMN, "Remove");
+    
+    newGroupTextBox.removeFromParent();
+    groupsFlexTable.setWidget(1, GROUP_NAME_COLUMN, newGroupTextBox);
+    newHostsTextBox.removeFromParent();
+    groupsFlexTable.setWidget(1, GROUP_HOSTS_COLUMN, newHostsTextBox);
+    addGroupButton.removeFromParent();
+    groupsFlexTable.setWidget(1, GROUP_REMOVE_COLUMN, addGroupButton);
+    
     userInteractionWidgets = new HashSet<FocusWidget>();
     userInteractionWidgets.add(addGroupButton);
     userInteractionWidgets.add(btnReset);
@@ -138,8 +149,8 @@ public class AllocateGroups extends Composite {
    * Initialize UI elements to a fresh state & set user focus.
    */
   private void readyForInput(){
-    newHostsTextBox.setText("");
     newGroupTextBox.setText("");
+    newHostsTextBox.setText("");
     newGroupTextBox.setFocus(true);
   }
 
@@ -162,7 +173,7 @@ public class AllocateGroups extends Composite {
       newHostsTextBox.selectAll();
       return;
     }
-    
+
     addGroup(newGroupName, newGroupSize.intValue());
     refreshData();
   }
@@ -170,7 +181,9 @@ public class AllocateGroups extends Composite {
   // Validation
   
   /**
-   * Check that groupName is an alphanumeric string.
+   * Check that {@code groupName} is an alphanumeric string.
+   * @param groupName The name of a group to validate.
+   * @return {@code true} only if the group name is valid.
    */
   private boolean validateGroupName(final String groupName) {
     // Don't add the group if it's already in the table.
@@ -187,7 +200,9 @@ public class AllocateGroups extends Composite {
   }
 
   /**
-   * Check that numHosts is a positive integer.
+   * Check that {@code numHosts} is a positive integer.
+   * @param numHosts The number to validate.
+   * @return {@code true} only if this is a valid group size.
    */
   private boolean validateNumHosts(final Integer numHosts) {
     if (numHosts == null) {
@@ -299,21 +314,20 @@ public class AllocateGroups extends Composite {
    * Wipe the table.
    */
   private void clearTable() {
-    groupsFlexTable.removeAllRows();
-    // Column headers
-    groupsFlexTable.setText(0, GROUP_NAME_COLUMN, "Group");
-    groupsFlexTable.setText(0, GROUP_HOSTS_COLUMN, "Hosts");
-    groupsFlexTable.setText(0, GROUP_REMOVE_COLUMN, "Remove");
+    while(groupsFlexTable.getRowCount() > 2) {
+      groupsFlexTable.removeRow(1);
+    }
   }
   
   /**
    * Update the table to reflect the fact that a new group has been added.
-   * @param newGroupName
-   * @param numberOfHosts
+   * @param newGroupName Name of the group to add.
+   * @param numberOfHosts Size of the group to add.
    */
   private void addGroupToTable(final String newGroupName, final int numberOfHosts) {
+    int row = groupsFlexTable.getRowCount()-1;
+    groupsFlexTable.insertRow(row);
     // Add the group to the table.
-    int row = groupsFlexTable.getRowCount();
     groupsFlexTable.setText(row, GROUP_NAME_COLUMN, newGroupName);
     groupsFlexTable.setText(row, GROUP_HOSTS_COLUMN, Integer.toString(numberOfHosts));
 
@@ -331,6 +345,7 @@ public class AllocateGroups extends Composite {
   
   /**
    * Updates the displayed number of groups.
+   * @param groups Number of groups currently created.
    */
   private void setNumGroups(int groups) {
     String txt = groups + " group";

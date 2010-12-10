@@ -1,36 +1,25 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
-	<ui:style>
-		.spaced{
-			padding: 0.5em;
-		}
+
+	<ui:style field="useful" src="../ui/useful.css"/>
+
+	<g:VerticalPanel>
+		<g:FlexTable ui:field="groupsFlexTable" cellSpacing="2"
+			cellPadding="3" addStyleNames="{useful.important} {useful.majorComponentWidth}" />
+
+		<g:HorizontalPanel visible="false">
+			<g:TextBox ui:field="newGroupTextBox" addStyleNames="{useful.mostlyHStretch} {useful.shortInput}" />
+			<g:IntegerBox ui:field="newHostsTextBox" addStyleNames="{useful.mostlyHStretch} {useful.shortInput}" />
+			<g:Button ui:field="addGroupButton" text="Add Group" addStyleNames="{useful.noWrap}" />
+		</g:HorizontalPanel>
+			
 		
-		.hStretch{
-			width: 100%;
-		}
-		
-		.expel{
-			margin: 0.5em;
-		}
-	</ui:style>
-	
-	<g:DecoratorPanel addStyleNames="{style.spaced}">
-		<g:VerticalPanel>
-			<g:DecoratorPanel addStyleNames="{style.spaced}">
-				<g:HorizontalPanel>
-					<g:Label text="Group Name" addStyleNames="{style.spaced}" />
-					<g:TextBox ui:field="newGroupTextBox" />
-					<g:Label text="Hosts Number" addStyleNames="{style.spaced}" />
-					<g:IntegerBox ui:field="newHostsTextBox" />
-					<g:Button ui:field="addGroupButton" text="Add" />
-				</g:HorizontalPanel>
-			</g:DecoratorPanel>
-			<g:FlexTable ui:field="groupsFlexTable" addStyleNames="{style.hStretch} {style.spaced}" />
-			<g:Label ui:field="groupsInfo" addStyleNames="{style.spaced}" />
-			<g:cell horizontalAlignment="right">
-				<g:Button ui:field="btnReset" text="Clear Groups" addStyleNames="{style.expel}" />
-			</g:cell>
-		</g:VerticalPanel>
-	</g:DecoratorPanel>
+		<g:Label ui:field="groupsInfo" addStyleNames="{useful.infoText} {useful.spaced}" />
+
+		<g:cell horizontalAlignment="right">
+			<g:Button ui:field="btnReset" text="Clear Groups" />
+		</g:cell>
+
+	</g:VerticalPanel>
 </ui:UiBinder> 

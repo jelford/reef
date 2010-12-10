@@ -4,7 +4,6 @@ import uk.ac.imperial.vazels.reef.client.AddressResolution;
 import uk.ac.imperial.vazels.reef.client.managers.IManager;
 import uk.ac.imperial.vazels.reef.client.managers.ManagerChangeHandler;
 import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
-import uk.ac.imperial.vazels.reef.client.managers.PullCallback;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
