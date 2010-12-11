@@ -31,7 +31,7 @@ public class DeletableCollectionManager<Id, Man extends DeletableManager> extend
    * Get a set of {@link Id}s for all non-deleted managers.
    * @return Set of managers.
    */
-  public Set<Id> getManagers() {
+  public Set<Id> getNonDeletedManagers() {
     Set<Id> liveManagers = new HashSet<Id>();
     
     // Create list of live manager (not deleted)
@@ -42,14 +42,6 @@ public class DeletableCollectionManager<Id, Man extends DeletableManager> extend
     }
     
     return liveManagers;
-  }
-  
-  /**
-   * Like {@link DeletableCollectionManager#getManagers()} but returns even deleted managers.
-   * @return List of managers.
-   */
-  public Set<Id> getAllManagers() {
-    return super.getManagers();
   }
   
   /**
