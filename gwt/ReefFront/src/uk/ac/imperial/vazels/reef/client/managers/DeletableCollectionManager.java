@@ -35,7 +35,7 @@ public class DeletableCollectionManager<Id, Man extends DeletableManager> extend
     Set<Id> liveManagers = new HashSet<Id>();
     
     // Create list of live manager (not deleted)
-    for(Id id : getAllManagers()) {
+    for(Id id : getManagers()) {
       if(!super.getManager(id).pendingDelete()) {
         liveManagers.add(id);
       }
