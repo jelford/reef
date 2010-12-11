@@ -3,11 +3,9 @@ package uk.ac.imperial.vazels.reef.client.groups;
 import java.util.HashSet;
 import java.util.Set;
 
-import uk.ac.imperial.vazels.reef.client.managers.GroupManager;
 import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
 import uk.ac.imperial.vazels.reef.client.managers.PullCallback;
 import uk.ac.imperial.vazels.reef.client.managers.PushCallback;
-import uk.ac.imperial.vazels.reef.client.managers.SingleGroupManager;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -221,13 +219,13 @@ public class AllocateGroups extends Composite {
       }
     };
     
-    if(man.hasServerData()) {
+    if(man.hasAllServerData()) {
       try {
-        man.pushLocalData(new PushCallback() {
+        man.pushAllLocalData(new PushCallback() {
           @Override
           public void got() {
             try {
-              man.withServerData(callback);
+              man.withAllServerData(callback);
             } catch (MissingRequesterException e) {
               e.printStackTrace();
             }
@@ -249,7 +247,7 @@ public class AllocateGroups extends Composite {
     }
     else {
       try {
-        man.withServerData(callback);
+        man.withAllServerData(callback);
       } catch (MissingRequesterException e) {
         e.printStackTrace();
       }
@@ -282,15 +280,15 @@ public class AllocateGroups extends Composite {
   }
   
   /**
-   * Remove a group from the local store.
+   * Delete a group from the local store.
    * @param name Name of the group to remove.
    */
   private void removeGroup(String name) {
-    GroupManager.getManager().removeItem(name);
+    GroupManager.getManager().deleteGroup(name);
   }
   
   /**
-   * Remove all the groups in the local store.
+   * Delete all the groups in the local store.
    */
   private void removeAllGroups() {
     GroupManager.getManager().deleteGroups();

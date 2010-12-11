@@ -11,7 +11,7 @@ import java.util.Set;
  * @param <Id> The type defining the Id of each item (key type)
  * @param <Man> The type of manager for each of the items.
  */
-public class CollectionManager<Id, Man extends DeletableManager> implements IManager{
+public class CollectionManager<Id, Man extends IManager>{
   private Map<Id, Man> managers = null;
   
   public CollectionManager() {
@@ -36,27 +36,10 @@ public class CollectionManager<Id, Man extends DeletableManager> implements IMan
   }
   
   /**
-   * Try to delete a manager (but don't forget about it).
-   * @param id The id of the manager to remove.
-   * @return {@code true} if the manager existed and was removed.
-   * @see CollectionManager#forgetManager(Object)
-   */
-  public boolean deleteManager(Id id) {
-    Man man = managers.get(id);
-    
-    if(man != null) {
-      man.requestDeletion();
-      return true;
-    }
-
-    return false;
-  }
-  
-  /**
    * Forget the manager is here, but don't delete it.
    * @param id The id of the manager to remove.
    * @return {@code true} if the manager existed and was removed.
-   * @see CollectionManager#deleteManager(Object)
+   * @see DeletableCollectionManager#deleteManager(Object)
    */
   public boolean forgetManager(Id id) {
     Man man = managers.get(id);
@@ -68,48 +51,23 @@ public class CollectionManager<Id, Man extends DeletableManager> implements IMan
   }
   
   /**
-   * Get a set of {@link Id}s for all non-deleted managers.
+   * Get a set of {@link Id}s for all managers.
    * @return Set of managers.
    */
   public Set<Id> getManagers() {
-    Set<Id> liveManagers = new HashSet<Id>();
-    
-    // Create list of live manager (not deleted)
-    for(Id id : managers.keySet()) {
-      if(!managers.get(id).pendingDelete()) {
-        liveManagers.add(id);
-      }
-    }
-    
-    return liveManagers;
-  }
-  
-  /**
-   * Like {@link CollectionManager#getManagers()} but returns even deleted managers.
-   * @return List of managers.
-   */
-  public Set<Id> getAllManagers() {
     return managers.keySet();
   }
   
   /**
-   * Grabs a non-deleted manager if one exists for this id.
+   * Grabs a manager if one exists for this id.
    * @param id Id for this manager.
    * @return A manager or {@code null} if none exists for the given id.
    */
   public Man getManager(Id id) {
-    Man manager = managers.get(id);
-    
-    if(manager != null && !manager.pendingDelete()) {
-      return manager;
-    }
-    else {
-      return null;
-    }
+    return managers.get(id);
   }
-  
-  @Override
-  public boolean hasServerData() {
+
+  public boolean hasAllServerData() {
     // Decide we don't if we're missing info from any of these
     for(Man man : managers.values()) {
       if(!man.hasServerData()) {
@@ -118,9 +76,8 @@ public class CollectionManager<Id, Man extends DeletableManager> implements IMan
     }
     return true;
   }
-
-  @Override
-  public boolean hasLocalChanges() {
+  
+  public boolean hasAnyLocalChanges() {
     // Decide we have local changes if any of the items have local changes
     for(Man man : managers.values()) {
       if(man.hasLocalChanges()) {
@@ -130,12 +87,12 @@ public class CollectionManager<Id, Man extends DeletableManager> implements IMan
     return false;
   }
 
-  @Override
-  public void withServerData(final PullCallback callback)
+  
+  public void withAllServerData(final PullCallback callback)
       throws MissingRequesterException {
     // Make a set of all the items missing data
     
-    final Set<Man> missingSet = new HashSet<Man>();
+    final Set<IManager> missingSet = new HashSet<IManager>();
     
     for(Man man : managers.values()) {
       if(!man.hasServerData()) {
@@ -145,22 +102,22 @@ public class CollectionManager<Id, Man extends DeletableManager> implements IMan
     
     new CollectionCallRecorder(missingSet, new ImitatorPushCallback(callback)) {
       @Override
-      protected void call(Man man, PushCallback generatedCb)
+      protected void call(IManager man, PushCallback generatedCb)
           throws MissingRequesterException {
         man.withServerData(generatedCb);
       }
     }.start();
   }
 
-  @Override
+  
   public void getServerData() throws MissingRequesterException {
-    withServerData(null);
+    withAllServerData(null);
   }
 
-  @Override
-  public void pushLocalData(final PushCallback callback)
+  
+  public void pushAllLocalData(final PushCallback callback)
       throws MissingRequesterException {
-    Set<Man> changeSet = new HashSet<Man>();
+    Set<IManager> changeSet = new HashSet<IManager>();
     
     for(Man man : managers.values()) {
       if(man.hasLocalChanges()) {
@@ -170,84 +127,29 @@ public class CollectionManager<Id, Man extends DeletableManager> implements IMan
     
     new CollectionCallRecorder(changeSet, callback) {
       @Override
-      protected void call(Man man, PushCallback generatedCb) throws MissingRequesterException {
+      protected void call(IManager man, PushCallback generatedCb) throws MissingRequesterException {
         man.pushLocalData(generatedCb);
       }
     }.start();
   }
-
+  
   /**
-   * Makes a number of method calls to various objects and 
+   * Add a change handler to every manager in the collection.
+   * @param handler Handler to add.
    */
-  protected abstract class CollectionCallRecorder {
-    private final Set<Man> toCall;
-    private final PushCallback callback;
-    private boolean failed;
-    
-    /**
-     * Create a call recorder that will call methods on all of the set given
-     * and return after all responses have been received.
-     * @param toCall A set of all the managers to call. This will be modified.
-     * @param callback A callback to call with the response.
-     */
-    public CollectionCallRecorder(Set<Man> toCall, PushCallback callback) {
-      this.toCall = toCall;
-      this.callback = callback;
-      this.failed = false;
+  public void addChangeHandlerToAll(ManagerChangeHandler handler) {
+    for(Man man : managers.values()) {
+      man.addChangeHandler(handler);
     }
-    
-    /**
-     * Fire off all of the requests, only call callback once all have returned
-     */
-    public void start() throws MissingRequesterException {
-      if(toCall.isEmpty()) {
-        cb();
-        return;
-      }
-      
-      for(final Man man : toCall) {
-        call(man, new PushCallback() {
-          @Override
-          public void got() {
-            checkOff(man);
-          }
-          
-          @Override
-          public void failed() {
-            failed = true;
-            checkOff(man);
-          }
-        });
-      }
+  }
+  
+  /**
+   * Remove a change handler from every manager in the collection if it exists.
+   * @param handler Handler to remove.
+   */
+  public void removeChangeHandlerFromAll(ManagerChangeHandler handler) {
+    for(Man man : managers.values()) {
+      man.removeChangeHandler(handler);
     }
-    
-    /**
-     * Called to check off a manager from the list and process if we're done
-     * @param man Manager to check off
-     */
-    private void checkOff(Man man) {
-      toCall.remove(man);
-      if(toCall.isEmpty()) {
-        cb();
-      }
-    }
-    
-    private void cb() {
-      if(callback != null) {
-        if(failed) {
-          callback.failed();
-        }
-        else {
-          callback.got();
-        }
-      }
-    }
-    
-    /**
-     * Call the required method.
-     * @param man The manager to call the method on.
-     * @param generatedCb The callback to hand to the function.
-     */
-    protected abstract void call(Man man, PushCallback generatedCb) throws MissingRequesterException;
   }
 }

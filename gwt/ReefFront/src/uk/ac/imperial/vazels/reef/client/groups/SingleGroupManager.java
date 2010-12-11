@@ -1,9 +1,10 @@
-package uk.ac.imperial.vazels.reef.client.managers;
+package uk.ac.imperial.vazels.reef.client.groups;
 
 import com.google.gwt.http.client.RequestBuilder;
 
 import uk.ac.imperial.vazels.reef.client.MultipleRequester;
-import uk.ac.imperial.vazels.reef.client.groups.Group;
+import uk.ac.imperial.vazels.reef.client.managers.DeletableManager;
+import uk.ac.imperial.vazels.reef.client.managers.SingleTypeManager;
 
 /**
  * Manages a group object, deals with syncing to the server.

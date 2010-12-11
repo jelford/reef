@@ -1,18 +1,18 @@
-package uk.ac.imperial.vazels.reef.client.managers;
+package uk.ac.imperial.vazels.reef.client.groups;
 
 import java.util.Set;
 
 import com.google.gwt.http.client.RequestBuilder;
 
 import uk.ac.imperial.vazels.reef.client.MultipleRequester;
-import uk.ac.imperial.vazels.reef.client.groups.GroupSummary;
+import uk.ac.imperial.vazels.reef.client.managers.DeletableListedCollectionManager;
 
 /**
  * Should do all communication involving groups on the server.
  * 
  * Caches results to make everything behave pleasantly.
  */
-public class GroupManager extends ListedCollectionManager<String, SingleGroupManager> {
+public class GroupManager extends DeletableListedCollectionManager<String, SingleGroupManager> {
   private static GroupManager manager = null;
   
   //Singleton stuff
