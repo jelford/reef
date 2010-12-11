@@ -12,14 +12,14 @@ import uk.ac.imperial.vazels.reef.client.MultipleRequester;
  * @param <Id> The type of item ids
  * @param <Man> The type of item managers
  */
-public abstract class ListedCollectionManager<Id, Man extends DeletableManager> implements IManager {
+public abstract class ListedCollectionManager<Id, Man extends IManager> implements IManager {
 
-  Manager<Set<Id>, Void> listManager;
-  DeletableCollectionManager<Id, Man> collectionManager;
+  private Manager<Set<Id>, Void> listManager;
+  private CollectionManager<Id, Man> collectionManager;
   
   public ListedCollectionManager() {
     listManager = new ListManager();
-    collectionManager = new DeletableCollectionManager<Id, Man>();
+    collectionManager = null;
   }
   
   /**
@@ -47,15 +47,6 @@ public abstract class ListedCollectionManager<Id, Man extends DeletableManager> 
     collectionManager.addManager(id, man);
     
     return man;
-  }
-  
-  /**
-   * Try to delete an item.
-   * @param id The id of the manager to remove.
-   * @return {@code true} if the manager existed and was removed.
-   */
-  public boolean removeItem(Id id) {
-    return collectionManager.deleteManager(id);
   }
   
   /**
@@ -131,7 +122,7 @@ public abstract class ListedCollectionManager<Id, Man extends DeletableManager> 
    * @param pulled the new set of ids.
    */
   protected void receivedNewIds(Set<Id> pulled) {
-    Set<Id> managers = collectionManager.getAllManagers();
+    Set<Id> managers = collectionManager.getManagers();
     
     // Create a forget list
     Set<Id> forget = new HashSet<Id>();
@@ -166,6 +157,19 @@ public abstract class ListedCollectionManager<Id, Man extends DeletableManager> 
    * @param nMan Is this a manager for a new item or one that maps to an existing one?
    */
   protected abstract Man createManager(Id id, boolean nMan);
+  
+  /**
+   * Returns the collection manager to be used by this manager.
+   * <p>
+   * This can be overwritten to allow more extensive managers.
+   * @return The collection manager for this manager.
+   */
+  protected CollectionManager<Id, Man> getCollectionManager() {
+    if(collectionManager == null) {
+      collectionManager = new CollectionManager<Id, Man>();
+    }
+    return collectionManager;
+  }
   
   /**
    * Manages the receipt of the list data.
