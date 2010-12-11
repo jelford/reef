@@ -15,11 +15,11 @@ import uk.ac.imperial.vazels.reef.client.MultipleRequester;
 public abstract class ListedCollectionManager<Id, Man extends DeletableManager> implements IManager {
 
   Manager<Set<Id>, Void> listManager;
-  CollectionManager<Id, Man> collectionManager;
+  DeletableCollectionManager<Id, Man> collectionManager;
   
   public ListedCollectionManager() {
     listManager = new ListManager();
-    collectionManager = new CollectionManager<Id, Man>();
+    collectionManager = new DeletableCollectionManager<Id, Man>();
   }
   
   /**

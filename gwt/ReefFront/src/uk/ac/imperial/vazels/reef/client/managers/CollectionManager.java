@@ -11,7 +11,7 @@ import java.util.Set;
  * @param <Id> The type defining the Id of each item (key type)
  * @param <Man> The type of manager for each of the items.
  */
-public class CollectionManager<Id, Man extends DeletableManager> implements IManager{
+public class CollectionManager<Id, Man extends IManager> implements IManager{
   private Map<Id, Man> managers = null;
   
   public CollectionManager() {
@@ -36,27 +36,10 @@ public class CollectionManager<Id, Man extends DeletableManager> implements IMan
   }
   
   /**
-   * Try to delete a manager (but don't forget about it).
-   * @param id The id of the manager to remove.
-   * @return {@code true} if the manager existed and was removed.
-   * @see CollectionManager#forgetManager(Object)
-   */
-  public boolean deleteManager(Id id) {
-    Man man = managers.get(id);
-    
-    if(man != null) {
-      man.requestDeletion();
-      return true;
-    }
-
-    return false;
-  }
-  
-  /**
    * Forget the manager is here, but don't delete it.
    * @param id The id of the manager to remove.
    * @return {@code true} if the manager existed and was removed.
-   * @see CollectionManager#deleteManager(Object)
+   * @see DeletableCollectionManager#deleteManager(Object)
    */
   public boolean forgetManager(Id id) {
     Man man = managers.get(id);
@@ -68,44 +51,20 @@ public class CollectionManager<Id, Man extends DeletableManager> implements IMan
   }
   
   /**
-   * Get a set of {@link Id}s for all non-deleted managers.
+   * Get a set of {@link Id}s for all managers.
    * @return Set of managers.
    */
   public Set<Id> getManagers() {
-    Set<Id> liveManagers = new HashSet<Id>();
-    
-    // Create list of live manager (not deleted)
-    for(Id id : managers.keySet()) {
-      if(!managers.get(id).pendingDelete()) {
-        liveManagers.add(id);
-      }
-    }
-    
-    return liveManagers;
-  }
-  
-  /**
-   * Like {@link CollectionManager#getManagers()} but returns even deleted managers.
-   * @return List of managers.
-   */
-  public Set<Id> getAllManagers() {
     return managers.keySet();
   }
   
   /**
-   * Grabs a non-deleted manager if one exists for this id.
+   * Grabs a manager if one exists for this id.
    * @param id Id for this manager.
    * @return A manager or {@code null} if none exists for the given id.
    */
   public Man getManager(Id id) {
-    Man manager = managers.get(id);
-    
-    if(manager != null && !manager.pendingDelete()) {
-      return manager;
-    }
-    else {
-      return null;
-    }
+    return managers.get(id);
   }
   
   @Override
