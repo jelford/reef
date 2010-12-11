@@ -1,5 +1,7 @@
 package uk.ac.imperial.vazels.reef.client.managers;
 
+import java.util.Set;
+
 public abstract class DeletableListedCollectionManager<Id, Man extends DeletableManager> extends ListedCollectionManager<Id, Man>{
   private DeletableCollectionManager<Id, Man> collectionManager;
   
@@ -22,5 +24,13 @@ public abstract class DeletableListedCollectionManager<Id, Man extends Deletable
       collectionManager = new DeletableCollectionManager<Id, Man>();
     }
     return collectionManager;
+  }
+  
+  /**
+   * Get ids for all the non-deleted items.
+   * @return set of ids.
+   */
+  public Set<Id> getNonDeletedItems() {
+    return collectionManager.getNonDeletedManagers();
   }
 }
