@@ -88,7 +88,7 @@ def workload_handler():
             raise restlite.Status, "400 No Workload Supplied"
 
         saveWorkload(wkldname, wkld)
-        return request.response("", "text/plain")
+        return request.response(wkldname, "text/plain")
 
     return locals()
 
