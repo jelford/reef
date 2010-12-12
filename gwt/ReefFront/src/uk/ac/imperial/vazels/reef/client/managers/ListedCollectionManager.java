@@ -75,7 +75,24 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
   public boolean hasServerData() {
     return listManager.hasServerData() && getCollectionManager().hasServerData();
   }
-
+  
+  @Override
+  public void serverChange() {
+    listManager.serverChange();
+  }
+  
+  /**
+   * Called when there has been a server change that we know of.
+   * @param id The id of the changed workload
+   */
+  public void serverChange(Id id) {
+    serverChange();
+    Man man = collectionManager.getManager(id);
+    if(man != null) {
+      man.serverChange();
+    }
+  }
+  
   @Override
   public void withServerData(final PullCallback callback)
       throws MissingRequesterException {

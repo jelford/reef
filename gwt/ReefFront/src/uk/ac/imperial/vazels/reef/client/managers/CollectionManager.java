@@ -68,6 +68,13 @@ public class CollectionManager<Id, Man extends IManager> implements IManager{
   }
   
   @Override
+  public void serverChange() {
+    for(Man man : managers.values()) {
+      man.serverChange();
+    }
+  }
+
+  @Override
   public boolean hasServerData() {
     // Decide we don't if we're missing info from any of these
     for(Man man : managers.values()) {
