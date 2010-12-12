@@ -10,6 +10,11 @@ public interface IManager {
   public boolean hasServerData();
   
   /**
+   * Called to indicate there has been a change on the server that is unknown to us.
+   */
+  public void serverChange();
+  
+  /**
    * Have we changed the local data since updating from the server?
    * @return {@code true} if we have local changes.
    */
