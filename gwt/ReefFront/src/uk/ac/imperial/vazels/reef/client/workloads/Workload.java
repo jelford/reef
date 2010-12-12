@@ -32,8 +32,20 @@ public class Workload {
     }
   }
   
+  /**
+   * Get the name of the workload.
+   * @return Name of the workload.
+   */
   public String getName() {
     return this.name;
+  }
+  
+  /**
+   * Get the set of actors associated with this workload.
+   * @return Set of actors.
+   */
+  public Set<String> getActors() {
+    return this.actors;
   }
   
   /**
