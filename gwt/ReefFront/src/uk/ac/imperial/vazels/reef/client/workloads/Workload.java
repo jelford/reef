@@ -42,7 +42,7 @@ public class Workload {
   
   /**
    * Get the set of actors associated with this workload.
-   * @return Set of actors.
+   * @return Set of actors. <strong>DO NOT CHANGE!</strong>
    */
   public Set<String> getActors() {
     return this.actors;
