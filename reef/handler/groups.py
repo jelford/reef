@@ -1,7 +1,28 @@
 import config
 import restlite
+from restlite import tojson
 import urlparse
 import authentication
+
+# Defined a set class that will serialize nicely so that it Python won't cry
+#   when we try to return it to the client (as json)
+class Group(dict):
+  def __init__(self):
+    self["name"] = None # We name all groups
+    self["size"] = 0 # Need to store the size
+    self["workloads"] = set([]) # Will store a list of workload names
+    self["filters"] = set([]) # Store a list of mapping restrictions (currently non-functional)
+    self["online_hosts"] = set([]) # Store a list of host names for connected & evolving hosts
+    self["evolving_hosts"] = set([])  
+
+  def _json_ (self) :
+    return {"name" : self["name"],
+            "size" : self["size"],
+            "workloads" : list(self["workloads"]),
+            "filters" : list(self["filters"]),
+            "online_hosts" : list(self["online_hosts"]),
+            "evolving_hosts" : list(self["evolving_hosts"])
+            }
 
 ### Allows for submitting groups ###
 
@@ -10,7 +31,7 @@ those of the form /groups/somethingMore are used for individual groups'''
 
 # Blank newgroup with some values initialized
 def __newGroup() :
-  return { "name" : None, "size" : 0, "workloads" : [], "filters" : []}
+  return Group()
 
 @restlite.resource
 def group_batch_handler():
@@ -107,3 +128,13 @@ def _getGroupDataFromArgs(args):
     raise restlite.Status, "400 Unrecognised Arguments"
 
   return group
+
+def getGroupFromRank(rank):
+  # Don't call this during the setup phase; it doesn't make sense!
+  group_data = config.getSettings("groups",True)
+  
+  for group_name in group_data:
+    if group_data[group_name]['group_number'] == rank:
+      return group_data[group_name]
+      
+  raise restlite.Status, "500 Tried to find physical group number which doesn't exist"

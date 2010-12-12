@@ -3,6 +3,9 @@ import os
 import asyncPopen as subprocess
 from tempfile import mkstemp
 import vazelsmonitor
+from handler.groups import getGroupFromRank
+from threading import Timer
+from time import sleep
 
 # When we start processes, we get a handle on them and can use that to
 # terminate, check for termination, get return codes, ...
@@ -43,7 +46,7 @@ def setupFiles():
   # Assign these global objects.
   vazels_control_stdout_WRITE = open(tmpFile,"w")
   vazels_control_stdout_READ = open(tmpFile,"r")
-  
+   
 def shutdownFiles():
   global vazels_control_stdout_WRITE
   global vazels_control_stdout_READ
@@ -70,7 +73,6 @@ def vazelsRunning():
   
   # If we haven't yet started the control centre
   if vazels_control_process is None:
-    print "Control centre not yet started"
     return False
   
   # If we have started the control centre, but it has terminated
@@ -90,10 +92,7 @@ def vazelsRunning():
     cur_line = new_line
     if cur_line.find("[OK]") != -1:
       return True
-  
-  if cur_line.find("SSH") != -1:
-    return "timeout"
-  
+   
   return "starting"
   
 def getVazelsPath():
@@ -101,6 +100,9 @@ def getVazelsPath():
     config.getSettings("global")['basedir'],
     config.getSettings("command_centre")["vazels_dir"],
   )
+
+def getCommandLineClientPath():
+  return os.path.join(getVazelsPath(), 'client')
 
 def getExperimentPath():
   return os.path.join(
@@ -148,19 +150,118 @@ def runVazels():
   return vazels_control_process.returncode == None
   
 def stopVazels():
-  global vazels_control_process
-  
-  experiment_path = getExperimentPath()
-
-  args = ['/bin/sh', 'commandline_client.sh']
-  args.append('--rmi_host='+config.getSettings('command_centre')['rmi_host'])
-  args.append('--rmi_port='+config.getSettings('command_centre')['rmi_port'])
-  args.append('stop')
-  
-  vazels_control_process = subprocess.Popen(args, cwd=os.path.join(getVazelsPath(),'client'))#, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+  __issueControlCentreCommand('stop')
   
   shutdownFiles()
   
   # Oh dear this can't fail! Simply communicate to the client that we're trying.
-  vazels_control_process.poll()
   return True
+
+def startexperiment():
+  return __issueControlCentreCommand('start')
+  
+def getalloutput():
+  return __issueControlCentreCommand('getalloutput')
+  
+def updateStatuses():
+  # Doesn't make sense to call this before the control centre is running
+  if vazelsRunning() is not True:
+    return False
+  
+  # Need a little more control here than in __issueControlCentreCommand()
+  global vazels_command_process
+  global vazels_command_stdout_WRITE
+  global vazels_command_stdout_READ
+  experiment_path = getExperimentPath()
+  args = __getCommandLineClientArgs()
+  
+  args.append('getallstatus')
+  
+  tmpFile = mkstemp()[1]
+  vazels_command_stdout_WRITE = open(tmpFile,"w")
+  vazels_command_stdout_READ = open(tmpFile,"r")
+  
+  vazels_command_process = subprocess.Popen(args, cwd=getCommandLineClientPath(), stdout=vazels_command_stdout_WRITE, stderr=vazels_command_stdout_WRITE)
+  
+  # Dispatch a new thread to catch the output for us. It could take a
+  #   little while for stuff to come back.
+  Timer(interval=1, function=__readStatusReturnValue, args=[]).start()
+  
+  # TODO: Address reasons this might fail?
+  return True
+  
+def __readStatusReturnValue():
+  global vazels_command_process
+  global vazels_command_stdout_WRITE
+  global vazels_command_stdout_READ
+  FIRST_GROUP_RANK = 1
+  
+  outputStarted = False
+  while(not outputStarted):
+    vazels_command_stdout_READ.seek(0)
+    lastLine = vazels_command_stdout_READ.readline()
+    if lastLine != "" :
+      outputStarted = True
+    sleep(2)
+  
+  # Seek the first line of the output where we talk about group status
+  while(lastLine.find("group rank "+str(FIRST_GROUP_RANK)) == -1):
+    lastLine = vazels_command_stdout_READ.readline()
+  
+  # TODO: Tidy this up and use string manipulation instead of brittle counting!
+  # for now, easier just to count the group numbers rather than doing string manipulation
+  current_group_rank = FIRST_GROUP_RANK
+  
+  def __host_free(group, host_name):
+    pass # TODO: Maybe do something more intelligent with this in the future?
+  def __host_evolving(group, host_name):
+    group['evolving_hosts'].add(host_name)
+  def __host_connected(group, host_name):
+    group['online_hosts'].add(host_name)
+    
+  statusActionSwitch =  {'FREE' : __host_free,
+                          'CONNECTED' : __host_connected,
+                          'EVOLVING' : __host_evolving}
+  
+  
+  while (lastLine != "") :
+    current_group = getGroupFromRank(current_group_rank)
+    
+    for host in range(current_group['size']):
+      status_text = lastLine.split('-->')[-1].strip()
+      
+      # Statuses are of the form 'STATUS @ hostname', so split this up.
+      status, host_name = (lambda l: (l[0], l[-1]))(status_text.split(' '))
+      
+      try:
+        statusActionSwitch[status](current_group, host_name)
+      except KeyError:
+        raise restlite.Status, "500 Something went seriously wrong trying to find status of hosts!"
+      
+      lastLine = vazels_command_stdout_READ.readline()
+    
+    current_group_rank += 1
+    
+  vazels_command_stdout_READ.close()
+  vazels_command_stdout_WRITE.close()
+  vazels_command_process = None
+  
+def __getCommandLineClientArgs():
+  return ['/bin/sh',
+                 'commandline_client.sh',
+                 '--rmi_host='+config.getSettings('command_centre')['rmi_host'],
+                 '--rmi_port='+config.getSettings('command_centre')['rmi_port']
+                 ]
+
+def __issueControlCentreCommand(command):
+  if vazelsRunning() is not True:
+    return False
+  
+  global vazels_command_process
+  experiment_path = getExperimentPath()
+  args = __getCommandLineClientArgs()
+  args.append(command)
+  vazels_command_process = subprocess.Popen(args, cwd=getCommandLineClientPath())
+  
+  return True
+  

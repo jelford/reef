@@ -51,3 +51,39 @@ def stop_handler():
       raise restlite.Status("500 "+str(os_call_to_vazels))
       
   return locals()
+  
+@restlite.resource
+def getallstatus_handler():
+  def GET(request):
+    authentication.login(request)
+    
+    if vazelsmanager.updateStatuses() is True:
+      return request.response("")
+    else :
+      raise restlite.Status, "400 Failed to send getallstatus request - don't call this before starting the Control Center"
+      
+  return locals()
+
+@restlite.resource
+def getalloutput_handler():
+  def GET(request):
+    authentication.login(request)
+    
+    if vazelsmanager.getalloutput() is True:
+      return request.response("")
+    else :
+      raise restlite.Status, "400 Failed to get output from Vazels - don't call this before starting the Control Center"
+      
+  return locals()
+  
+@restlite.resource
+def startexperiment_handler():
+  def GET(request):
+    authentication.login(request)
+    
+    if vazelsmanager.startexperiment() is True:
+      return request.response("")
+    else:
+      raise restlite.Status, "400 Failed to start experiment - don't call this before starting the Control Center"
+    
+  return locals()
