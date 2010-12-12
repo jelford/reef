@@ -26,7 +26,7 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
    * Set the requester to grab the ids for the available managers.
    * @param puller Request builder for the pull request.
    */
-  public void setPuller(MultipleRequester<Set<Id>> puller) {
+  protected void setPuller(MultipleRequester<Set<Id>> puller) {
     listManager.setPuller(puller);
   }
 
@@ -37,7 +37,7 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
    * @param id Id for the new manager.
    * @return New manager for the item, or {@code null} if the id was already taken.
    */
-  public Man addItem(Id id) {
+  protected Man addItem(Id id) {
     Man curMan = collectionManager.getManager(id);
     
     if(curMan != null)
@@ -53,7 +53,7 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
    * Get ids for all the items.
    * @return set of ids.
    */
-  public Set<Id> getItems() {
+  protected Set<Id> getItems() {
     return collectionManager.getManagers();
   }
   
@@ -62,7 +62,7 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
    * @param id id of the item.
    * @return a manager or {@code null} if none exists for this id.
    */
-  public Man getItem(Id id) {
+  protected Man getItem(Id id) {
     return collectionManager.getManager(id);
   }
   
