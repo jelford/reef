@@ -50,10 +50,10 @@ public class DisplayOutput extends Composite {
 
   public void loadData() {
     System.out.println(outputData.getData());
-    
-     temp = outputData.getPanel();
+     mainPanel.remove(placeholder);
+     //temp = outputData.getPanel();
      placeholder = outputData.getPanel();
-     mainPanel.add(temp);
+     mainPanel.add(placeholder);
 
   }
   
