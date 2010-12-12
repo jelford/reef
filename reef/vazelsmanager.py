@@ -90,10 +90,7 @@ def vazelsRunning():
     cur_line = new_line
     if cur_line.find("[OK]") != -1:
       return True
-  
-  if cur_line.find("SSH") != -1:
-    return "timeout"
-  
+   
   return "starting"
   
 def getVazelsPath():
@@ -148,19 +145,29 @@ def runVazels():
   return vazels_control_process.returncode == None
   
 def stopVazels():
-  global vazels_control_process
-  
-  experiment_path = getExperimentPath()
-
-  args = ['/bin/sh', 'commandline_client.sh']
-  args.append('--rmi_host='+config.getSettings('command_centre')['rmi_host'])
-  args.append('--rmi_port='+config.getSettings('command_centre')['rmi_port'])
-  args.append('stop')
-  
-  vazels_control_process = subprocess.Popen(args, cwd=os.path.join(getVazelsPath(),'client'))#, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+  __issueControlCentreCommand('stop')
   
   shutdownFiles()
   
   # Oh dear this can't fail! Simply communicate to the client that we're trying.
-  vazels_control_process.poll()
   return True
+
+def startExperiment():
+  __issueControlCentreCommand('start')
+  
+def __getCommandLineClientArgs():
+  return['/bin/sh',
+                 'commandline_client.sh',
+                 '--rmi_host='+config.getSettings('command_centre')['rmi_host'],
+                 '--rmi_port='+config.getSettings('command_centre')['rmi_port']
+                 ]
+
+def __issueControlCentreCommand(command):
+  global vazels_control_process
+  
+  experiment_path = getExperimentPath()
+  
+  args = __getCommandLineClientArgs()
+  args.append(command)
+  
+  vazels_control_process = subprocess.Popen(args, cwd=os.path.join(getVazelsPath(), 'client'))
