@@ -6,11 +6,11 @@ import com.google.gwt.core.client.JsArrayString;
 public class WorkloadOverlay extends JavaScriptObject{
   protected WorkloadOverlay() {}
   
-  public native String getName() /*-{
+  public final native String getName() /*-{
     return this.name;
   }-*/;
   
-  public native JsArrayString getActors() /*-{
+  public final native JsArrayString getActors() /*-{
     return this.actors;
   }-*/;
 }
