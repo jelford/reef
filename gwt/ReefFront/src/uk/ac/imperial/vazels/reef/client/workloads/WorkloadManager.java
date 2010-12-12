@@ -43,6 +43,14 @@ public class WorkloadManager extends ListedCollectionManager<String, SingleWorkl
     return getItem(name);
   }
 
+  /**
+   * Called to notify the manager that a workload has been uploaded.
+   * @param name Of the uploaded workload.
+   */
+  public void workloadUploaded(String name) {
+    this.serverChange(name);
+  }
+  
   @Override
   protected SingleWorkloadManager createManager(String id, boolean nMan) {
     return new SingleWorkloadManager(id);
