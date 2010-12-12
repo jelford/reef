@@ -15,7 +15,7 @@ public abstract class DeletableListedCollectionManager<Id, Man extends Deletable
    * @return {@code true} if the manager existed and was removed.
    */
   protected boolean removeItem(Id id) {
-    return collectionManager.deleteManager(id);
+    return getCollectionManager().deleteManager(id);
   }
   
   @Override
@@ -31,6 +31,6 @@ public abstract class DeletableListedCollectionManager<Id, Man extends Deletable
    * @return set of ids.
    */
   protected Set<Id> getNonDeletedItems() {
-    return collectionManager.getNonDeletedManagers();
+    return getCollectionManager().getNonDeletedManagers();
   }
 }
