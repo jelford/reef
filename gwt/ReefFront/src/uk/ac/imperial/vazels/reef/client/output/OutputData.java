@@ -47,7 +47,9 @@ public class OutputData {
     JsArrayString keys = groups.keys();
     for(int i = 0; i < keys.length(); i++) {
       outputPanel.add(new Label("Group " + keys.get(i)));
-      outputPanel.add(groupHTMLHelper(groups.get(keys.get(i))));
+      System.out.println("Bar: " + keys.get(i));
+      System.out.println(groups.get(i));
+      //outputPanel.add(groupHTMLHelper(groups.get(keys.get(i))));
     }
     
     
@@ -55,10 +57,15 @@ public class OutputData {
   }
   
   Panel groupHTMLHelper(String groupData) {
+    System.out.println("Foo: " + groupData);
     FlowPanel groupPanel = new FlowPanel();
     
     OutputDataOverlay hosts = parseData(groupData);
-    System.out.println(hosts.keys().get(0));
+    System.out.println(hosts.keys().length());
+    JsArrayString keys = hosts.keys();
+    for (int i = 0; i < keys.length(); i++) {
+      groupPanel.add(new Label("foo"));
+    }
     
     return groupPanel;
   }

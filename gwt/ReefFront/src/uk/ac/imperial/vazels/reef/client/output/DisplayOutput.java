@@ -52,9 +52,8 @@ public class DisplayOutput extends Composite {
     System.out.println(outputData.getData());
     
      temp = outputData.getPanel();
-     mainPanel.remove(placeholder); // changing the panel doesn't seem to update it.
      placeholder = outputData.getPanel();
-     mainPanel.add(placeholder);
+     mainPanel.add(temp);
 
   }
   

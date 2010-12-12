@@ -19,13 +19,12 @@ public class OutputDataOverlay extends JavaScriptObject {
     
   }-*/;
   
-  public native final String get(String name) /*-{
-    if(index >= 0 && index < this.length()) {
+  public native final String get(int index) /*-{
+    if(index >= 0 && index < this.length) {
         return this[index];
     }
     
     return null;
   }-*/;
-  
   
 }
