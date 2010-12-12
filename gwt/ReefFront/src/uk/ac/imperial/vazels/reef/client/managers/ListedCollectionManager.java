@@ -3,6 +3,8 @@ package uk.ac.imperial.vazels.reef.client.managers;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.gwt.user.client.Window;
+
 import uk.ac.imperial.vazels.reef.client.MultipleRequester;
 
 /**
@@ -38,13 +40,13 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
    * @return New manager for the item, or {@code null} if the id was already taken.
    */
   protected Man addItem(Id id) {
-    Man curMan = collectionManager.getManager(id);
+    Man curMan = getCollectionManager().getManager(id);
     
     if(curMan != null)
       return null;
     
     Man man = createManager(id, true);
-    collectionManager.addManager(id, man);
+    getCollectionManager().addManager(id, man);
     
     return man;
   }
@@ -54,7 +56,7 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
    * @return set of ids.
    */
   protected Set<Id> getItems() {
-    return collectionManager.getManagers();
+    return getCollectionManager().getManagers();
   }
   
   /**
@@ -63,17 +65,17 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
    * @return a manager or {@code null} if none exists for this id.
    */
   protected Man getItem(Id id) {
-    return collectionManager.getManager(id);
+    return getCollectionManager().getManager(id);
   }
   
   @Override
   public boolean hasLocalChanges() {
-    return collectionManager.hasLocalChanges();
+    return getCollectionManager().hasLocalChanges();
   }
   
   @Override
   public boolean hasServerData() {
-    return listManager.hasServerData() && collectionManager.hasServerData();
+    return listManager.hasServerData() && getCollectionManager().hasServerData();
   }
 
   @Override
@@ -83,7 +85,7 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
       @Override
       public void got() {
         try {
-          collectionManager.withServerData(callback);
+          getCollectionManager().withServerData(callback);
         }
         catch(MissingRequesterException e) {
           // Ignore this, I can't see a good way to relay this to the user
@@ -101,7 +103,7 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
       @Override
       public void got() {
         try {
-          collectionManager.getServerData();
+          getCollectionManager().getServerData();
         }
         catch(MissingRequesterException e) {
           // Again cannot see a nice way to relay this to the user
@@ -113,7 +115,7 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
   @Override
   public void pushLocalData(PushCallback callback)
       throws MissingRequesterException {
-    collectionManager.pushLocalData(callback);
+    getCollectionManager().pushLocalData(callback);
     listManager.serverChange();
   }
   
@@ -122,7 +124,7 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
    * @param pulled the new set of ids.
    */
   protected void receivedNewIds(Set<Id> pulled) {
-    Set<Id> managers = collectionManager.getManagers();
+    Set<Id> managers = getCollectionManager().getManagers();
     
     // Create a forget list
     Set<Id> forget = new HashSet<Id>();
@@ -142,13 +144,14 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
     
     // Forget now we're not iterating
     for(Id id : forget) {
-      collectionManager.forgetManager(id);
+      getCollectionManager().forgetManager(id);
     }
     
     // Now add all the things left to add
     for(Id id : add) {
-      collectionManager.addManager(id, createManager(id, false));
+      getCollectionManager().addManager(id, createManager(id, false));
     }
+    
   }
   
   /**
