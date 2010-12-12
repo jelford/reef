@@ -3,8 +3,6 @@ package uk.ac.imperial.vazels.reef.client.managers;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.gwt.user.client.Window;
-
 import uk.ac.imperial.vazels.reef.client.MultipleRequester;
 
 /**
