@@ -2,6 +2,7 @@ import config
 import restlite
 import urlparse
 import authentication
+from SerializableClasses import DynamicDict
 
 ### Allows for submitting groups ###
 
@@ -10,7 +11,13 @@ those of the form /groups/somethingMore are used for individual groups'''
 
 # Blank newgroup with some values initialized
 def __newGroup() :
-  return { "name" : None, "size" : 0, "workloads" : [], "filters" : []}
+  return DynamicDict({ "name" : None, # We name all groups
+          "size" : 0, # Need to store the size
+          "workloads" : set([]), # Will store a list of workload names
+          "filters" : set([]), # Store a list of mapping restrictions (currently non-functional)
+          "online_hosts" : set([]), # Store a list of host names for connected & evolving hosts
+          "evolving_hosts" : set([])
+        })
 
 @restlite.resource
 def group_batch_handler():
@@ -107,3 +114,13 @@ def _getGroupDataFromArgs(args):
     raise restlite.Status, "400 Unrecognised Arguments"
 
   return group
+
+def getGroupFromRank(rank):
+  # Don't call this during the setup phase; it doesn't make sense!
+  group_data = config.getSettings("groups",True)
+  
+  for group_name in group_data:
+    if group_data[group_name]['group_number'] == rank:
+      return group_data[group_name]
+      
+  raise restlite.Status, "500 Tried to find physical group number which doesn't exist"
