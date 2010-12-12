@@ -280,15 +280,15 @@ public class AllocateGroups extends Composite {
   }
   
   /**
-   * Remove a group from the local store.
+   * Delete a group from the local store.
    * @param name Name of the group to remove.
    */
   private void removeGroup(String name) {
-    GroupManager.getManager().removeItem(name);
+    GroupManager.getManager().deleteGroup(name);
   }
   
   /**
-   * Remove all the groups in the local store.
+   * Delete all the groups in the local store.
    */
   private void removeAllGroups() {
     GroupManager.getManager().deleteGroups();
