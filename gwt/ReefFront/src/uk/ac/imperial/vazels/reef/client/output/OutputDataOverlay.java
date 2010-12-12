@@ -1,6 +1,7 @@
 package uk.ac.imperial.vazels.reef.client.output;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 
 public class OutputDataOverlay extends JavaScriptObject {
@@ -19,12 +20,13 @@ public class OutputDataOverlay extends JavaScriptObject {
     
   }-*/;
   
-  public native final String get(int index) /*-{
-    if(index >= 0 && index < this.length) {
-        return this[index];
-    }
+  public native final GroupsDataOverlay get(String key) /*-{
+    //alert(this);
+    //if(index >= 0 && index < this.length) {
+        return this[key];
+    //}
     
-    return null;
+    //return this[index];
   }-*/;
   
 }

@@ -7,6 +7,8 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -41,46 +43,41 @@ public class OutputData {
   public Panel getPanel() {
     
     FlowPanel outputPanel = new FlowPanel();
+    Tree tree = new Tree();
+    //TreeItem root = new TreeItem();
     outputPanel.setSize("50%", "50%");
-    System.out.println(getData());
     OutputDataOverlay groups = parseData(getData());
     JsArrayString keys = groups.keys();
+    
     for(int i = 0; i < keys.length(); i++) {
-      outputPanel.add(new Label("Group " + keys.get(i)));
-      System.out.println("Bar: " + keys.get(i));
-      System.out.println(groups.get(i));
-      //outputPanel.add(groupHTMLHelper(groups.get(keys.get(i))));
+      TreeItem group = new TreeItem("Group " + keys.get(i));
+      groupHTMLHelper(groups.get(keys.get(i)), group);
+      tree.addItem(group);
     }
+    outputPanel.add(tree);
     
     
     return outputPanel;
   }
   
-  Panel groupHTMLHelper(String groupData) {
-    System.out.println("Foo: " + groupData);
-    FlowPanel groupPanel = new FlowPanel();
+  void groupHTMLHelper(GroupsDataOverlay groupsDataOverlay, TreeItem groupTree) {
     
-    OutputDataOverlay hosts = parseData(groupData);
-    System.out.println(hosts.keys().length());
-    JsArrayString keys = hosts.keys();
+    JsArrayString keys = groupsDataOverlay.keys();
     for (int i = 0; i < keys.length(); i++) {
-      groupPanel.add(new Label("foo"));
+      TreeItem hostTree = new TreeItem("Host " + keys.get(i));
+      hostTreeHelper(groupsDataOverlay.get(keys.get(i)), hostTree);
+      groupTree.addItem(hostTree);
     }
     
-    return groupPanel;
   }
   
-  Panel hostHTMLHelper(JSONValue host) {
-    FlowPanel hostPanel = new FlowPanel();
+  void hostTreeHelper(VariableDataOverlay varData, TreeItem hostTree) {
     
-    JSONArray data = host.isArray();
-    if(data == null) {
-      return hostPanel;
-    }
-    for(int i = 0; i < data.size(); i++) {
-      
-    }
-    return hostPanel;
+    
+    
+    
+    
+    
   }
   
   native OutputDataOverlay parseData(String data) /*-{
@@ -88,5 +85,6 @@ public class OutputData {
     return JSON.parse(data);
     
   }-*/;
+
   
 }
