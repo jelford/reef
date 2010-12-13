@@ -66,7 +66,6 @@ public class OutputData {
     final FlowPanel outputPanel = new FlowPanel(); 
     Runnable onLoadCallback = new Runnable() {
       public void run() {
-        Window.alert("Foo");
         Tree tree = new Tree();
         //TreeItem root = new TreeItem();
         outputPanel.setSize("50%", "50%");
@@ -85,11 +84,9 @@ public class OutputData {
     
           @Override
           public void onSelection(SelectionEvent<TreeItem> event) {
-            System.out.println("Foo1: " + event.getSelectedItem().getStylePrimaryName());
             
             TreeItem item = event.getSelectedItem();
             if (event.getSelectedItem().getChildCount() == 0 && event.getSelectedItem().getStylePrimaryName().contentEquals("Double")) {
-              System.out.println("Foo2");
               String groupName = item.getParentItem().getParentItem().getText();
               if(dataPanel.getWidgetCount() != 0) {
                 dataPanel.remove(0);
