@@ -203,6 +203,16 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
     });
   }
   
+  @Override
+  public void addChangeHandler(ManagerChangeHandler handler) {
+    listManager.addChangeHandler(handler);
+  }
+
+  @Override
+  public void removeChangeHandler(ManagerChangeHandler handler) {
+    listManager.removeChangeHandler(handler);
+  }
+
   /**
    * Takes the new set of ids and make sure the collection corresponds.
    * @param pulled the new set of ids.
