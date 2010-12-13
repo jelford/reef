@@ -85,3 +85,5 @@ def startexperiment_handler():
       return request.response("")
     else:
       raise restlite.Status, "500 Failed to start experiment - don't call this before starting the Control Center"
+    
+  return locals()

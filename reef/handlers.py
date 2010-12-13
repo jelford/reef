@@ -8,11 +8,13 @@ from handler.actors import actors_handler
 from handler.actorassign import actorassign_handler
 from handler.control_handler import control_handler, start_handler, stop_handler, getallstatus_handler, getalloutput_handler, startexperiment_handler
 from handler.groups import group_handler, group_batch_handler
+from handler.status import status_handler
 
 def getRouting():
     return [
         #(r'GET,POST /settings$', 'GET,POST /settings/'),
         #(r'GET,POST /settings/', settings_editor),
+        (r'GET /status$', status_handler),
         (r'GET,POST /actors$', 'GET,POST /actors/'),
         (r'GET,POST /actors/', actors_handler),
         (r'POST /actorassign$', 'POST /actorassign/'),
@@ -25,7 +27,7 @@ def getRouting():
         (r'GET /control/?$', control_handler),
         (r'GET /control/getallstatus/?$', getallstatus_handler),
         (r'GET /control/getalloutput/?$', getalloutput_handler),
-        (r'GET /control/startexperiment/?$', startexperiment_handler)
+        (r'GET /control/startexperiment/?$', startexperiment_handler),
         (r'GET,POST /workloads/?', workload_handler),
         (r'GET,POST /', auth_page_handler),
     ]
