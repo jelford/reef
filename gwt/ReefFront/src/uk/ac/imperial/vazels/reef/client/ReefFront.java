@@ -1,11 +1,8 @@
 package uk.ac.imperial.vazels.reef.client;
 
-import uk.ac.imperial.vazels.reef.client.actors.UploadActorWidget;
-import uk.ac.imperial.vazels.reef.client.groups.AllocateGroups;
-import uk.ac.imperial.vazels.reef.client.servercontrol.ServerControl;
-import uk.ac.imperial.vazels.reef.client.workloads.WorkloadWidget;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 
 import uk.ac.imperial.vazels.reef.client.ReefTabPanel;
@@ -26,9 +23,14 @@ public class ReefFront implements EntryPoint
 	 // RootPanel.get("server-control").add(new ServerControl());
 	 // RootPanel.get("workloads").add(new WorkloadWidget());
 	 // RootPanel.get("actors").add(new UploadActorWidget());
-	  
 
-     RootPanel.get("tabPanel").add(new ReefTabPanel());
+    
+//    
+//    final Image image = new Image();
+//    image.setUrl("reeffront/gwt/neon/images/logo.png");
+//    RootPanel.get().add(image);
+//     
+    RootPanel.get("tabPanel").add(new ReefTabPanel());
 
 
 	}
