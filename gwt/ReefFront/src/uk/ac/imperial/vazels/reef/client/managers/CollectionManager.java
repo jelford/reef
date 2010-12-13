@@ -132,6 +132,26 @@ public class CollectionManager<Id, Man extends IManager>{
       }
     }.start();
   }
+  
+  /**
+   * Add a change handler to every manager in the collection.
+   * @param handler Handler to add.
+   */
+  public void addChangeHandlerToAll(ManagerChangeHandler handler) {
+    for(Man man : managers.values()) {
+      man.addChangeHandler(handler);
+    }
+  }
+  
+  /**
+   * Remove a change handler from every manager in the collection if it exists.
+   * @param handler Handler to remove.
+   */
+  public void removeChangeHandlerFromAll(ManagerChangeHandler handler) {
+    for(Man man : managers.values()) {
+      man.removeChangeHandler(handler);
+    }
+  }
 
   /**
    * Makes a number of method calls to various objects and 
