@@ -1,22 +1,28 @@
 package uk.ac.imperial.vazels.reef.client.managers;
 
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 /**
  * Keep track of the synchronisation state of a manager.
  */
 public class SyncTracker {
+  private IManager tracking;
+  
   private boolean serverData;
   private boolean localChanges;
   
   private LinkedList<PullCallback> pullWaitList;
   
+  private Set<ManagerChangeHandler> changeHandlers;
+  
   /**
    * Create the default tracker.
    * This assumes we don't have server data or local changes.
    */
-  public SyncTracker() {
-    this(false, false);
+  public SyncTracker(IManager tracking) {
+    this(tracking, false, false);
   }
   
   /**
@@ -24,10 +30,12 @@ public class SyncTracker {
    * @param serverData Do we have the server data?
    * @param localChanges Do we have any local changes?
    */
-  public SyncTracker(boolean serverData, boolean localChanges) {
+  public SyncTracker(IManager tracking, boolean serverData, boolean localChanges) {
+    this.tracking = tracking;
     this.serverData = serverData;
     this.localChanges = localChanges;
     this.pullWaitList = null;
+    this.changeHandlers = new HashSet<ManagerChangeHandler>();
   }
   
   /**
@@ -51,6 +59,7 @@ public class SyncTracker {
    */
   public void change() {
     localChanges = true;
+    callChangeHandlers();
   }
   
   /**
@@ -82,6 +91,23 @@ public class SyncTracker {
    */
   public void wipedLocalChanges() {
     localChanges = false;
+    callChangeHandlers();
+  }
+  
+  /**
+   * Adds a change handler to this tracker.
+   * @param handler Handler to add.
+   */
+  public void addChangeHandler(ManagerChangeHandler handler) {
+    changeHandlers.add(handler);
+  }
+  
+  /**
+   * Removes a change handler from this tracker.
+   * @param handler Handler to remove if it exists.
+   */
+  public void removeChangeHandler(ManagerChangeHandler handler) {
+    changeHandlers.remove(handler);
   }
   
   /**
@@ -114,6 +140,12 @@ public class SyncTracker {
         cb.got(); // We don't have nulls
       }
       pullWaitList = null;
+    }
+  }
+  
+  protected void callChangeHandlers() {
+    for(ManagerChangeHandler handler : changeHandlers) {
+      handler.change(tracking);
     }
   }
 }
