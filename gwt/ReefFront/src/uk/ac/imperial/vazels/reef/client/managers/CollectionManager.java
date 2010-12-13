@@ -92,7 +92,7 @@ public class CollectionManager<Id, Man extends IManager>{
       throws MissingRequesterException {
     // Make a set of all the items missing data
     
-    final Set<Man> missingSet = new HashSet<Man>();
+    final Set<IManager> missingSet = new HashSet<IManager>();
     
     for(Man man : managers.values()) {
       if(!man.hasServerData()) {
@@ -102,7 +102,7 @@ public class CollectionManager<Id, Man extends IManager>{
     
     new CollectionCallRecorder(missingSet, new ImitatorPushCallback(callback)) {
       @Override
-      protected void call(Man man, PushCallback generatedCb)
+      protected void call(IManager man, PushCallback generatedCb)
           throws MissingRequesterException {
         man.withServerData(generatedCb);
       }
@@ -117,7 +117,7 @@ public class CollectionManager<Id, Man extends IManager>{
   
   public void pushAllLocalData(final PushCallback callback)
       throws MissingRequesterException {
-    Set<Man> changeSet = new HashSet<Man>();
+    Set<IManager> changeSet = new HashSet<IManager>();
     
     for(Man man : managers.values()) {
       if(man.hasLocalChanges()) {
@@ -127,7 +127,7 @@ public class CollectionManager<Id, Man extends IManager>{
     
     new CollectionCallRecorder(changeSet, callback) {
       @Override
-      protected void call(Man man, PushCallback generatedCb) throws MissingRequesterException {
+      protected void call(IManager man, PushCallback generatedCb) throws MissingRequesterException {
         man.pushLocalData(generatedCb);
       }
     }.start();
@@ -151,80 +151,5 @@ public class CollectionManager<Id, Man extends IManager>{
     for(Man man : managers.values()) {
       man.removeChangeHandler(handler);
     }
-  }
-
-  /**
-   * Makes a number of method calls to various objects and 
-   */
-  protected abstract class CollectionCallRecorder {
-    private final Set<Man> toCall;
-    private final PushCallback callback;
-    private boolean failed;
-    
-    /**
-     * Create a call recorder that will call methods on all of the set given
-     * and return after all responses have been received.
-     * @param toCall A set of all the managers to call. This will be modified.
-     * @param callback A callback to call with the response.
-     */
-    public CollectionCallRecorder(Set<Man> toCall, PushCallback callback) {
-      this.toCall = toCall;
-      this.callback = callback;
-      this.failed = false;
-    }
-    
-    /**
-     * Fire off all of the requests, only call callback once all have returned
-     */
-    public void start() throws MissingRequesterException {
-      if(toCall.isEmpty()) {
-        cb();
-        return;
-      }
-      
-      for(final Man man : toCall) {
-        call(man, new PushCallback() {
-          @Override
-          public void got() {
-            checkOff(man);
-          }
-          
-          @Override
-          public void failed() {
-            failed = true;
-            checkOff(man);
-          }
-        });
-      }
-    }
-    
-    /**
-     * Called to check off a manager from the list and process if we're done
-     * @param man Manager to check off
-     */
-    private void checkOff(Man man) {
-      toCall.remove(man);
-      if(toCall.isEmpty()) {
-        cb();
-      }
-    }
-    
-    private void cb() {
-      if(callback != null) {
-        if(failed) {
-          callback.failed();
-        }
-        else {
-          callback.got();
-        }
-      }
-    }
-    
-    /**
-     * Call the required method.
-     * @param man The manager to call the method on.
-     * @param generatedCb The callback to hand to the function.
-     */
-    protected abstract void call(Man man, PushCallback generatedCb) throws MissingRequesterException;
   }
 }
