@@ -23,7 +23,8 @@ def getRouting():
         (r'POST /control/start/?$', start_handler),
         (r'POST /control/stop/?$', stop_handler),
         (r'GET /control/?$', control_handler),
-        (r'POST /control/getallstatus/?$', getallstatus_handler),
+        (r'GET /control/getallstatus/?$', getallstatus_handler),
+        (r'GET /control/getalloutput/?$', getalloutput_handler)
         (r'GET,POST /workloads/?', workload_handler),
         (r'GET,POST /', auth_page_handler),
     ]

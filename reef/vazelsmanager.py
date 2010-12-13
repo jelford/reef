@@ -159,11 +159,10 @@ def stopVazels():
 
 # TODO: No handler for this
 def startExperiment():
-  __issueControlCentreCommand('start')
+  return __issueControlCentreCommand('start')
   
-# TODO: No handler for this
-def collectData():
-  __issueControlCentreCommand('getalloutput')
+def getalloutput():
+  return __issueControlCentreCommand('getalloutput')
   
 def updateStatuses():
   # Doesn't make sense to call this before the control centre is running
@@ -256,9 +255,14 @@ def __getCommandLineClientArgs():
                  ]
 
 def __issueControlCentreCommand(command):
+  if vazelsRunning() is not True:
+    return False
+  
   global vazels_command_process
   experiment_path = getExperimentPath()
   args = __getCommandLineClientArgs()
   args.append(command)
   vazels_command_process = subprocess.Popen(args, cwd=getCommandLineClientPath())
+  
+  return True
   
