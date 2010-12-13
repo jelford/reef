@@ -157,8 +157,7 @@ def stopVazels():
   # Oh dear this can't fail! Simply communicate to the client that we're trying.
   return True
 
-# TODO: No handler for this
-def startExperiment():
+def startexperiment():
   return __issueControlCentreCommand('start')
   
 def getalloutput():
