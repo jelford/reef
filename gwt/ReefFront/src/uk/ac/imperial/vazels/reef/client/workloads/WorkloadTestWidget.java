@@ -1,6 +1,8 @@
 package uk.ac.imperial.vazels.reef.client.workloads;
 
 import uk.ac.imperial.vazels.reef.client.AddressResolution;
+import uk.ac.imperial.vazels.reef.client.managers.IManager;
+import uk.ac.imperial.vazels.reef.client.managers.ManagerChangeHandler;
 import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
 import uk.ac.imperial.vazels.reef.client.managers.PullCallback;
 
@@ -20,13 +22,13 @@ public class WorkloadTestWidget extends Composite {
 
   @UiField
   FormPanel form;
-  
+
   @UiField
   ListBox workloads;
-  
+
   @UiField
   Button submit;
-  
+
   private static WorkloadTestWidgetUiBinder uiBinder = GWT
       .create(WorkloadTestWidgetUiBinder.class);
 
@@ -36,39 +38,46 @@ public class WorkloadTestWidget extends Composite {
 
   public WorkloadTestWidget() {
     initWidget(uiBinder.createAndBindUi(this));
-    
+
     form.setAction(new AddressResolution().resolve("/workloads"));
     form.setEncoding(FormPanel.ENCODING_MULTIPART);
     form.setMethod(FormPanel.METHOD_POST);
-    
-    updateWorkloadList();
+
+    WorkloadManager.getManager().addChangeHandler(new ManagerChangeHandler() {
+      @Override
+      public void change(IManager man) {
+        updateWorkloadList();
+      }
+    });
+
+    try {
+      WorkloadManager.getManager().getServerData();
+    } catch (MissingRequesterException e) {
+      e.printStackTrace();
+    }
   }
 
   @UiHandler("submit")
   void onClick(ClickEvent event) {
     form.submit();
   }
-  
+
   @UiHandler("form")
   void onSubmitComplete(SubmitCompleteEvent event) {
     WorkloadManager.getManager().workloadUploaded(event.getResults());
-    updateWorkloadList();
+
+    try {
+      WorkloadManager.getManager().getServerData();
+    } catch (MissingRequesterException e) {
+      e.printStackTrace();
+    }
   }
-  
+
   private void updateWorkloadList() {
     final WorkloadManager man = WorkloadManager.getManager();
-    try {
-      man.withServerData(new PullCallback() {
-        @Override
-        public void got() {
-          workloads.clear();
-          for(String name : man.getNames()) {
-            workloads.addItem(name);
-          }
-        }
-      });
-    } catch(MissingRequesterException e) {
-      
+    workloads.clear();
+    for (String name : man.getNames()) {
+      workloads.addItem(name);
     }
   }
 }
