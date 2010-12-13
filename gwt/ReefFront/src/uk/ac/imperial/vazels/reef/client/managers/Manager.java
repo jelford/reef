@@ -29,7 +29,7 @@ public abstract class Manager<PullData, PushData> implements IManager {
    * @param nManager Is this a newly created manager or does it already exist on the server?
    */
   public Manager(boolean nManager) {
-    syncTracker = new SyncTracker(nManager, !nManager);
+    syncTracker = new SyncTracker(this, nManager, !nManager);
     puller = null;
     pendingPull = false;
     pullHandler = new RepeatPullHandler();
@@ -143,6 +143,16 @@ public abstract class Manager<PullData, PushData> implements IManager {
     });
   }
   
+  @Override
+  public void addChangeHandler(ManagerChangeHandler handler) {
+    syncTracker.addChangeHandler(handler);
+  }
+
+  @Override
+  public void removeChangeHandler(ManagerChangeHandler handler) {
+    syncTracker.removeChangeHandler(handler);
+  }
+
   /**
    * Should use received data to update itself accordingly.
    * @param pulled The pulled data.
