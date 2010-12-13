@@ -20,6 +20,7 @@ public class SyncTracker {
   /**
    * Create the default tracker.
    * This assumes we don't have server data or local changes.
+   * @param tracking The manager that we are tracking for.
    */
   public SyncTracker(IManager tracking) {
     this(tracking, false, false);
@@ -27,6 +28,7 @@ public class SyncTracker {
   
   /**
    * Create the sync tracker with specific values for local and server changes.
+   * @param tracking The manager that we are tracking for.
    * @param serverData Do we have the server data?
    * @param localChanges Do we have any local changes?
    */
