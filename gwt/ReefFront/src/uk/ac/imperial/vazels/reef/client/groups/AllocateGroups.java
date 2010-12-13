@@ -219,13 +219,13 @@ public class AllocateGroups extends Composite {
       }
     };
     
-    if(man.hasServerData()) {
+    if(man.hasAllServerData()) {
       try {
-        man.pushLocalData(new PushCallback() {
+        man.pushAllLocalData(new PushCallback() {
           @Override
           public void got() {
             try {
-              man.withServerData(callback);
+              man.withAllServerData(callback);
             } catch (MissingRequesterException e) {
               e.printStackTrace();
             }
@@ -247,7 +247,7 @@ public class AllocateGroups extends Composite {
     }
     else {
       try {
-        man.withServerData(callback);
+        man.withAllServerData(callback);
       } catch (MissingRequesterException e) {
         e.printStackTrace();
       }
