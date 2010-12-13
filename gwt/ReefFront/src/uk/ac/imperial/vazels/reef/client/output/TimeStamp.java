@@ -10,8 +10,8 @@ public class TimeStamp extends JavaScriptObject {
     return this.type;
   }-*/;
   
-  native final int getDouble() /*-{
-    return parseInt(this.value);
+  native final float getDouble() /*-{
+    return parseFloat(this.value);
   }-*/;
   
   native final String getString() /*-{
