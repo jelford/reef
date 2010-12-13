@@ -62,12 +62,12 @@
 		.greentext {
 			color: #4b6901;
 			font-size: 5em;
-			font-weight: bold;
-<!--			margin: 0px 0px 0px;-->
+			font-weight: bold; 
+/*			margin: 0px 0px 0px;*/ 
 			text-align: left;
 		}
 		
-		.redtext {
+		.redtxt {
 			font-size: 1em;
 			color: #a11010;
 			text-align: left;
@@ -77,7 +77,7 @@
 			background: #e3e3e3;
 		}
 		
-		.textBox {
+		.textbox {
 			padding: 2px;
 			width: 99px;
 		}
@@ -118,36 +118,39 @@
 	<!-- <g:DecoratorPanel addStyleNames="{style.spaced}"> -->
 
 	<g:VerticalPanel>
-		<g:HorizontalPanel horizontalAlignment="center">
-			<g:VerticalPanel>
-				<g:FlexTable ui:field="groupsFlexTable" cellSpacing="2"
-					cellPadding="30" width="400px" addStyleNames="{style.greentext}" />
 
-
-				<g:HorizontalPanel>
-					<!-- <g:Label text="Group Name" addStyleNames="{style.spaced}" /> -->
-					<g:TextBox ui:field="newGroupTextBox" addStyleNames="{style.textBox}" />
-					<!-- <g:Label text="Hosts Number" addStyleNames="{style.spaced} {style.expel1}" 
-						/> -->
-					<g:IntegerBox ui:field="newHostsTextBox"
-						addStyleNames="{style.textBox} {style.expel1}" />
-					<g:TextBox ui:field="newMappingTextBox" addStyleNames="{style.textBox}" />
-					<g:Button ui:field="addGroupButton" addStyleNames="{style.expel1}"
-						text="Add Group" />
-				</g:HorizontalPanel>
-			</g:VerticalPanel>
-
-		</g:HorizontalPanel>
-		<g:Label ui:field="groupsInfo" addStyleNames="{style.redtext} {style.spaced}" />
-
-		<g:cell horizontalAlignment="right">
 			<g:HorizontalPanel>
-				<g:Button ui:field="btnReset" text="Clear Groups"
-					addStyleNames="{style.expel}" />
-				<!-- <g:Button ui:field="btnNext" text="Next->" addStyleNames="{style.expel}" 
-					/> -->
+				<g:VerticalPanel>
+					<g:FlexTable ui:field="groupsFlexTable" cellSpacing="2"
+						cellPadding="30" width="400px" addStyleNames="{style.greentext}" />
+
+
+					<g:HorizontalPanel>
+						<!-- <g:Label text="Group Name" addStyleNames="{style.spaced}" /> -->
+						<g:TextBox ui:field="newGroupTextBox" addStyleNames="{style.textbox}" />
+						<!-- <g:Label text="Hosts Number" addStyleNames="{style.spaced} {style.expel1}" 
+							/> -->
+						<g:IntegerBox ui:field="newHostsTextBox"
+							addStyleNames="{style.textbox} {style.expel1}" />
+						<g:TextBox ui:field="newMappingTextBox" addStyleNames="{style.textbox}" />
+						<g:Button ui:field="addGroupButton" addStyleNames="{style.expel1}"
+							text="Add Group" />
+					</g:HorizontalPanel>
+				</g:VerticalPanel>
+
 			</g:HorizontalPanel>
-		</g:cell>
+			
+		
+			<g:Label ui:field="groupsInfo" addStyleNames="{style.redtxt} {style.spaced}" />
+
+			<g:cell horizontalAlignment="right">
+				<g:HorizontalPanel>
+					<g:Button ui:field="btnReset" text="Clear Groups"
+						addStyleNames="{style.expel}" />
+					<!-- <g:Button ui:field="btnNext" text="Next->" addStyleNames="{style.expel}" 
+						/> -->
+				</g:HorizontalPanel>
+			</g:cell>
 
 	</g:VerticalPanel>
 	<!-- </g:DecoratorPanel> -->
