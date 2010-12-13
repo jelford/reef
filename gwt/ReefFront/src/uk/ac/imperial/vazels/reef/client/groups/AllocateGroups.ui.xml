@@ -118,7 +118,7 @@
 	<!-- <g:DecoratorPanel addStyleNames="{style.spaced}"> -->
 
 	<g:VerticalPanel>
-		<g:HorizontalPanel>
+		<g:HorizontalPanel horizontalAlignment="center">
 			<g:VerticalPanel>
 				<g:FlexTable ui:field="groupsFlexTable" cellSpacing="2"
 					cellPadding="30" width="400px" addStyleNames="{style.greentext}" />
