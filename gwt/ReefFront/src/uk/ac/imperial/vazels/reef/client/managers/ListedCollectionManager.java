@@ -8,6 +8,9 @@ import uk.ac.imperial.vazels.reef.client.MultipleRequester;
 /**
  * Like {@link CollectionManager} but takes the ids of its managers from
  * a requester. This way we don't need to manually add all the items.
+ * <p>
+ * Remember that manager methods affect the collection rather than individual items.
+ * Data still needs to be individually pulled or pushed for each item.
  *
  * @param <Id> The type of item ids
  * @param <Man> The type of item managers
@@ -16,10 +19,12 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
 
   private Manager<Set<Id>, Void> listManager;
   private CollectionManager<Id, Man> collectionManager;
+  private Set<IManager> collectionChangers;
   
   public ListedCollectionManager() {
     listManager = new ListManager();
     collectionManager = null;
+    collectionChangers = new HashSet<IManager>();
   }
   
   /**
@@ -31,7 +36,7 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
   }
 
   /**
-   * Add a new item to the list and push changes on the item manager.
+   * Add a new item to the list.
    * Warning: if the new manager thinks the item is already deleted,
    * your returned manager will be your only link to it.
    * @param id Id for the new manager.
@@ -45,6 +50,7 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
     
     Man man = createManager(id, true);
     getCollectionManager().addManager(id, man);
+    addCollectionChanger(curMan);
     
     return man;
   }
@@ -68,11 +74,29 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
   
   @Override
   public boolean hasLocalChanges() {
-    return getCollectionManager().hasAnyLocalChanges();
+    return listManager.hasLocalChanges();
+  }
+  
+  /**
+   * Like {@link ListedCollectionManager#hasLocalChanges()} but
+   * looks at all the child managers too.
+   * @return {@code true} if there are any visible local changes.
+   */
+  public boolean hasAnyLocalChanges() {
+    return listManager.hasLocalChanges() && getCollectionManager().hasAnyLocalChanges();
   }
   
   @Override
   public boolean hasServerData() {
+    return listManager.hasServerData();
+  }
+  
+  /**
+   * Like {@link ListedCollectionManager#hasServerData()} bu
+   * looks at all the child managers too.
+   * @return {@code true} if there are any visible local changes.
+   */
+  public boolean hasAllServerData() {
     return listManager.hasServerData() && getCollectionManager().hasAllServerData();
   }
   
@@ -95,8 +119,13 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
   
   @Override
   public void withServerData(final PullCallback callback)
+    throws MissingRequesterException {
+    listManager.withServerData(callback);
+  }
+  
+  public void withAllServerData(final PullCallback callback)
       throws MissingRequesterException {
-    listManager.withServerData(new PullCallback() {
+    withServerData(new PullCallback() {
       @Override
       public void got() {
         try {
@@ -114,6 +143,14 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
 
   @Override
   public void getServerData() throws MissingRequesterException {
+    listManager.getServerData();
+  }
+  
+  /**
+   * Get server data for this and all the child managers.
+   * @throws MissingRequesterException
+   */
+  public void getAllServerData() throws MissingRequesterException {
     listManager.withServerData(new PullCallback() {
       @Override
       public void got() {
@@ -128,10 +165,42 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
   }
   
   @Override
-  public void pushLocalData(PushCallback callback)
+  public void pushLocalData(PushCallback callback) {
+    try {
+      // This will remove managers from collectionChangers
+      new CollectionCallRecorder(collectionChangers,callback) {
+        @Override
+        protected void call(IManager man, PushCallback generatedCb)
+          throws MissingRequesterException {
+          man.pushLocalData(generatedCb);
+        }
+      }.start();
+    }
+    catch(MissingRequesterException e) {
+      e.printStackTrace();
+    }
+  }
+  
+  /**
+   * Push all the local data including child managers.
+   * @param callback
+   * @throws MissingRequesterException
+   */
+  public void pushAllLocalData(final PushCallback callback)
       throws MissingRequesterException {
-    getCollectionManager().pushAllLocalData(callback);
-    listManager.serverChange();
+    getCollectionManager().pushAllLocalData(new PushCallback() {
+      @Override
+      public void got() {
+        clearCollectionChangers();
+        listManager.serverChange();
+        callback.got();
+      }
+      
+      @Override
+      public void failed() {
+        callback.failed();
+      }
+    });
   }
   
   /**
@@ -187,6 +256,23 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
       collectionManager = new CollectionManager<Id, Man>();
     }
     return collectionManager;
+  }
+  
+  /**
+   * Called when a manager is added or removed that would change the collection.
+   * This means a real addition or deletion that would change the requested item list.
+   * @param man The manager in question.
+   */
+  protected void addCollectionChanger(IManager man) {
+    collectionChangers.add(man);
+    listManager.change();
+  }
+  
+  /**
+   * Clears out the list of collection changes.
+   */
+  protected void clearCollectionChangers() {
+    collectionChangers = new HashSet<IManager>();
   }
   
   /**
