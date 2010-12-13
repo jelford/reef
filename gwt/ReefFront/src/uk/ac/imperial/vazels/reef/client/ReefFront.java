@@ -4,7 +4,6 @@ import uk.ac.imperial.vazels.reef.client.actors.UploadActorWidget;
 import uk.ac.imperial.vazels.reef.client.groups.AllocateGroups;
 import uk.ac.imperial.vazels.reef.client.servercontrol.ServerControl;
 import uk.ac.imperial.vazels.reef.client.workloads.WorkloadTestWidget;
-import uk.ac.imperial.vazels.reef.client.workloads.WorkloadWidget;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.ui.RootPanel;
