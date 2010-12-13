@@ -1,8 +1,28 @@
 import config
 import restlite
+from restlite import tojson
 import urlparse
 import authentication
-from SerializableClasses import DynamicDict
+
+# Defined a set class that will serialize nicely so that it Python won't cry
+#   when we try to return it to the client (as json)
+class Group(dict):
+  def __init__(self):
+    self["name"] = None # We name all groups
+    self["size"] = 0 # Need to store the size
+    self["workloads"] = set([]) # Will store a list of workload names
+    self["filters"] = set([]) # Store a list of mapping restrictions (currently non-functional)
+    self["online_hosts"] = set([]) # Store a list of host names for connected & evolving hosts
+    self["evolving_hosts"] = set([])  
+
+  def _json_ (self) :
+    return {"name" : self["name"],
+            "size" : self["size"],
+            "workloads" : list(self["workloads"]),
+            "filters" : list(self["filters"]),
+            "online_hosts" : list(self["online_hosts"]),
+            "evolving_hosts" : list(self["evolving_hosts"])
+            }
 
 ### Allows for submitting groups ###
 
@@ -11,13 +31,7 @@ those of the form /groups/somethingMore are used for individual groups'''
 
 # Blank newgroup with some values initialized
 def __newGroup() :
-  return DynamicDict({ "name" : None, # We name all groups
-          "size" : 0, # Need to store the size
-          "workloads" : set([]), # Will store a list of workload names
-          "filters" : set([]), # Store a list of mapping restrictions (currently non-functional)
-          "online_hosts" : set([]), # Store a list of host names for connected & evolving hosts
-          "evolving_hosts" : set([])
-        })
+  return Group()
 
 @restlite.resource
 def group_batch_handler():

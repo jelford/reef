@@ -181,7 +181,7 @@ def updateStatuses():
   vazels_command_stdout_WRITE = open(tmpFile,"w")
   vazels_command_stdout_READ = open(tmpFile,"r")
   
-  vazels_command_process = subprocess.Popen(args, cwd=getCommandLineClientPath(), stdout=vazels_command_stdout_WRITE, stderr=cazels_command_stdout_WRITE)
+  vazels_command_process = subprocess.Popen(args, cwd=getCommandLineClientPath(), stdout=vazels_command_stdout_WRITE, stderr=vazels_command_stdout_WRITE)
   
   # Dispatch a new thread to catch the output for us. It could take a
   #   little while for stuff to come back.
