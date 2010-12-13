@@ -11,7 +11,7 @@ import java.util.Set;
  * @param <Id> The type defining the Id of each item (key type)
  * @param <Man> The type of manager for each of the items.
  */
-public class CollectionManager<Id, Man extends IManager> implements IManager{
+public class CollectionManager<Id, Man extends IManager>{
   private Map<Id, Man> managers = null;
   
   public CollectionManager() {
@@ -66,16 +66,8 @@ public class CollectionManager<Id, Man extends IManager> implements IManager{
   public Man getManager(Id id) {
     return managers.get(id);
   }
-  
-  @Override
-  public void serverChange() {
-    for(Man man : managers.values()) {
-      man.serverChange();
-    }
-  }
 
-  @Override
-  public boolean hasServerData() {
+  public boolean hasAllServerData() {
     // Decide we don't if we're missing info from any of these
     for(Man man : managers.values()) {
       if(!man.hasServerData()) {
@@ -84,9 +76,8 @@ public class CollectionManager<Id, Man extends IManager> implements IManager{
     }
     return true;
   }
-
-  @Override
-  public boolean hasLocalChanges() {
+  
+  public boolean hasAnyLocalChanges() {
     // Decide we have local changes if any of the items have local changes
     for(Man man : managers.values()) {
       if(man.hasLocalChanges()) {
@@ -96,8 +87,8 @@ public class CollectionManager<Id, Man extends IManager> implements IManager{
     return false;
   }
 
-  @Override
-  public void withServerData(final PullCallback callback)
+  
+  public void withAllServerData(final PullCallback callback)
       throws MissingRequesterException {
     // Make a set of all the items missing data
     
@@ -118,13 +109,13 @@ public class CollectionManager<Id, Man extends IManager> implements IManager{
     }.start();
   }
 
-  @Override
+  
   public void getServerData() throws MissingRequesterException {
-    withServerData(null);
+    withAllServerData(null);
   }
 
-  @Override
-  public void pushLocalData(final PushCallback callback)
+  
+  public void pushAllLocalData(final PushCallback callback)
       throws MissingRequesterException {
     Set<Man> changeSet = new HashSet<Man>();
     

@@ -68,12 +68,12 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
   
   @Override
   public boolean hasLocalChanges() {
-    return getCollectionManager().hasLocalChanges();
+    return getCollectionManager().hasAnyLocalChanges();
   }
   
   @Override
   public boolean hasServerData() {
-    return listManager.hasServerData() && getCollectionManager().hasServerData();
+    return listManager.hasServerData() && getCollectionManager().hasAllServerData();
   }
   
   @Override
@@ -100,7 +100,7 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
       @Override
       public void got() {
         try {
-          getCollectionManager().withServerData(callback);
+          getCollectionManager().withAllServerData(callback);
         }
         catch(MissingRequesterException e) {
           // Ignore this, I can't see a good way to relay this to the user
@@ -130,7 +130,7 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
   @Override
   public void pushLocalData(PushCallback callback)
       throws MissingRequesterException {
-    getCollectionManager().pushLocalData(callback);
+    getCollectionManager().pushAllLocalData(callback);
     listManager.serverChange();
   }
   
