@@ -1,5 +1,11 @@
 package uk.ac.imperial.vazels.reef.client.workloads;
 
+import java.util.Set;
+
+import uk.ac.imperial.vazels.reef.client.actors.ActorManager;
+import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
+import uk.ac.imperial.vazels.reef.client.managers.PullCallback;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -36,11 +42,6 @@ public class ActorWorkloadWidget extends Composite {
     attachedActors = new ListBox();
     assignmentTab.add(attachedActors);
 
-    //using local workloads
-    //for(String wkld: Workloads.returnWorkloads()) {
-    //wkldsBox.addItem(wkld);
-    //}
-
     Button submitButton = new Button ("Submit", new ClickHandler() {
       public void onClick(ClickEvent event) {
         assignActor();
@@ -52,14 +53,61 @@ public class ActorWorkloadWidget extends Composite {
 
   }
   void updateWkldsBox() {
-
-  }
-  private void updateActorBox() {
-    // TODO Auto-generated method stub
+    final WorkloadManager man = WorkloadManager.getManager();
+    wkldsBox.clear();
+    try {
+      //get the list of workloads from the server and add them to wkldsBox
+      man.withServerData(new PullCallback() {
+        public void got() {
+          Set<String> workloads = man.getNames();
+          for(String wkld: workloads) {
+            wkldsBox.addItem(wkld);
+          }
+        }
+      });
+    } catch (MissingRequesterException e) {
+      e.printStackTrace();
+    }
   }
   
-  private void updateAttachedActorsBox() {
-    // TODO Auto-generated method stub
+  private void updateActorBox() {
+    final ActorManager man = ActorManager.getManager();
+    actorsBox.clear();
+    try {
+      //get the list of workloads from the server and add them to wkldsBox
+      man.withServerData(new PullCallback() {
+        public void got() {
+          Set<String> actors = man.getNames();
+          for(String actor: actors) {
+            wkldsBox.addItem(actor);
+          }
+        }
+      });
+    } catch (MissingRequesterException e) {
+      e.printStackTrace();
+    }
+  }
 
+  private void updateAttachedActorsBox() {
+    attachedActors.clear();
+    //need there to be a group present to have a group selected
+    if(wkldsBox.getItemCount() > 0) {
+      WorkloadManager manager = WorkloadManager.getManager();
+      final SingleWorkloadManager singleWkldManager = manager.getWorkloadManager(wkldsBox.getItemText(wkldsBox.getSelectedIndex()));
+      //get workload data from server, and on callback, use the data on actors
+      try {
+        singleWkldManager.withServerData(new PullCallback() {
+          public void got() {
+            Set <String> theAssignedActors = singleWkldManager.getActors();
+            for(String actor: theAssignedActors) {
+              attachedActors.addItem(actor);
+            }            
+          }
+        });
+      }
+      catch (MissingRequesterException e) {
+        e.printStackTrace();
+      }
+    }
   }
 }
