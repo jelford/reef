@@ -10,8 +10,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class ActorWorkloadWidget extends Composite {
-  ListBox wkldsBox, actorsBox;
-  TextBox attachedActors;
+  ListBox wkldsBox, actorsBox, attachedActors;
   
   public ActorWorkloadWidget() {
     initWidget();
@@ -24,7 +23,7 @@ public class ActorWorkloadWidget extends Composite {
 
     wkldsBox = new ListBox();
     assignmentTab.add(wkldsBox);
-
+/*
     assignmentTab.add(new Label("Groups: "));
 
     groupsBox = new ListBox();
@@ -33,7 +32,7 @@ public class ActorWorkloadWidget extends Composite {
         updateAttachedWklds();
       }
     };*/
-    ClickHandler updateGroupList = new ClickHandler(){
+/*    ClickHandler updateGroupList = new ClickHandler(){
       @Override
       public void onClick(ClickEvent event) {
         updateGroupsBox();
@@ -64,5 +63,6 @@ public class ActorWorkloadWidget extends Composite {
       }
     });
     assignmentTab.add(submitWtoG);
+*/
   }
 }
