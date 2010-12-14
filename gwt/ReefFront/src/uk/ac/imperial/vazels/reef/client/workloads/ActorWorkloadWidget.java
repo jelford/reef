@@ -19,50 +19,28 @@ public class ActorWorkloadWidget extends Composite {
     VerticalPanel assignmentTab = new VerticalPanel();
     initWidget(assignmentTab);
 
-    assignmentTab.add(new Label("Actors: "));
-
+    assignmentTab.add(new Label("Workloads: "));
     wkldsBox = new ListBox();
+    //use manager handler to get update of when workloads change
     assignmentTab.add(wkldsBox);
-/*
-    assignmentTab.add(new Label("Groups: "));
 
-    groupsBox = new ListBox();
-/*    ChangeHandler handler = new ChangeHandler() {
-      public void onChange(ChangeEvent event) {
-        updateAttachedWklds();
-      }
-    };*/
-/*    ClickHandler updateGroupList = new ClickHandler(){
-      @Override
-      public void onClick(ClickEvent event) {
-        updateGroupsBox();
-      }
-    };
-    groupsBox.addClickHandler(updateGroupList);
-//    groupsBox.addChangeHandler(handler);
-    assignmentTab.add(groupsBox);
+    assignmentTab.add(new Label("Actors: "));
+    actorsBox = new ListBox();
+    assignmentTab.add(actorsBox);
 
-    assignmentTab.add(new Label("Currently attached workloads: "));
-
-    attachedWklds = new TextBox();
-    attachedWklds.setReadOnly(true);
-    assignmentTab.add(attachedWklds);
-    updateAttachedWklds();
+    //using local workloads
     for(String wkld: Workloads.returnWorkloads()) {
       wkldsBox.addItem(wkld);
     }
 
-    updateGroupsBox();
-
-    //need groups and workloads info input into box
-    //need choose which workloads to attach workload to?
-    Button submitWtoG = new Button ("Submit", new ClickHandler() {
+    Button submitButton = new Button ("Submit", new ClickHandler() {
       public void onClick(ClickEvent event) {
-        addWorkload();
-        showSubmission();
+        assignActor();
       }
     });
-    assignmentTab.add(submitWtoG);
-*/
+    assignmentTab.add(submitButton);
   }
+  void assignActor() {
+    
+  } 
 }
