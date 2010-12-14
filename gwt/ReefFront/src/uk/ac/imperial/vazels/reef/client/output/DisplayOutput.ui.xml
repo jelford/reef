@@ -1,0 +1,14 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:o="urn:import:uk.ac.imperial.vazels.reef.client.output">
+	
+	<ui:style field="useful" src="../ui/useful.css"/>
+	
+	<g:VerticalPanel addStyleNames="{useful.majorComponentWidth}">
+		<o:OutputView ui:field="view"/>
+		<g:cell horizontalAlignment="CENTER">
+			<g:Button ui:field="refresher">Reload Data</g:Button>
+		</g:cell>
+	</g:VerticalPanel>
+</ui:UiBinder> 

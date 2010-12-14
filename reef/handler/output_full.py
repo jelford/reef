@@ -9,18 +9,22 @@ import authentication
 
 @restlite.resource
 def output_full_handler():
-	global authmodel
-	import parser
-	import os
-	import restlite
-	## requests will return the entire data available
-	
-	def GET(request):
-		path1 = config.getSettings("global")["projdir"]
-		path = os.path.join(path1, "experiment/Output_Folder")
-		return request.response(parser.scan_output(path))
-		
-	def POST(request,entity):
-		pass
-		
-	return locals()
+    import parser
+    import os
+    import vazelsmanager
+    ## requests will return the entire data available
+
+    def GET(request):
+        authentication.login(request)
+
+        # We want the proper experiment path that vazelsmanager tells us
+        exp_dir = vazelsmanager.getExperimentPath()
+        path = os.path.join(exp_dir,"Output_Folder")
+        parsed = parser.scan_output(path)
+        # If the parsing broke in any way we get back None
+        if parsed is None:
+            raise restlite.Status, "500 Could Not Read Output Data"
+        return request.response(parsed)
+
+    return locals()
+

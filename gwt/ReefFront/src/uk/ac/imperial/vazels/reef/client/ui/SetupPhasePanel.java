@@ -1,7 +1,5 @@
 package uk.ac.imperial.vazels.reef.client.ui;
 
-import uk.ac.imperial.vazels.reef.client.groups.AllocateGroups;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Button;
@@ -37,6 +35,6 @@ public class SetupPhasePanel extends Composite {
   
   @UiHandler("btnStart")
   void start(ClickEvent event) {
-    top.setContent("Running Phase", new AllocateGroups());
+    top.setContent("Running Phase", new RunningPhasePanel());
   }
 }
