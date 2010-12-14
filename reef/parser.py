@@ -5,7 +5,7 @@ import sys
 # hopefully this should deal with the issue that lab machines don't
 # have it installed
 
-import protocolBuffer_pb2
+import vOutput_pb2
 
 def scan_output(path_to_output):
 	# Main entry point to scanner, this will return a dictionary with the
