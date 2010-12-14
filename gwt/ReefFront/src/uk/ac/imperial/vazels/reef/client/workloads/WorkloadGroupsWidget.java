@@ -5,6 +5,7 @@ import java.util.Set;
 import uk.ac.imperial.vazels.reef.client.managers.GroupManager;
 import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
 import uk.ac.imperial.vazels.reef.client.managers.PullCallback;
+import uk.ac.imperial.vazels.reef.client.managers.PushCallback;
 import uk.ac.imperial.vazels.reef.client.managers.SingleGroupManager;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -20,109 +21,89 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/* A class to allow the assigning, including uploading, of workloads to groups
+ * 
+ */
 public class WorkloadGroupsWidget extends Composite {
 
-  //  private WorkloadSummary workloads;
-  ListBox wkldsBox, groupsBox;
-  ListBox attachedWklds; //make this non static?
+  //wkldsBox is list of workloads
+  //groupsBox is list of groups
+  //attachedWklds is list of workloads attached to currently shown group
+  ListBox wkldsBox, groupsBox, attachedWklds;
 
   public WorkloadGroupsWidget() {
     initPanel();
-    //    refresh();
-  }
+    //obtain current groups on server to put in box
+    updateGroupsBox();
 
+    //obtain current workloads assigned to selected group
+    updateAttachedWklds();    
+  }
+  
+/* Initialises widget, initialises the 3 ListBox objects and submit button.
+ */
   void initPanel() {
     VerticalPanel assignmentTab = new VerticalPanel();
     initWidget(assignmentTab);
+    
+    //display list of groups
+    assignmentTab.add(new Label("Groups: "));
+    groupsBox = new ListBox();
 
-    assignmentTab.add(new Label("Workloads: "));
+    //handler only required if expect groups to change after widget loads
+    groupsBox.addClickHandler(new ClickHandler(){
+      public void onClick(ClickEvent event) {
+        updateGroupsBox();
+      }
+    });
+    assignmentTab.add(groupsBox);
 
+    //display list of workloads
+    assignmentTab.add(new Label("Select a workload to assign:"));
+ 
     wkldsBox = new ListBox();
+    //handler only required if expect workloads to change after widget loads
     wkldsBox.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent event) {
         updateWorkloadList();
       }
-      });
+    });
     assignmentTab.add(wkldsBox);
 
-    assignmentTab.add(new Label("Groups: "));
-
-    groupsBox = new ListBox();
-/*    ChangeHandler handler = new ChangeHandler() {
-      public void onChange(ChangeEvent event) {
-        updateAttachedWklds();
-      }
-    };*/
-    ClickHandler updateGroupList = new ClickHandler(){
-      @Override
-      public void onClick(ClickEvent event) {
-        updateGroupsBox();
-      }
-    };
-    groupsBox.addClickHandler(updateGroupList);
-//    groupsBox.addChangeHandler(handler);
-    assignmentTab.add(groupsBox);
-
-    assignmentTab.add(new Label("Currently attached workloads: "));
+    //display list of currently attached workloads
+    assignmentTab.add(new Label("Workloads currently attached to selected group:"));
 
     attachedWklds = new ListBox();
     assignmentTab.add(attachedWklds);
-    updateAttachedWklds();
-    
-    updateGroupsBox();
 
-    //need groups and workloads info input into box
-    //need choose which workloads to attach workload to?
+    //submit button for selected workload
     Button submitWtoG = new Button ("Submit", new ClickHandler() {
       public void onClick(ClickEvent event) {
         addWorkload();
-        showSubmission();
       }
     });
     assignmentTab.add(submitWtoG);
   }
 
-  //this may need to become more like updateGroupsBox
-  private void updateWorkloadList() {
-    wkldsBox.clear();
-    for(String wkld: Workloads.returnWorkloads()) {
-      wkldsBox.addItem(wkld);
-    }
-  }
-
-  //update attached workloads for the current 
-  private void updateAttachedWklds() {
-    attachedWklds.clear();
-    if(groupsBox.getItemCount() > 0) {
-      GroupManager manager = GroupManager.getManager();
-      final SingleGroupManager gpManager = manager.getGroupManager(groupsBox.getItemText(groupsBox.getSelectedIndex()));
-      try {
-        gpManager.withServerData(new PullCallback() {
-          public void got() {
-            String [] theAttachedWklds = gpManager.getWorkloads();
-            for(String wkld: theAttachedWklds) {
-              attachedWklds.addItem(wkld);
-            }            
-          }          
-        });
-      }
-      catch (MissingRequesterException e) {
-        e.printStackTrace();
-      }
-    }
-  }
+  //update the groups box using list of groups from server, possibly only needed once each time widget runs
   private void updateGroupsBox() {
     final GroupManager man = GroupManager.getManager();
+    //get the list of groups from the server and add any new items to the group box
     try {
       man.withServerData(new PullCallback() {
+        /* on callback, get the list of groups as a set
+         * for all elements in groupsBox, if element is in the new set, remove from the new set
+         *  if it is not, remove from groupsBox
+         * then add any remaining elements in the new set to groupsBox
+         */
         public void got() {
           Set<String> groups = man.getNames(); //returns Set<String>
           for(int i = 0; i < groupsBox.getItemCount() ; i++) {
-            if(!groups.contains(groupsBox.getItemText(i))) {
-              groupsBox.removeItem(i);
+            if(groups.contains(groupsBox.getItemText(i))) {
+              groups.remove(groupsBox.getItemText(i));
             }
             else {
-              groups.remove(groupsBox.getItemText(i));
+              groupsBox.removeItem(i);
             }
           }
           for(String group: groups) {
@@ -133,140 +114,60 @@ public class WorkloadGroupsWidget extends Composite {
     } catch (MissingRequesterException e) {
       e.printStackTrace();
     }
-
   }
+
+  //update the list of workloads
+  //Note: this will need to become more like updateGroupsBox
+  private void updateWorkloadList() {
+    wkldsBox.clear();
+    for(String wkld: Workloads.returnWorkloads()) {
+      wkldsBox.addItem(wkld);
+    }
+  }
+
+  //update attached workloads for the current group
+  private void updateAttachedWklds() {
+    attachedWklds.clear();
+    //need there to be a group present to have a group selected
+    if(groupsBox.getItemCount() > 0) {
+      GroupManager manager = GroupManager.getManager();
+      final SingleGroupManager gpManager = manager.getGroupManager(groupsBox.getItemText(groupsBox.getSelectedIndex()));
+      //update known groups from server, and on callback get and use the new workload data
+      try {
+        gpManager.withServerData(new PullCallback() {
+          public void got() {
+            String [] theAttachedWklds = gpManager.getWorkloads();
+            for(String wkld: theAttachedWklds) {
+              attachedWklds.addItem(wkld);
+            }            
+          }
+        });
+      }
+      catch (MissingRequesterException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+//add selected workload to selected group and then push this new data to server
   public void addWorkload() {
     GroupManager manager = GroupManager.getManager();
     SingleGroupManager gpManager = manager.getGroupManager(groupsBox.getItemText(groupsBox.getSelectedIndex()));
     gpManager.addWorkload(wkldsBox.getItemText(wkldsBox.getSelectedIndex()));
     try {
-      gpManager.pushLocalData(null);
+      gpManager.pushLocalData(new PushCallback() {
+//show submission occurred
+        public void got() {
+          updateAttachedWklds(); 
+        }
+
+        public void failed() {
+          Window.alert("Failure: no confirmation from server that workload assignment succeeded");
+        }        
+      });
     }
     catch(MissingRequesterException e) {
       e.printStackTrace();
     }
   }
-  private void showSubmission() {
-    updateAttachedWklds(); 
-  }
 }
-
-/* The below is the code for server interaction.*/
-/**
- * Post all the current group data to the server & update the local data with
- * the returned info from the server (i.e. check that local and remote records
- * are the same).
- */
-/*  private class GroupDataUpdate extends MultipleRequester<GroupSummary>{
-    public GroupDataUpdate() {
-      super(RequestBuilder.POST, "/groups/", new Converter<GroupSummary>(){
-        public GroupSummary convert(String original) {
-          return new GroupSummary(original);
-        }      });}
-    protected QueryArg[] getArgs() {
-      // Construct an array of QueryArgs we'll use for our post request
-      QueryArg[] queryArguments = new QueryArg[groups.keySet().size()];
-      int index = 0;
-      for (String groupName : groups.keySet()) {
-        queryArguments[index] = new QueryArg(groupName, 
-            Integer.toString(groups.get(groupName)));
-        index++;
-      }
-      return queryArguments;
-    }
-    protected void received(GroupSummary reply, boolean success, String message) {
-      if(success)
-        refreshGroupData(reply);
-    }
-  }
-
-  private class GroupWorkloadPostRequest extends MultipleRequester<GroupSummary>{
-    GroupWorkloadPostRequest() {
-      super(RequestBuilder.POST, "/groups/", null);
-    }
-
-
-
-  }
-
-
-  /**
- * Dispatch a request to the server letting it know we'd like to hear about
- * workload info.
- *//*
-  private void refresh() {
-    new WorkloadDataRequest().go(new RequestHandler<WorkloadSummary>(){
-      @Override
-      public void handle(WorkloadSummary reply, boolean success, String message) {
-        if (success) {
-          refreshWorkloadListBox(reply);
-        }
-      }
-    });
-  }
-
-  private void refreshWorkloadListBox(final WorkloadSummary summary) {
-    wkldsBox.clear();
-    workloads = summary;    
-    for(int i = 0; i < workloads.size(); i++) {
-      wkldsBox.addItem(workloads.get(i));
-    }
-    //    refreshWorkloadsInfo();
-  }*/
-
-/**
- * Helper class to send requests to get workload info (this will send a batch
- * request to the server, and retrieve a summary of all workload info).
- *//*
-  private class WorkloadDataRequest extends MultipleRequester<WorkloadSummary>{
-    WorkloadDataRequest() {
-      super(RequestBuilder.GET, "/workloads/", 
-          new Converter<WorkloadSummary>() {
-        @Override
-        public WorkloadSummary convert(String original) {
-          return new WorkloadSummary(original);
-        }
-      });
-    }
-  }
-}*/
-/**
- * refreshWorkloadData with no data.
- */
-//  private void clearWorkloadData() {
-//    WorkloadSummary clearAllWorkloads = new WorkloadSummary();
-//    if (workloads != null) {
-//      for (String workloadName : workloads.keySet()) {
-//        clearAllWorkloads.put(workloadName, 0);
-//     }
-//   }
-//    refreshWorkloadData(clearAllWorkloads);
-//}
-/** no group updating here
- * Post all the current workload data to the server & update the local data with
- * the returned info from the server (i.e. check that local and remote records
- * are the same).
- */ 
-/* 
-  private class WorkloadDataUpdate extends MultipleRequester<WorkloadSummary>{
-    /*  public WorkloadDataUpdate() {
-      super(RequestBuilder.GET, "/workloads/", new Converter<WorkloadSummary>(){
-        @Override
-        public WorkloadSummary convert(String original) {
-          return new WorkloadSummary(original);
-        }
-      });
-    }*/
-/*
-    @Override
-    protected void received(WorkloadSummary reply, boolean success, String message) {
-      if(success)
-        refreshWorkloadData(reply);
-    }
-  }*/
-
-/**
- * Tell the server about the workloads in our table
- */
-//  private void batchUpdateServerWorkloads() {
-/*      protected QueryArg[] getArgs() {deleted     */
