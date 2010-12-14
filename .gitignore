@@ -2,5 +2,5 @@
 *.pyc
 *.class
 *pages.bak*
-gwt/ReefFront/reeffront/*
+gwt/ReefFront/war/reeffront/*
 gwt/ReefFront/war/WEB-INF/classes/*
