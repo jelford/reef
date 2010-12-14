@@ -20,9 +20,10 @@ def control_handler():
 
 @restlite.resource
 def start_handler():
-  def GET(request):
-    authentication.login(request)
-    raise restlite.Status("400 Invalid GET request to " + request["PATH_INFO"])
+### Shouldn't need this at all ###
+#  def GET(request):
+#    authentication.login(request)
+#    raise restlite.Status("400 Invalid GET request to " + request["PATH_INFO"])
   
   def POST(request, entity):
     authentication.login(request)

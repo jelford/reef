@@ -7,8 +7,8 @@ import authentication
 # Defined a set class that will serialize nicely so that it Python won't cry
 #   when we try to return it to the client (as json)
 class Group(dict):
-  def __init__(self):
-    self["name"] = None # We name all groups
+  def __init__(self, name):
+    self["name"] = name # We name all groups
     self["size"] = 0 # Need to store the size
     self["workloads"] = set([]) # Will store a list of workload names
     self["filters"] = set([]) # Store a list of mapping restrictions (currently non-functional)
@@ -29,9 +29,10 @@ class Group(dict):
 ''' URIs of the form /groups/$ are used for batch handling, whereas
 those of the form /groups/somethingMore are used for individual groups'''
 
-# Blank newgroup with some values initialized
-def __newGroup() :
-  return Group()
+### Don't need anymore ###
+# # Blank newgroup with some values initialized
+# def __newGroup() :
+#   return Group()
 
 @restlite.resource
 def group_batch_handler():
@@ -80,15 +81,13 @@ def group_handler():
       else:
         existing_groups[group_name].update(g_data)
     else:
+
       # New group
-      n_group = __newGroup()
-      n_group["name"] = group_name
+      n_group = Group(group_name)
       n_group.update(g_data)
       if n_group["size"] != 0:
         existing_groups[group_name] = n_group
     
-    #print config.getSettings
-
     try:
       return request.response(existing_groups[group_name])
     except KeyError:
