@@ -11,9 +11,12 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class ActorWorkloadWidget extends Composite {
   ListBox wkldsBox, actorsBox, attachedActors;
-  
+
   public ActorWorkloadWidget() {
     initWidget();
+    updateWkldsBox();
+    updateActorBox();
+    updateAttachedActorsBox();
   }
   public void initWidget() {
     VerticalPanel assignmentTab = new VerticalPanel();
@@ -28,10 +31,15 @@ public class ActorWorkloadWidget extends Composite {
     actorsBox = new ListBox();
     assignmentTab.add(actorsBox);
 
+<<
+    assignmentTab.add(new Label("Already assigned: "));
+    attachedActors = new ListBox();
+    assignmentTab.add(attachedActors);
+
     //using local workloads
-    for(String wkld: Workloads.returnWorkloads()) {
-      wkldsBox.addItem(wkld);
-    }
+    //for(String wkld: Workloads.returnWorkloads()) {
+    //wkldsBox.addItem(wkld);
+    //}
 
     Button submitButton = new Button ("Submit", new ClickHandler() {
       public void onClick(ClickEvent event) {
@@ -41,6 +49,17 @@ public class ActorWorkloadWidget extends Composite {
     assignmentTab.add(submitButton);
   }
   void assignActor() {
-    
-  } 
+
+  }
+  void updateWkldsBox() {
+
+  }
+  private void updateActorBox() {
+    // TODO Auto-generated method stub
+  }
+  
+  private void updateAttachedActorsBox() {
+    // TODO Auto-generated method stub
+
+  }
 }
