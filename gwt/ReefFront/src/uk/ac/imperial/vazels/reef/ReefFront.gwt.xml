@@ -4,10 +4,8 @@
   <inherits name='com.google.gwt.user.User'/>
   
   <!--  Inherit JSON schizzle -->
-  <inherits name="com.google.gwt.json.JSON" />
+  <!-- <inherits name="com.google.gwt.json.JSON" /> -->
   
-  <!--  inheriting maps -->
-  <!-- <inherits name="com.google.gwt.dev.util.collect.HashMap" /> -->
   <!--  Inheriting things for charts -->
   <inherits name='com.google.gwt.visualization.Visualization'/>
 
