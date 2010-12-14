@@ -165,7 +165,6 @@ public class MultipleRequester<Type> extends EasyRequest {
     return (code != null && code == 200);
   }
   
-
   /**
    * Implement this to show we can convert to {@code <Type>}.
    * 
