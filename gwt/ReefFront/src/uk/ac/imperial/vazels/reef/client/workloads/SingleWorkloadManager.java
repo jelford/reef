@@ -9,7 +9,7 @@ import uk.ac.imperial.vazels.reef.client.MultipleRequester;
 import uk.ac.imperial.vazels.reef.client.managers.Manager;
 
 /**
- * Manages a group object, deals with syncing to the server.
+ * Manages a workload object, deals with syncing to the server.
  */
 public class SingleWorkloadManager extends Manager<Workload, Void> {
   private Workload wkld;
@@ -28,8 +28,8 @@ public class SingleWorkloadManager extends Manager<Workload, Void> {
   }
 
   /**
-   * Get the name of this group.
-   * @return group name
+   * Get the name of this workload.
+   * @return workload name
    */
   public String getName() {
     return wkld.getName();
@@ -51,7 +51,7 @@ public class SingleWorkloadManager extends Manager<Workload, Void> {
   
   @Override
   protected boolean receivePullData(Workload data) {
-    // TODO If the group returned has a different name we break things currently
+    // TODO If the workload returned has a different name we break things currently
     wkld = data;
     return true;
   }
