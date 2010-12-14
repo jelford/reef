@@ -1,16 +1,11 @@
-import string
 import os
 import sys
-import restlite
 
-# all protocol buffer scripts are stored in the includes folder
+# all protocol buffer scripts are stored locally
 # hopefully this should deal with the issue that lab machines don't
 # have it installed
 
-sys.path.append('includes')
 import protocolBuffer_pb2
-
-
 
 def scan_output(path_to_output):
 	# Main entry point to scanner, this will return a dictionary with the
@@ -18,14 +13,20 @@ def scan_output(path_to_output):
 	
 	# if you do not provide the path to an Output_Folder, bad things might happen.
 	
-	print (path_to_output)
-	if os.path.exists(path_to_output):
-		result = scan_output_helper(path_to_output)
-	else:
-		print "Folder provided did not exist"
-		raise restlite.Status, "404 Output Folder Not Found"
+	#print (path_to_output)
+	#if os.path.exists(path_to_output):
+	#	result = scan_output_helper(path_to_output)
+	#else:
+	#	print "Folder provided did not exist"
+	#	raise restlite.Status, "404 Output Folder Not Found"
 
-	return result
+	# Instead of how we did it before, let any exceptions spell failure.
+	# This catches any problems with parsing too, although we should
+	# probably look for specific failures
+	try:
+		return scan_output_helper(path_to_output)
+	except:
+		return None
 	
 	
 def scan_output_helper(path):
@@ -34,26 +35,25 @@ def scan_output_helper(path):
 	# to store each layer in. Uses the current folder's name as the key for
 	# the dictionary. this ensures keys will not clash
 
-	folder_dict = {}
-
 	file_paths = [os.path.join(path, name) for name in os.listdir(path)]
 	
 	'''If any of the files in this directory are files, then they all are,
 		and they contain snapshots'''
-	if len(file_paths) > 0 and os.path.isfile(file_paths[0]) :
+	if not file_paths:
+		return {}
+	elif os.path.isfile(file_paths[0]) :
 		snapshots_list = [process_file(name) for name in file_paths]
 		snapshots_dict = {}
 		# Join all the dictionaries together as one
 		for snapshot in snapshots_list :
 			snapshots_dict.update(snapshot)
 		return snapshots_dict
-	elif len(file_paths) > 0 :
+	else:
+		folder_dict = {}
 		for name in file_paths:
 			# Recurse through each folder building up a tree
 			folder_dict[os.path.basename(name)] = scan_output_helper(name)
 		return folder_dict
-	else :
-		return {}
 	
 def process_file(filepath):
 
@@ -62,18 +62,13 @@ def process_file(filepath):
 
 	# prepares an object for us to read the protocol buffer
 	time_serie = protocolBuffer_pb2.TimeSerie()
-	f = open(filepath, "rb")
-	time_serie.ParseFromString(f.read())
-	f.close()
+	with open(filepath, "rb") as f:
+		time_serie.ParseFromString(f.read())
 	
 	# protocol buffer is now all in memory.
 	
 	time_serie_dict = {}
-	# since the snapshots don't keep track of how many are in the time_serie
-	# we shall keep a counter, mainly so there is a key that we can fetch data
-	# with, could consider using timestamp?
 	
-	i = 0
 	for snapshot in time_serie.snapshot:
 		
 		snapshot_dict = {}
@@ -95,7 +90,5 @@ def process_file(filepath):
 		
 		# Index them by timestamp instead of order in file
 		time_serie_dict[snapshot_dict['timestamp']] = snapshot_dict
-		# time_serie_dict[i] = snapshot_dict
-		i += 1
 		
 	return time_serie_dict
