@@ -4,6 +4,7 @@ import uk.ac.imperial.vazels.reef.client.actors.UploadActorWidget;
 import uk.ac.imperial.vazels.reef.client.groups.AllocateGroups;
 import uk.ac.imperial.vazels.reef.client.servercontrol.ServerControl;
 import uk.ac.imperial.vazels.reef.client.workloads.WorkloadTestWidget;
+import uk.ac.imperial.vazels.reef.client.workloads.ActorWorkloadWidget;
 import uk.ac.imperial.vazels.reef.client.workloads.WorkloadGroupsWidget;
 import uk.ac.imperial.vazels.reef.client.workloads.WorkloadWidget;
 
@@ -25,6 +26,7 @@ public class ReefFront implements EntryPoint
 	  RootPanel.get("server-control").add(new ServerControl());
 	  RootPanel.get("workloads").add(new WorkloadWidget());
 	  RootPanel.get("actors").add(new UploadActorWidget()); 
-    RootPanel.get("workloadsToGroups").add(new WorkloadGroupsWidget());
+  //  RootPanel.get("workloadsToGroups").add(new WorkloadGroupsWidget());
+    RootPanel.get("workloadsToGroups").add(new ActorWorkloadWidget());
 	}
 }

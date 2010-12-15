@@ -95,11 +95,6 @@ public class ActorWorkloadWidget extends Composite {
       //get the list of workloads from the server and add them to wkldsBox
       man.withServerData(new PullCallback() {
         public void got() {
-          /*          Set<String> workloads = man.getNames();
-          for(String wkld: workloads) {
-            wkldsBox.addItem(wkld);
-          }
-        }*/
           Set<String> workloads = man.getNames(); //returns Set<String>
           for(int i = 0; i < wkldsBox.getItemCount() ; i++) {
             if(workloads.contains(wkldsBox.getItemText(i))) {
