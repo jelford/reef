@@ -1,6 +1,0 @@
-
-
-<!-- Includes the source files for the Chrome theme. -->
-<module>
-      <stylesheet src="gwt/neon/neon.css"/>
-</module>
