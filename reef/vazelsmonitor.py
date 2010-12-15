@@ -33,8 +33,13 @@ def __applyWorkloadsToControlCentre(interval) :
         print("Managing group: " + group)
         for wkld in groups[group]["workloads"]:
           print ("Adding workload(" + wkld + ") to group("+group+")")
+          #try:
           if wkld != "SUE" : __applyWorkload(workload_def=workloadDefs[wkld], target_group=groups[group])
+          wd = workloadDefs[wkld]
+          tg = groups[group]
           __extractActors(workload_def=workloadDefs[wkld], target_group=groups[group])
+          #except KeyError:
+          #  print "Trying to access workloadDefs["+str(wkld)+"], groups["+str(group)+"]"
 
     elif runningState == "starting":
       # Go round again, after a quick pause
@@ -74,10 +79,13 @@ def __applyWorkload(workload_def, target_group):
 def __extractActors(workload_def, target_group):
   print("Extracting actors")
   group_number = target_group['group_number']
-  experiment_dir = config.getSettings("global")['expdir']
+  experiment_dir = vazelsmanager.getExperimentPath()
   
   print("workload_def: " + str(workload_def))
-  for actor_name in [g['name'] for g in config.getSettings("actors")["defs"]]: #workload_def['actors']:
+  
+  actorDefs = config.getSettings("actors")["defs"]
+  
+  for actor_name in [actorDefs[g]['name'] for g in actorDefs]: #workload_def['actors']:
     print("Extracting actor: " + actor_name)
     actor = config.getSettings('actors')['defs'][actor_name]
     type=actor['type'].upper()
