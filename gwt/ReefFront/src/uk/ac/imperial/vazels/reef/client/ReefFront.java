@@ -4,6 +4,7 @@ package uk.ac.imperial.vazels.reef.client;
 import com.google.gwt.core.client.EntryPoint;
 
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 import uk.ac.imperial.vazels.reef.client.ReefTabPanel;
 
@@ -17,6 +18,8 @@ public class ReefFront implements EntryPoint
 	 */
   public void onModuleLoad()
 	{
-    RootPanel.get("tabPanel").add(new ReefTabPanel());
+    SimplePanel top = new SimplePanel();
+    top.add(new ReefTabPanel(top));
+    RootPanel.get("tabPanel").add(top);
 	}
 }
