@@ -56,6 +56,17 @@ public class SingleWorkloadManager extends Manager<Workload, Void> {
     return true;
   }
   
+  /**
+   * Add actor to the workload.
+   * @param actor The name of the actor to add
+   * @return {@code true} if the actor was newly added
+   */
+  public boolean addActor(String actor) {
+    change();
+    return wkld.addActor(actor);
+  }
+  
+  
   @Override
   protected boolean receivePushData(Void data) {
     // Unused

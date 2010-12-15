@@ -48,6 +48,10 @@ public class Workload {
     return this.actors;
   }
   
+  public boolean addActor(String actor) {
+    return actors.add(actor);
+  }
+  
   /**
    * Try to parse json string into actual json.
    * @param json String to parse
