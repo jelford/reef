@@ -1,6 +1,6 @@
 
 
-<!-- Includes the source files for the Chrome theme. -->
+<!-- Includes the source files for the Neon theme. -->
 <module>
-      <stylesheet src="gwt/neon/neon.css"/>
+      <stylesheet src="reef/neon/neon.css"/>
 </module>
