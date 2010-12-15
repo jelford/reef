@@ -19,9 +19,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /* A class to allow the assigning, including uploading, of workloads to groups
  * 
@@ -35,31 +33,37 @@ public class WorkloadGroupsWidget extends Composite {
 
   public WorkloadGroupsWidget() {
     initPanel();
-    //obtain current groups on server to put in box
+    
+    //obtain current groups to put in box
     try {
-      GroupManager.getManager().withServerData(new PullCallback() {
+      GroupManager.getManager().withAllServerData(new PullCallback() {
         public void got() {
-          updateGroupsBox();        
+          updateGroupsBox();
         }      
       });
     } catch (MissingRequesterException e) {
       e.printStackTrace();
     }    
 
+    //obtain current workloads to put in box
     try {
-      WorkloadManager.getManager().withServerData(new PullCallback() {
+      WorkloadManager.getManager().withAllServerData(new PullCallback() {
         public void got() {
           updateWkldsBox();        
         }      
       });
     } catch (MissingRequesterException e) {
       e.printStackTrace();
-    }    
+    }
+    
     //obtain current workloads assigned to selected group
     updateAttachedWklds();    
+
+  
   }
 
-  /* Initialises widget, initialises the 3 ListBox objects and submit button.
+  /* 
+   * Initialises widget, initialises the 3 ListBox objects and submit button.
    */
   void initPanel() {
     VerticalPanel assignmentTab = new VerticalPanel();
@@ -69,14 +73,12 @@ public class WorkloadGroupsWidget extends Composite {
     assignmentTab.add(new Label("Groups: "));
     groupsBox = new ListBox();
 
-    //handler only required if expect groups to change after widget loads
     GroupManager.getManager().addChangeHandler(new ManagerChangeHandler() {
       @Override
       public void change(IManager man) {
         updateGroupsBox();
       }
     });
-
     
     groupsBox.addChangeHandler(new ChangeHandler() {
       @Override
@@ -99,12 +101,10 @@ public class WorkloadGroupsWidget extends Composite {
         updateWkldsBox();
       }
     });
-
     assignmentTab.add(wkldsBox);
 
     //display list of currently attached workloads
     assignmentTab.add(new Label("Workloads currently attached to selected group:"));
-
     attachedWklds = new ListBox();
     assignmentTab.add(attachedWklds);
 

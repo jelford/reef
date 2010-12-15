@@ -3,6 +3,9 @@ package uk.ac.imperial.vazels.reef.client.workloads;
 import java.util.Set;
 
 import uk.ac.imperial.vazels.reef.client.actors.ActorManager;
+import uk.ac.imperial.vazels.reef.client.groups.GroupManager;
+import uk.ac.imperial.vazels.reef.client.managers.IManager;
+import uk.ac.imperial.vazels.reef.client.managers.ManagerChangeHandler;
 import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
 import uk.ac.imperial.vazels.reef.client.managers.PullCallback;
 import uk.ac.imperial.vazels.reef.client.managers.PushCallback;
@@ -33,29 +36,24 @@ public class ActorWorkloadWidget extends Composite {
 
     assignmentTab.add(new Label("Workloads: "));
     wkldsBox = new ListBox();
-    //use other handler to get update of when workloads change
-    //handler only required if expect groups to change after widget loads
-    wkldsBox.addClickHandler(new ClickHandler(){
-      public void onClick(ClickEvent event) {
+    assignmentTab.add(wkldsBox);
+    WorkloadManager.getManager().addChangeHandler(new ManagerChangeHandler() {
+      @Override
+      public void change(IManager man) {
         updateWkldsBox();
       }
     });
 
-    assignmentTab.add(wkldsBox);
-
     assignmentTab.add(new Label("Actors: "));
-    //handler only required if expect groups to change after widget loads
-
-    actorsBox.addClickHandler(new ClickHandler(){
-      public void onClick(ClickEvent event) {
+    actorsBox = new ListBox();
+    assignmentTab.add(actorsBox);
+    ActorManager.getManager().addChangeHandler(new ManagerChangeHandler() {
+      @Override
+      public void change(IManager man) {
         updateActorBox();
       }
     });
-    actorsBox = new ListBox();
-
-    assignmentTab.add(actorsBox);
-
-<<
+    
     assignmentTab.add(new Label("Already assigned: "));
     attachedActors = new ListBox();
     assignmentTab.add(attachedActors);
@@ -67,6 +65,7 @@ public class ActorWorkloadWidget extends Composite {
     });
     assignmentTab.add(submitButton);
   }
+
   void assignActor() {
     //add selected actor to selected workload and then push this new data to server
     WorkloadManager manager = WorkloadManager.getManager();
@@ -88,6 +87,7 @@ public class ActorWorkloadWidget extends Composite {
       e.printStackTrace();
     }
   }
+
   void updateWkldsBox() {
     final WorkloadManager man = WorkloadManager.getManager();
     wkldsBox.clear();
