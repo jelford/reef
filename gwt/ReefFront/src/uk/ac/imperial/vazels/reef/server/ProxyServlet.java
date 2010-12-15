@@ -177,8 +177,11 @@ public class ProxyServlet extends HttpServlet {
 
         while (paramNames.hasMoreElements()) {
           String paramName = paramNames.nextElement();
-          params.add(new BasicNameValuePair(paramName, req
-              .getParameterValues(paramName)[0]));
+          String[] vals = req.getParameterValues(paramName);
+          
+          for(String val : vals) {
+            params.add(new BasicNameValuePair(paramName, val));
+          }
         }
 
         post.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
