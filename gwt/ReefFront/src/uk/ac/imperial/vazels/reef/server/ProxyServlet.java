@@ -37,7 +37,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -61,9 +60,6 @@ import com.oreilly.servlet.multipart.Part;
 
 public class ProxyServlet extends HttpServlet {
 
-  /**
-     * 
-     */
   private static final long serialVersionUID = 9L;
 
   private static final String targetServer = "http://localhost:8000/";
@@ -110,7 +106,7 @@ public class ProxyServlet extends HttpServlet {
         MultipartEntity entity = new MultipartEntity(
             HttpMultipartMode.BROWSER_COMPATIBLE);
 
-        MultipartParser mp = new MultipartParser(req, 1 * 1024 * 1024); // 10MB
+        MultipartParser mp = new MultipartParser(req, 10 * 1024 * 1024); // 10MB
         Part part;
 
         while ((part = mp.readNextPart()) != null) {
@@ -167,9 +163,6 @@ public class ProxyServlet extends HttpServlet {
         // post.setHeader(entity.getContentType());
         // post.setHeader(entity.getContentEncoding());
         post.setEntity(entity);
-        System.out.println(entity.getContentType());
-        System.out.println(entity.getContentType().getName());
-        System.out.println(entity.getContentType().getValue());
         // post.
       } else { // not multipart
         Enumeration<String> paramNames = req.getParameterNames();
@@ -177,8 +170,11 @@ public class ProxyServlet extends HttpServlet {
 
         while (paramNames.hasMoreElements()) {
           String paramName = paramNames.nextElement();
-          params.add(new BasicNameValuePair(paramName, req
-              .getParameterValues(paramName)[0]));
+          String[] vals = req.getParameterValues(paramName);
+          
+          for(String val : vals) {
+            params.add(new BasicNameValuePair(paramName, val));
+          }
         }
 
         post.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
@@ -201,10 +197,6 @@ public class ProxyServlet extends HttpServlet {
     // System.out.println(headerName + " : " + req.getHeader(headerName));
     // }
 
-    System.out.println("Content Type");
-    System.out.println("Length: " + targetRequest.getAllHeaders().length);
-    for (Header h : targetRequest.getAllHeaders())
-      System.out.println(h);
     HttpResponse targetResponse = httpclient.execute(targetRequest);
     HttpEntity entity = targetResponse.getEntity();
 
