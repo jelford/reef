@@ -35,8 +35,9 @@ public class AllocateGroups extends Composite {
    */
   private static final int GROUP_NAME_COLUMN = 0;
   private static final int GROUP_HOSTS_COLUMN = GROUP_NAME_COLUMN+1;
-  private static final int GROUP_REMOVE_COLUMN = GROUP_HOSTS_COLUMN+1;
-  
+  private static final int GROUP_MAPPING_COLUMN = GROUP_HOSTS_COLUMN+1;
+  private static final int GROUP_REMOVE_COLUMN = GROUP_MAPPING_COLUMN+1;
+
   /**
    * Table for holding the information on each group.
    */
@@ -57,6 +58,10 @@ public class AllocateGroups extends Composite {
    */
   @UiField IntegerBox newHostsTextBox;
 
+  /* Specify the mapping restrictions of a new group.
+  */
+  
+ @UiField TextBox newMappingTextBox;
   /**
    * Button to add a new group
    */
@@ -106,6 +111,8 @@ public class AllocateGroups extends Composite {
     refreshData();
   }
 
+
+
   /**
    * Add a new group to the data structures from the input text fields.
    */
@@ -117,7 +124,7 @@ public class AllocateGroups extends Composite {
   /**
    * Submit when the user hits return in an inputbox.
    */
-  @UiHandler({"newGroupTextBox", "newHostsTextBox"})
+  @UiHandler({"newGroupTextBox", "newHostsTextBox", "newMappingTextBox"})
   void textSubmission(KeyPressEvent event) {
     if (event.getCharCode() == KeyCodes.KEY_ENTER) {
       addGroupFromInputBoxes();
@@ -140,6 +147,7 @@ public class AllocateGroups extends Composite {
    * Initialize UI elements to a fresh state & set user focus.
    */
   private void readyForInput(){
+    newMappingTextBox.setText("");
     newHostsTextBox.setText("");
     newGroupTextBox.setText("");
     newGroupTextBox.setFocus(true);
@@ -164,9 +172,19 @@ public class AllocateGroups extends Composite {
       newHostsTextBox.selectAll();
       return;
     }
-    
-    addGroup(newGroupName, newGroupSize.intValue());
-    refreshData();
+    final String newMapping = 
+      newMappingTextBox.getText().trim();
+
+    if (!validateGroupName(newMapping)) {
+      newMappingTextBox.selectAll();
+      return;
+    }
+
+    /* We're done with these values; clear them */
+    readyForInput();
+
+    addGroup(newGroupName, newGroupSize, newMapping);
+	refreshData();
   }
 
   // Validation
@@ -264,7 +282,8 @@ public class AllocateGroups extends Composite {
     clearTable();
     final GroupManager man = GroupManager.getManager();
     for(String group : man.getNames()) {
-      addGroupToTable(group, man.getGroupManager(group).getSize());
+      final SingleGroupManager indivGroupMan = man.getGroupManager(group);
+      addGroupToTable(group, indivGroupMan.getSize(), indivGroupMan.getRestrictions());
     }
     setNumGroups(man.getNames().size());
   }
@@ -274,10 +293,11 @@ public class AllocateGroups extends Composite {
    * @param name Name of the group.
    * @param size Size of the group.
    */
-  private void addGroup(String name, int size) {
+  private void addGroup(String name, int size, String restrictions) {
     SingleGroupManager man = GroupManager.getManager().addGroup(name);
     if(man != null) {
       man.setSize(size);
+      man.setRestrictions(restrictions);
     }
   }
   
@@ -305,6 +325,7 @@ public class AllocateGroups extends Composite {
     // Column headers
     groupsFlexTable.setText(0, GROUP_NAME_COLUMN, "Group");
     groupsFlexTable.setText(0, GROUP_HOSTS_COLUMN, "Hosts");
+    groupsFlexTable.setText(0, GROUP_MAPPING_COLUMN, "Mapping");
     groupsFlexTable.setText(0, GROUP_REMOVE_COLUMN, "Remove");
   }
   
@@ -313,11 +334,12 @@ public class AllocateGroups extends Composite {
    * @param newGroupName
    * @param numberOfHosts
    */
-  private void addGroupToTable(final String newGroupName, final int numberOfHosts) {
+  private void addGroupToTable(final String newGroupName, final int numberOfHosts, final String newMapping) {
     // Add the group to the table.
     int row = groupsFlexTable.getRowCount();
     groupsFlexTable.setText(row, GROUP_NAME_COLUMN, newGroupName);
     groupsFlexTable.setText(row, GROUP_HOSTS_COLUMN, Integer.toString(numberOfHosts));
+    groupsFlexTable.setText(row, GROUP_MAPPING_COLUMN, newMapping);
 
     // Add a button to remove this group from the table.
     Button removeGroupButton = new Button("x");
