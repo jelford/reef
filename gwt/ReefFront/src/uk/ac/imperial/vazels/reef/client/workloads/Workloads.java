@@ -3,7 +3,7 @@ package uk.ac.imperial.vazels.reef.client.workloads;
 import java.util.LinkedList;
 
 public class Workloads {
-  static LinkedList <String> workloads = null;
+/*  static LinkedList <String> workloads = null;
 
   private Workloads() {
   }
@@ -23,5 +23,5 @@ public class Workloads {
   //not implemented with server yet
   static void remove(String wkld) {
     workloads.remove(wkld);
-  }
+  }*/
 }
