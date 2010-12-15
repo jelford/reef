@@ -11,7 +11,7 @@ public class WorkloadsManager {
   public static Workload get(final String workloadName) {
     Workload toReturn = null;
     for(Workload wkld: workloads) {
-      if(wkld.name.equals(workloadName)) {
+      if(wkld.getName().equals(workloadName)) {
         toReturn = wkld;
         break; 
       }
@@ -26,7 +26,7 @@ public class WorkloadsManager {
   public static LinkedList<String> getWorkloadNames() {
     LinkedList<String> wkldNames = new LinkedList<String> ();
     for(Workload wkld: workloads) {
-      wkldNames.add(wkld.name);
+      wkldNames.add(wkld.getName());
     }
     return wkldNames;
   }
