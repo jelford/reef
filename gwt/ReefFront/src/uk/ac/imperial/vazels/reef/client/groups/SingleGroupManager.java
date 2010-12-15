@@ -132,4 +132,12 @@ public class SingleGroupManager extends SingleTypeManager<Group> implements Dele
       return args;
     }
   }
+
+  public String getRestrictions() {
+    return group.getRestrictions();
+  }
+
+  public void setRestrictions(final String restrictions) {
+    group.setRestrictions(restrictions);
+  }
 }
