@@ -11,50 +11,35 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 public class DisplayOutput extends Composite {
   
   private final Label testLabel = new Label("Hello World");
   private final Button refreshButton = new Button("Refresh");
-  private Panel temp = new HorizontalPanel();
-  private VerticalPanel mainPanel;
-  private OutputData outputData = new OutputData("{}");
-  private Panel placeholder;
+  private OutputView view = new OutputView();
   
   public DisplayOutput() {
     
-    mainPanel = new VerticalPanel();
+    VerticalPanel mainPanel = new VerticalPanel();
     
     initWidget(mainPanel);
     mainPanel.setSize("521px", "100px");
+    
+    Panel temp = new HorizontalPanel();
     temp.setSize("521px", "22px");
-    
     temp.add(testLabel);
-    
     temp.add(refreshButton);
     
     refreshButton.addClickHandler(new ClickHandler() {
         @Override
         public void onClick(ClickEvent event) {
-          
           refresh();
-          
         }
     });
     
-    placeholder = new HorizontalPanel();
-    
     mainPanel.add(temp);
-    mainPanel.add(placeholder); //placeholder for data to be put into
-  }
-
-  public void loadData() {
-    System.out.println(outputData.getData());
-     mainPanel.remove(placeholder);
-     //temp = outputData.getPanel();
-     placeholder = outputData.getPanel();
-     mainPanel.add(placeholder);
-
+    mainPanel.add(view); //placeholder for data to be put into
   }
   
   private void refresh() {
@@ -63,9 +48,7 @@ public class DisplayOutput extends Composite {
       @Override
       public void handle(OutputData reply, boolean success, String message) {
         if (success) {
-          System.out.println(reply.getData());
-          outputData.setData(reply.getData());
-          loadData();
+          view.useData(reply);
         }
       }
     });
@@ -80,7 +63,6 @@ public class DisplayOutput extends Composite {
         public OutputData convert(String original) {
             return new OutputData(original);
         }
-
       });
     }
   }
