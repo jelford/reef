@@ -61,7 +61,7 @@ def process_file(filepath):
 	# with usable data stored in the fields to it
 
 	# prepares an object for us to read the protocol buffer
-	time_serie = protocolBuffer_pb2.TimeSerie()
+	time_serie = vOutput_pb2.TimeSerie()
 	with open(filepath, "rb") as f:
 		time_serie.ParseFromString(f.read())
 	
