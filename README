@@ -1,2 +1,10 @@
 Vazels GUI Project
 ==================
+
+LICENSE ISSUES
+==============
+Be aware that this software makes major use of various existing components.
+ * It comes packaged with Vazels (http://www.vazels.org) which is GPLv3
+ * It makes extensive use of the original source code of Restlite
+   (http://code.google.com/p/restlite/) which is LGPL
+ * The software itself is licensed under GPLv3
