@@ -22,7 +22,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 
 public class ReefTabPanel extends Composite {
 
-/**
+  /**
    * Initialize this example.
    */
   
