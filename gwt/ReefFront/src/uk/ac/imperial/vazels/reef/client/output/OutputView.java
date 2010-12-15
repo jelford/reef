@@ -32,15 +32,8 @@ public class OutputView extends Composite {
   
   private OutputData data = null;
   
-  public OutputView(final OutputData data) {
+  public OutputView() {
     initWidget(uiBinder.createAndBindUi(this));
-    
-    VisualizationUtils.loadVisualizationApi(new Runnable() {
-      @Override
-      public void run() {
-        buildDisplay(data);
-      }
-    }, ScatterChart.PACKAGE);
   }
 
   @UiHandler("tree")
@@ -55,11 +48,24 @@ public class OutputView extends Composite {
   }
   
   /**
-   * Build the display using the given output data.
-   * @param data The data to use.
+   * Tell the widget to use the given data.
+   * @param data Data to display.
    */
-  public void buildDisplay(OutputData data) {
+  public void useData(OutputData data) {
     this.data = data;
+    
+    VisualizationUtils.loadVisualizationApi(new Runnable() {
+      @Override
+      public void run() {
+        buildDisplay();
+      }
+    }, ScatterChart.PACKAGE);
+  }
+  
+  /**
+   * Build the display using the given output data.
+   */
+  private void buildDisplay() {
     buildTree();
     placeholder.clear();
   }
