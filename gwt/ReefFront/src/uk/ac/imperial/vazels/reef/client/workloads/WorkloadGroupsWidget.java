@@ -4,6 +4,8 @@ import java.util.Set;
 
 import uk.ac.imperial.vazels.reef.client.groups.GroupManager;
 import uk.ac.imperial.vazels.reef.client.groups.SingleGroupManager;
+import uk.ac.imperial.vazels.reef.client.managers.IManager;
+import uk.ac.imperial.vazels.reef.client.managers.ManagerChangeHandler;
 import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
 import uk.ac.imperial.vazels.reef.client.managers.PullCallback;
 import uk.ac.imperial.vazels.reef.client.managers.PushCallback;
@@ -29,46 +31,75 @@ public class WorkloadGroupsWidget extends Composite {
   //wkldsBox is list of workloads
   //groupsBox is list of groups
   //attachedWklds is list of workloads attached to currently shown group
-  ListBox wkldsBox, wkldsBox, attachedWklds;
+  ListBox wkldsBox, groupsBox, attachedWklds;
 
   public WorkloadGroupsWidget() {
     initPanel();
     //obtain current groups on server to put in box
-    updateGroupsBox();
-    updateWkldsBox();
+    try {
+      GroupManager.getManager().withServerData(new PullCallback() {
+        public void got() {
+          updateGroupsBox();        
+        }      
+      });
+    } catch (MissingRequesterException e) {
+      e.printStackTrace();
+    }    
 
+    try {
+      WorkloadManager.getManager().withServerData(new PullCallback() {
+        public void got() {
+          updateWkldsBox();        
+        }      
+      });
+    } catch (MissingRequesterException e) {
+      e.printStackTrace();
+    }    
     //obtain current workloads assigned to selected group
     updateAttachedWklds();    
   }
-  
-/* Initialises widget, initialises the 3 ListBox objects and submit button.
- */
+
+  /* Initialises widget, initialises the 3 ListBox objects and submit button.
+   */
   void initPanel() {
     VerticalPanel assignmentTab = new VerticalPanel();
     initWidget(assignmentTab);
-    
+
     //display list of groups
     assignmentTab.add(new Label("Groups: "));
-    wkldsBox = new ListBox();
+    groupsBox = new ListBox();
 
     //handler only required if expect groups to change after widget loads
-    wkldsBox.addClickHandler(new ClickHandler(){
-      public void onClick(ClickEvent event) {
+    GroupManager.getManager().addChangeHandler(new ManagerChangeHandler() {
+      @Override
+      public void change(IManager man) {
         updateGroupsBox();
       }
     });
-    assignmentTab.add(wkldsBox);
+
+    
+    groupsBox.addChangeHandler(new ChangeHandler() {
+      @Override
+      public void onChange(ChangeEvent event) {
+        updateAttachedWklds();        
+      }
+    });
+    
+    assignmentTab.add(groupsBox);
 
     //display list of workloads
     assignmentTab.add(new Label("Select a workload to assign:"));
- 
+
     wkldsBox = new ListBox();
     //handler only required if expect workloads to change after widget loads
-    wkldsBox.addClickHandler(new ClickHandler() {
-      public void onClick(ClickEvent event) {
+
+    WorkloadManager.getManager().addChangeHandler(new ManagerChangeHandler() {
+      @Override
+      public void change(IManager man) {
         updateWkldsBox();
       }
     });
+
     assignmentTab.add(wkldsBox);
 
     //display list of currently attached workloads
@@ -89,31 +120,10 @@ public class WorkloadGroupsWidget extends Composite {
   //update the groups box using list of groups from server, possibly only needed once each time widget runs
   private void updateGroupsBox() {
     final GroupManager man = GroupManager.getManager();
-    //get the list of groups from the server and add any new items to the group box
-    try {
-      man.withServerData(new PullCallback() {
-        /* on callback, get the list of groups as a set
-         * for all elements in groupsBox, if element is in the new set, remove from the new set
-         *  if it is not, remove from groupsBox
-         * then add any remaining elements in the new set to groupsBox
-         */
-        public void got() {
-          Set<String> groups = man.getNames(); //returns Set<String>
-          for(int i = 0; i < wkldsBox.getItemCount() ; i++) {
-            if(groups.contains(wkldsBox.getItemText(i))) {
-              groups.remove(wkldsBox.getItemText(i));
-            }
-            else {
-              wkldsBox.removeItem(i);
-            }
-          }
-          for(String group: groups) {
-            wkldsBox.addItem(group);
-          }
-        }
-      });
-    } catch (MissingRequesterException e) {
-      e.printStackTrace();
+    groupsBox.clear();
+    Set<String> groups = man.getNames();
+    for(String g: groups) {
+      groupsBox.addItem(g);
     }
   }
 
@@ -121,26 +131,11 @@ public class WorkloadGroupsWidget extends Composite {
   //Note: this will need to become more like updateGroupsBox
   private void updateWkldsBox() {
     final WorkloadManager man = WorkloadManager.getManager();
+    wkldsBox.clear();
     //get the list of groups from the server and add any new items to the group box
-    try {
-      man.withServerData(new PullCallback() {
-        public void got() {
-          Set<String> wklds = man.getNames(); //returns Set<String>
-          for(int i = 0; i < wkldsBox.getItemCount() ; i++) {
-            if(wklds.contains(wkldsBox.getItemText(i))) {
-              wklds.remove(wkldsBox.getItemText(i));
-            }
-            else {
-              wkldsBox.removeItem(i);
-            }
-          }
-          for(String w: wklds) {
-            wkldsBox.addItem(w);
-          }
-        }
-      });
-    } catch (MissingRequesterException e) {
-      e.printStackTrace();
+    Set<String> wklds = man.getNames();
+    for(String w: wklds) {
+      wkldsBox.addItem(w);
     }
   }
 
@@ -148,9 +143,9 @@ public class WorkloadGroupsWidget extends Composite {
   private void updateAttachedWklds() {
     attachedWklds.clear();
     //need there to be a group present to have a group selected
-    if(wkldsBox.getItemCount() > 0) {
+    if(groupsBox.getItemCount() > 0) {
       GroupManager manager = GroupManager.getManager();
-      final SingleGroupManager gpManager = manager.getGroupManager(wkldsBox.getItemText(wkldsBox.getSelectedIndex()));
+      final SingleGroupManager gpManager = manager.getGroupManager(groupsBox.getItemText(groupsBox.getSelectedIndex()));
       //update known groups from server, and on callback get and use the new workload data
       try {
         gpManager.withServerData(new PullCallback() {
@@ -168,14 +163,14 @@ public class WorkloadGroupsWidget extends Composite {
     }
   }
 
-//add selected workload to selected group and then push this new data to server
+  //add selected workload to selected group and then push this new data to server
   public void addWorkload() {
     GroupManager manager = GroupManager.getManager();
-    SingleGroupManager gpManager = manager.getGroupManager(wkldsBox.getItemText(wkldsBox.getSelectedIndex()));
+    SingleGroupManager gpManager = manager.getGroupManager(groupsBox.getItemText(groupsBox.getSelectedIndex()));
     gpManager.addWorkload(wkldsBox.getItemText(wkldsBox.getSelectedIndex()));
     try {
       gpManager.pushLocalData(new PushCallback() {
-//show submission occurred
+        //show submission occurred
         public void got() {
           updateAttachedWklds(); 
         }

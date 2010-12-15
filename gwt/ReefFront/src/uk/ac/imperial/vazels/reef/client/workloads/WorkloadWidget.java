@@ -1,6 +1,7 @@
 package uk.ac.imperial.vazels.reef.client.workloads;
 
 import uk.ac.imperial.vazels.reef.client.AddressResolution;
+import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -8,9 +9,11 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 
 //error of not reaching server must be displayed
 //also when 2 wklds given same name
@@ -26,6 +29,16 @@ public class WorkloadWidget extends Composite {
     initWidget(formPanel);
 
     formPanel.setAction(new AddressResolution().resolve("/workloads"));
+    formPanel.addSubmitCompleteHandler(new SubmitCompleteHandler() {
+      public void onSubmitComplete(SubmitCompleteEvent event) {
+        WorkloadManager.getManager().workloadUploaded(event.getResults());
+        try {
+          WorkloadManager.getManager().getServerData();
+        } catch (MissingRequesterException e) {
+          e.printStackTrace();
+        }
+      }
+    });
 
     VerticalPanel uploadPanel = new VerticalPanel();
     formPanel.setWidget(uploadPanel); 
@@ -55,11 +68,12 @@ public class WorkloadWidget extends Composite {
       public void onClick(ClickEvent event) {
         formPanel.submit();
 //assuming success, give new workload to workloads class
-        Workloads.add(wkld_name.getText());
         listWklds.addItem(wkld_name.getText());
         wkld_name.setText("");
       }
     });
     uploadPanel.add(button);  
   }
+  
+ 
 }

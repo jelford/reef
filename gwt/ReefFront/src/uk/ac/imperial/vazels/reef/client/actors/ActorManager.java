@@ -58,7 +58,7 @@ public class ActorManager extends ListedCollectionManager<String, SingleActorMan
     
     private class ActorPuller extends MultipleRequester<Set<String>> {
       public ActorPuller() {
-        super(RequestBuilder.GET, "/workloads/", new JsArrayStringSetConverter());
+        super(RequestBuilder.GET, "/actors/", new JsArrayStringSetConverter());
       } 
     }
 }
