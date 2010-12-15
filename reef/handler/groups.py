@@ -72,6 +72,8 @@ def group_handler():
 
     args = urlparse.parse_qs(entity)
 
+    print args
+
     g_data = _getGroupDataFromArgs(args)
 
     if group_name in existing_groups:

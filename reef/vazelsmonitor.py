@@ -77,7 +77,7 @@ def __extractActors(workload_def, target_group):
   experiment_dir = config.getSettings("global")['expdir']
   
   print("workload_def: " + str(workload_def))
-  for actor_name in workload_def['actors']:
+  for actor_name in [g['name'] for g in config.getSettings("actors")["defs"]]: #workload_def['actors']:
     print("Extracting actor: " + actor_name)
     actor = config.getSettings('actors')['defs'][actor_name]
     type=actor['type'].upper()
