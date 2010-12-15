@@ -106,7 +106,7 @@ public class ProxyServlet extends HttpServlet {
         MultipartEntity entity = new MultipartEntity(
             HttpMultipartMode.BROWSER_COMPATIBLE);
 
-        MultipartParser mp = new MultipartParser(req, 1 * 1024 * 1024); // 10MB
+        MultipartParser mp = new MultipartParser(req, 10 * 1024 * 1024); // 10MB
         Part part;
 
         while ((part = mp.readNextPart()) != null) {
