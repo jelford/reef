@@ -1,4 +1,4 @@
-package uk.ac.imperial.vazels.reef.client;
+package uk.ac.imperial.vazels.reef.client.ui;
 
 import uk.ac.imperial.vazels.reef.client.groups.AllocateGroups;
 

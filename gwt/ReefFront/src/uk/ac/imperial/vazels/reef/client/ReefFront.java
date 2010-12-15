@@ -1,6 +1,8 @@
 package uk.ac.imperial.vazels.reef.client;
 
 
+import uk.ac.imperial.vazels.reef.client.ui.SetupPhasePanel;
+
 import com.google.gwt.core.client.EntryPoint;
 
 import com.google.gwt.user.client.ui.RootPanel;
