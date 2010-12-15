@@ -162,8 +162,8 @@ public class OutputView extends Composite {
     options.setLineSize(2);
     options.setPointSize(10);
     options.setEnableTooltip(true);
-    options.setWidth(500);
-    options.setHeight(400);
+    options.setWidth(600);
+    options.setHeight(300);
     
     return new ScatterChart(dt, options);
   }
