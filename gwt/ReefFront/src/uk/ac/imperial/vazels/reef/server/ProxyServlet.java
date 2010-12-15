@@ -37,7 +37,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -167,9 +166,6 @@ public class ProxyServlet extends HttpServlet {
         // post.setHeader(entity.getContentType());
         // post.setHeader(entity.getContentEncoding());
         post.setEntity(entity);
-        System.out.println(entity.getContentType());
-        System.out.println(entity.getContentType().getName());
-        System.out.println(entity.getContentType().getValue());
         // post.
       } else { // not multipart
         Enumeration<String> paramNames = req.getParameterNames();
@@ -201,10 +197,6 @@ public class ProxyServlet extends HttpServlet {
     // System.out.println(headerName + " : " + req.getHeader(headerName));
     // }
 
-    System.out.println("Content Type");
-    System.out.println("Length: " + targetRequest.getAllHeaders().length);
-    for (Header h : targetRequest.getAllHeaders())
-      System.out.println(h);
     HttpResponse targetResponse = httpclient.execute(targetRequest);
     HttpEntity entity = targetResponse.getEntity();
 
