@@ -1,10 +1,13 @@
 package uk.ac.imperial.vazels.reef.client;
 
+<<<<<<< HEAD
 import uk.ac.imperial.vazels.reef.client.actors.UploadActorWidget;
 import uk.ac.imperial.vazels.reef.client.groups.AllocateGroups;
 import uk.ac.imperial.vazels.reef.client.servercontrol.ServerControl;
 import uk.ac.imperial.vazels.reef.client.workloads.WorkloadWidget;
 import uk.ac.imperial.vazels.reef.client.output.DisplayOutput;
+=======
+>>>>>>> create-tabPanel
 
 import com.google.gwt.core.client.EntryPoint;
 
@@ -28,6 +31,13 @@ public class ReefFront implements EntryPoint
     initialHTML = RootPanel.get().getBodyElement().getInnerHTML();
      
 	  //RootPanel.get("settingstest").add(new SettingsWgt());
+<<<<<<< HEAD
+	  RootPanel.get("specify-groups").add(new AllocateGroups());
+	  RootPanel.get("server-control").add(new ServerControl());
+	  RootPanel.get("workloads").add(new WorkloadWidget());
+	  RootPanel.get("actors").add(new UploadActorWidget());
+	  RootPanel.get("outputdata").add(new DisplayOutput());
+=======
 	 // RootPanel.get("specify-groups").add(new AllocateGroups());
 	 // RootPanel.get("server-control").add(new ServerControl());
 	 // RootPanel.get("workloads").add(new WorkloadWidget());
@@ -36,6 +46,8 @@ public class ReefFront implements EntryPoint
      
     
     RootPanel.get("tabPanel").add(new ReefTabPanel());
-    //RootPanel.get("outputdata").add(new DisplayOutput());
+
+
+>>>>>>> create-tabPanel
 	}
 }

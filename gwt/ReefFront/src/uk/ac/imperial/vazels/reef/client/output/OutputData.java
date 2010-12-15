@@ -10,6 +10,7 @@ import com.google.gwt.core.client.JsArrayString;
  * Describes the data returned when output is requested from an experiment.
  */
 public class OutputData {
+  private static final boolean FAKE_IT = true;
   
   private Map<String, GroupData> groups;
   
@@ -27,6 +28,24 @@ public class OutputData {
    */
   public OutputData(String jsonInput) {
     groups = new HashMap<String, GroupData>();
+
+    /*
+     * Today, we will be faking out data. Just so ya know.
+     * @TODO: FIX THIS FUCKING MESS.
+     */
+    jsonInput = FAKE_IT ? "{\"1\":" +
+    "{\"0\":" + 
+        "{\"returned_messages\" :" + 
+            "{\"29351\" : {\"timestamp\" : \"29351\", \"type\" : \"Double\", \"value\" : \"31999.0\", \"actor\" : \"counter\"}," +
+            "\"29355\" : {\"timestamp\" : \"29355\", \"type\" : \"Double\", \"value\" : \"32000.0\", \"actor\" : \"counter\"} }" +
+        "}" +
+    "}," +
+    "\"2\": {\"0\" : {}}" +
+   
+    "}" : jsonInput;
+    
+    
+    
     OutputDataOverlay data = parseData(jsonInput);
     JsArrayString keys = data.keys();
     for(int i=0; i<keys.length(); i++) {

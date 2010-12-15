@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='reeffront'>
+<<<<<<< HEAD
+  <!-- Inherit the core Web Toolkit stuff.                        -->
+  <inherits name='com.google.gwt.user.User'/>
+  
+  <!--  Inherit JSON schizzle -->
+  <!-- <inherits name="com.google.gwt.json.JSON" /> -->
+  
+  <!--  Inheriting things for charts -->
+  <inherits name='com.google.gwt.visualization.Visualization'/>
+=======
 	<!-- Inherit the core Web Toolkit stuff. -->
 	<inherits name='com.google.gwt.user.User' />
+>>>>>>> create-tabPanel
 
 	<!-- Inherit JSON schizzle -->
 	<!-- <inherits name="com.google.gwt.json.JSON" /> -->
