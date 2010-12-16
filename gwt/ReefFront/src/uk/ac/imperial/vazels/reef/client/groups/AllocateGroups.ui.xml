@@ -5,33 +5,24 @@
 	<ui:style field="useful" src="../ui/useful.css"/>
 
 	<g:VerticalPanel>
+		<g:FlexTable ui:field="groupsFlexTable" cellSpacing="2"
+			cellPadding="30" width="400px" addStyleNames="{useful.greentext}" />
 
-			<g:HorizontalPanel>
-				<g:VerticalPanel>
-					<g:FlexTable ui:field="groupsFlexTable" cellSpacing="2"
-						cellPadding="30" width="400px" addStyleNames="{useful.greentext}" />
-
-
-					<g:HorizontalPanel>
-						<g:TextBox ui:field="newGroupTextBox" addStyleNames="{useful.textbox}" />
-						<g:IntegerBox ui:field="newHostsTextBox"
-							addStyleNames="{useful.textbox} {useful.expel1}" />
-						<g:Button ui:field="addGroupButton" addStyleNames="{useful.expel1}"
-							text="Add Group" />
-					</g:HorizontalPanel>
-				</g:VerticalPanel>
-
-			</g:HorizontalPanel>
+		<g:HorizontalPanel>
+			<g:TextBox ui:field="newGroupTextBox" addStyleNames="{useful.textbox}" />
+			<g:IntegerBox ui:field="newHostsTextBox"
+				addStyleNames="{useful.textbox} {useful.expel1}" />
+			<g:Button ui:field="addGroupButton" addStyleNames="{useful.expel1}"
+				text="Add Group" />
+		</g:HorizontalPanel>
 			
 		
-			<g:Label ui:field="groupsInfo" addStyleNames="{useful.redtxt} {useful.spaced}" />
+		<g:Label ui:field="groupsInfo" addStyleNames="{useful.redtxt} {useful.spaced}" />
 
-			<g:cell horizontalAlignment="right">
-				<g:HorizontalPanel>
-					<g:Button ui:field="btnReset" text="Clear Groups"
-						addStyleNames="{useful.expel}" />
-				</g:HorizontalPanel>
-			</g:cell>
+		<g:cell horizontalAlignment="right">
+				<g:Button ui:field="btnReset" text="Clear Groups"
+					addStyleNames="{useful.expel}" />
+		</g:cell>
 
 	</g:VerticalPanel>
 </ui:UiBinder> 
