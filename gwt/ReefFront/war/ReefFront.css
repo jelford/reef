@@ -1,0 +1,54 @@
+.spaced {
+	padding: 0.5em;
+}
+
+.spaced2 {
+	padding: 0.2em;
+}
+
+.spaced3 {
+	padding: 0em 2em 0em;
+}
+
+.spaced4 {
+	padding: 0em 0em 0em;
+}
+
+.hStretch {
+	width: 100%;
+}
+
+.expel {
+	margin: 0.5em;
+}
+
+.expel1 {
+	margin: 0em 0.5em 0em;
+}
+
+.greentext {
+	color: #4b6901;
+	font-size: 5em;
+	font-weight: bold; 
+/*	margin: 0px 0px 0px;*/ 
+	text-align: left;
+}
+
+.redtxt {
+	font-size: 1em;
+	color: #a11010;
+	text-align: left;
+}
+
+.greybck {
+	background: #e3e3e3;
+}
+
+.textbox {
+	padding: 2px;
+	width: 99px;
+}
+
+.alignleft {
+	text-align: left;
+}
