@@ -6,7 +6,7 @@
 
 	<g:VerticalPanel>
 		<g:FlexTable ui:field="groupsFlexTable" cellSpacing="2"
-			cellPadding="30" width="400px" addStyleNames="{useful.greentext}" />
+			cellPadding="3" width="400px" addStyleNames="{useful.greentext}" />
 
 		<g:HorizontalPanel>
 			<g:TextBox ui:field="newGroupTextBox" addStyleNames="{useful.textbox}" />
