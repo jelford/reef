@@ -3,11 +3,9 @@ package uk.ac.imperial.vazels.reef.client.groups;
 import java.util.HashSet;
 import java.util.Set;
 
-import uk.ac.imperial.vazels.reef.client.managers.GroupManager;
 import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
 import uk.ac.imperial.vazels.reef.client.managers.PullCallback;
 import uk.ac.imperial.vazels.reef.client.managers.PushCallback;
-import uk.ac.imperial.vazels.reef.client.managers.SingleGroupManager;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -99,6 +97,7 @@ public class AllocateGroups extends Composite {
     userInteractionWidgets.add(btnReset);
     userInteractionWidgets.add(newGroupTextBox);
     userInteractionWidgets.add(newHostsTextBox);
+    userInteractionWidgets.add(newMappingTextBox);
     
     refreshData();
   }
@@ -146,9 +145,9 @@ public class AllocateGroups extends Composite {
    * Initialize UI elements to a fresh state & set user focus.
    */
   private void readyForInput(){
-    newMappingTextBox.setText("");
-    newHostsTextBox.setText("");
     newGroupTextBox.setText("");
+    newHostsTextBox.setText("");
+    newMappingTextBox.setText("");
     newGroupTextBox.setFocus(true);
   }
 
@@ -175,7 +174,7 @@ public class AllocateGroups extends Composite {
     final String newMapping = 
       newMappingTextBox.getText().trim();
 
-    if (!validateGroupName(newMapping)) {
+    if (!validateMappingRestriction(newMapping)) {
       newMappingTextBox.selectAll();
       return;
     }
@@ -189,6 +188,7 @@ public class AllocateGroups extends Composite {
   /**
    * Check that {@code groupName} is an alphanumeric string.
    * @param groupName The name of a group to validate.
+   * @return {@code true} only if the group name is valid.
    */
   private boolean validateGroupName(final String groupName) {
     // Don't add the group if it's already in the table.
@@ -207,6 +207,7 @@ public class AllocateGroups extends Composite {
   /**
    * Check that {@code numHosts} is a positive integer.
    * @param numHosts The number to validate.
+   * @return {@code true} only if this is a valid group size.
    */
   private boolean validateNumHosts(final Integer numHosts) {
     if (numHosts == null) {
@@ -214,6 +215,31 @@ public class AllocateGroups extends Composite {
       return false;
     } else if (numHosts <= 0) {
       Window.alert("You must have at least one host in a group.");
+      return false;
+    }
+    return true;
+  }
+  
+  /**
+   * Check that {@code restriction} is a valid mapping restriction.
+   * @param restriction The mapping restriction to check.
+   * @return {@code true} only if this is a valid mapping restriction.
+   */
+  private boolean validateMappingRestriction(final String restriction) {
+    if(restriction.equals("")) {
+      return true;
+    }
+    
+    final String join = "(:-)|(-:)";
+    final String rank = "([1-9][0-9]*)|(\\*)";
+    final String ranks = "("+rank+")\\.("+rank+")";
+    final String addrSegment = "[0-9a-zA-Z]|\\*";
+    final String addr = "("+addrSegment+")(\\.("+addrSegment+"))*";
+    final String regex = "^("+ranks+")("+join+")("+addr+")";
+    if(!restriction.matches(regex)) {
+      Window.alert("Mapping restrictions must match the regular expression:\n"+
+          regex+"\n"+
+          "See the vazels website for details");
       return false;
     }
     return true;
