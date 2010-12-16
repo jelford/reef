@@ -115,8 +115,6 @@
 		}
 	</ui:style>
 
-	<!-- <g:DecoratorPanel addStyleNames="{style.spaced}"> -->
-
 	<g:VerticalPanel>
 
 			<g:HorizontalPanel>
@@ -132,7 +130,6 @@
 							/> -->
 						<g:IntegerBox ui:field="newHostsTextBox"
 							addStyleNames="{style.textbox} {style.expel1}" />
-						<g:TextBox ui:field="newMappingTextBox" addStyleNames="{style.textbox}" />
 						<g:Button ui:field="addGroupButton" addStyleNames="{style.expel1}"
 							text="Add Group" />
 					</g:HorizontalPanel>
@@ -147,11 +144,8 @@
 				<g:HorizontalPanel>
 					<g:Button ui:field="btnReset" text="Clear Groups"
 						addStyleNames="{style.expel}" />
-					<!-- <g:Button ui:field="btnNext" text="Next->" addStyleNames="{style.expel}" 
-						/> -->
 				</g:HorizontalPanel>
 			</g:cell>
 
 	</g:VerticalPanel>
-	<!-- </g:DecoratorPanel> -->
 </ui:UiBinder> 

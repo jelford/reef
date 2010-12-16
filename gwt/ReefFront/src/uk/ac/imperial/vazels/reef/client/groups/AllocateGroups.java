@@ -33,8 +33,7 @@ public class AllocateGroups extends Composite {
    */
   private static final int GROUP_NAME_COLUMN = 0;
   private static final int GROUP_HOSTS_COLUMN = GROUP_NAME_COLUMN+1;
-  private static final int GROUP_MAPPING_COLUMN = GROUP_HOSTS_COLUMN+1;
-  private static final int GROUP_REMOVE_COLUMN = GROUP_MAPPING_COLUMN+1;
+  private static final int GROUP_REMOVE_COLUMN = GROUP_HOSTS_COLUMN+1;
 
   /**
    * Table for holding the information on each group.
@@ -55,11 +54,6 @@ public class AllocateGroups extends Composite {
    * Specify the number of hosts in a new group.
    */
   @UiField IntegerBox newHostsTextBox;
-
-  /**
-   * Specify the mapping restrictions of a new group.
-   */
-  @UiField TextBox newMappingTextBox;
 
   /**
    * Button to add a new group
@@ -97,7 +91,6 @@ public class AllocateGroups extends Composite {
     userInteractionWidgets.add(btnReset);
     userInteractionWidgets.add(newGroupTextBox);
     userInteractionWidgets.add(newHostsTextBox);
-    userInteractionWidgets.add(newMappingTextBox);
     
     refreshData();
   }
@@ -122,7 +115,7 @@ public class AllocateGroups extends Composite {
   /**
    * Submit when the user hits return in an inputbox.
    */
-  @UiHandler({"newGroupTextBox", "newHostsTextBox", "newMappingTextBox"})
+  @UiHandler({"newGroupTextBox", "newHostsTextBox"})
   void textSubmission(KeyPressEvent event) {
     if (event.getCharCode() == KeyCodes.KEY_ENTER) {
       addGroupFromInputBoxes();
@@ -147,7 +140,6 @@ public class AllocateGroups extends Composite {
   private void readyForInput(){
     newGroupTextBox.setText("");
     newHostsTextBox.setText("");
-    newMappingTextBox.setText("");
     newGroupTextBox.setFocus(true);
   }
 
@@ -171,15 +163,7 @@ public class AllocateGroups extends Composite {
       return;
     }
 
-    final String newMapping = 
-      newMappingTextBox.getText().trim();
-
-    if (!validateMappingRestriction(newMapping)) {
-      newMappingTextBox.selectAll();
-      return;
-    }
-
-    addGroup(newGroupName, newGroupSize.intValue(), newMapping);
+    addGroup(newGroupName, newGroupSize.intValue());
     refreshData();
   }
 
@@ -215,31 +199,6 @@ public class AllocateGroups extends Composite {
       return false;
     } else if (numHosts <= 0) {
       Window.alert("You must have at least one host in a group.");
-      return false;
-    }
-    return true;
-  }
-  
-  /**
-   * Check that {@code restriction} is a valid mapping restriction.
-   * @param restriction The mapping restriction to check.
-   * @return {@code true} only if this is a valid mapping restriction.
-   */
-  private boolean validateMappingRestriction(final String restriction) {
-    if(restriction.equals("")) {
-      return true;
-    }
-    
-    final String join = "(:-)|(-:)";
-    final String rank = "([1-9][0-9]*)|(\\*)";
-    final String ranks = "("+rank+")\\.("+rank+")";
-    final String addrSegment = "[0-9a-zA-Z]|\\*";
-    final String addr = "("+addrSegment+")(\\.("+addrSegment+"))*";
-    final String regex = "^("+ranks+")("+join+")("+addr+")";
-    if(!restriction.matches(regex)) {
-      Window.alert("Mapping restrictions must match the regular expression:\n"+
-          regex+"\n"+
-          "See the vazels website for details");
       return false;
     }
     return true;
@@ -307,8 +266,7 @@ public class AllocateGroups extends Composite {
     clearTable();
     final GroupManager man = GroupManager.getManager();
     for(String group : man.getNames()) {
-      final SingleGroupManager indivGroupMan = man.getGroupManager(group);
-      addGroupToTable(group, indivGroupMan.getSize(), indivGroupMan.getRestrictions());
+      addGroupToTable(group, man.getGroupManager(group).getSize());
     }
     setNumGroups(man.getNames().size());
   }
@@ -317,13 +275,11 @@ public class AllocateGroups extends Composite {
    * Add group to the local store.
    * @param name Name of the group.
    * @param size Size of the group.
-   * @param restrictions Mapping restrictions for this group.
    */
-  private void addGroup(String name, int size, String restrictions) {
+  private void addGroup(String name, int size) {
     SingleGroupManager man = GroupManager.getManager().addGroup(name);
     if(man != null) {
       man.setSize(size);
-      man.setRestrictions(restrictions);
     }
   }
   
@@ -351,7 +307,6 @@ public class AllocateGroups extends Composite {
     // Column headers
     groupsFlexTable.setText(0, GROUP_NAME_COLUMN, "Group");
     groupsFlexTable.setText(0, GROUP_HOSTS_COLUMN, "Hosts");
-    groupsFlexTable.setText(0, GROUP_MAPPING_COLUMN, "Mapping");
     groupsFlexTable.setText(0, GROUP_REMOVE_COLUMN, "Remove");
   }
   
@@ -359,14 +314,12 @@ public class AllocateGroups extends Composite {
    * Update the table to reflect the fact that a new group has been added.
    * @param newGroupName Name of the group to add.
    * @param numberOfHosts Size of the group to add.
-   * @param newMapping Mapping restrictions for the group to add.
    */
-  private void addGroupToTable(final String newGroupName, final int numberOfHosts, final String newMapping) {
+  private void addGroupToTable(final String newGroupName, final int numberOfHosts) {
     // Add the group to the table.
     int row = groupsFlexTable.getRowCount();
     groupsFlexTable.setText(row, GROUP_NAME_COLUMN, newGroupName);
     groupsFlexTable.setText(row, GROUP_HOSTS_COLUMN, Integer.toString(numberOfHosts));
-    groupsFlexTable.setText(row, GROUP_MAPPING_COLUMN, newMapping);
 
     // Add a button to remove this group from the table.
     Button removeGroupButton = new Button("x");

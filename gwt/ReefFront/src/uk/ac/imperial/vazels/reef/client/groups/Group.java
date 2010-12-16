@@ -10,10 +10,8 @@ import com.google.gwt.core.client.JsArrayString;
  */
 public class Group {
   private Set<String> workloads;
-  private Set<String> filters;
   private final String name;
   private int size;
-  private String restrictions;
   
   /**
    * Create a synthetic group.
@@ -25,7 +23,6 @@ public class Group {
     this.name = name;
     this.size = size;
     this.workloads = new HashSet<String>();
-    this.filters = new HashSet<String>();
   }
   
   /**
@@ -41,12 +38,6 @@ public class Group {
     this.workloads = new HashSet<String>();
     for(int i=0; i<nWorkloads.length(); i++) {
       this.workloads.add(nWorkloads.get(i));
-    }
-    
-    JsArrayString nFilters = overlay.getFilters();
-    this.filters = new HashSet<String>();
-    for(int i=0; i<nFilters.length(); i++) {
-      this.filters.add(nFilters.get(i));
     }
   }
   
@@ -110,13 +101,5 @@ public class Group {
    */
   public String getName() {
     return name;
-  }
-
-  public String getRestrictions() {
-    return restrictions;
-  }
-
-  public void setRestrictions(final String restrictions) {
-    this.restrictions = new String(restrictions);
   }
 }
