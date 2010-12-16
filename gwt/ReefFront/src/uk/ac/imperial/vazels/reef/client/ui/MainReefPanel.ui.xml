@@ -2,51 +2,13 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
-	<ui:style field="useful" src="../ui/useful.css"/>
-	
-		<ui:style>
+	<ui:style>
 		.uniformMainMargin {
 			margin: 0px 19px 19px;
 		}
 		
-		.important {
-			font-weight: bold;
-		}
-	
 		.greybck {
 			background: #e3e3e3;
-		}
-		
-		.greenbck {
-			background: red;
-			/*		#476203;*/
-		}
-		
-		.greentext {
-			color: #476203;
-			font-size: 1.65em;
-			font-weight: bold;
-			margin: 4px 3px 7px;
-			text-align: left;
-		}	
-	
-		.spaced {
-			padding: 0em 2em 2em;
-		}
-		
-		.spaced2 {
-			padding: 1em 0em 0em;
-		}
-		
-		.spaced3 {
-			padding: 0em 0.5em 0em;
-		}
-		
-		.greensmalltext {
-			font-size: 1em;
-			color: #476203;
-			text-align: right;
-			text-decoration: underline;
 		}
 	</ui:style>
 	
