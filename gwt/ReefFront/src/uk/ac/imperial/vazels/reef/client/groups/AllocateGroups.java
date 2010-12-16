@@ -86,6 +86,17 @@ public class AllocateGroups extends Composite {
     // Method provided by Composite to initialize the widget from the XML
     initWidget(uiBinder.createAndBindUi(this));
 
+    groupsFlexTable.setText(0, GROUP_NAME_COLUMN, "Group");
+    groupsFlexTable.setText(0, GROUP_HOSTS_COLUMN, "Hosts");
+    groupsFlexTable.setText(0, GROUP_REMOVE_COLUMN, "Remove");
+    
+    newGroupTextBox.removeFromParent();
+    groupsFlexTable.setWidget(1, GROUP_NAME_COLUMN, newGroupTextBox);
+    newHostsTextBox.removeFromParent();
+    groupsFlexTable.setWidget(1, GROUP_HOSTS_COLUMN, newHostsTextBox);
+    addGroupButton.removeFromParent();
+    groupsFlexTable.setWidget(1, GROUP_REMOVE_COLUMN, addGroupButton);
+    
     userInteractionWidgets = new HashSet<FocusWidget>();
     userInteractionWidgets.add(addGroupButton);
     userInteractionWidgets.add(btnReset);
@@ -303,11 +314,9 @@ public class AllocateGroups extends Composite {
    * Wipe the table.
    */
   private void clearTable() {
-    groupsFlexTable.removeAllRows();
-    // Column headers
-    groupsFlexTable.setText(0, GROUP_NAME_COLUMN, "Group");
-    groupsFlexTable.setText(0, GROUP_HOSTS_COLUMN, "Hosts");
-    groupsFlexTable.setText(0, GROUP_REMOVE_COLUMN, "Remove");
+    while(groupsFlexTable.getRowCount() > 2) {
+      groupsFlexTable.removeRow(1);
+    }
   }
   
   /**
@@ -316,8 +325,9 @@ public class AllocateGroups extends Composite {
    * @param numberOfHosts Size of the group to add.
    */
   private void addGroupToTable(final String newGroupName, final int numberOfHosts) {
+    int row = groupsFlexTable.getRowCount()-1;
+    groupsFlexTable.insertRow(row);
     // Add the group to the table.
-    int row = groupsFlexTable.getRowCount();
     groupsFlexTable.setText(row, GROUP_NAME_COLUMN, newGroupName);
     groupsFlexTable.setText(row, GROUP_HOSTS_COLUMN, Integer.toString(numberOfHosts));
 

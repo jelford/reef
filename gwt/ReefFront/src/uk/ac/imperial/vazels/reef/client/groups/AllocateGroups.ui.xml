@@ -8,7 +8,7 @@
 		<g:FlexTable ui:field="groupsFlexTable" cellSpacing="2"
 			cellPadding="3" width="400px" addStyleNames="{useful.greentext}" />
 
-		<g:HorizontalPanel>
+		<g:HorizontalPanel visible="false">
 			<g:TextBox ui:field="newGroupTextBox" addStyleNames="{useful.textbox}" />
 			<g:IntegerBox ui:field="newHostsTextBox"
 				addStyleNames="{useful.textbox} {useful.expel1}" />
