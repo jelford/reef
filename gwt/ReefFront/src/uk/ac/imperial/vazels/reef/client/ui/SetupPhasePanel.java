@@ -16,7 +16,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 
 public class SetupPhasePanel extends Composite {
-  private final SimplePanel top;
+  private final MainReefPanel top;
   
   @UiField Button btnStart;
   @UiField DecoratedTabPanel tabPanel;
@@ -28,7 +28,7 @@ public class SetupPhasePanel extends Composite {
   }
 
   @SuppressWarnings("deprecation")
-  public SetupPhasePanel(SimplePanel top) {
+  public SetupPhasePanel(MainReefPanel top) {
     initWidget(uiBinder.createAndBindUi(this));
 
     this.top = top;

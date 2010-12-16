@@ -49,42 +49,37 @@
 		}
 	</ui:style>
 
-	<g:DecoratorPanel>
-		<g:HorizontalPanel addStyleNames="{style.spaced}">
-
-			<g:VerticalPanel addStyleNames="{style.greybck}">
-				<g:HorizontalPanel>
-					<g:Label addStyleNames="{style.greentext} {style.spaced3} ">Experiment Setup</g:Label>
-					<g:Label addStyleNames="{style.spaced2} {style.greensmalltext}"> Need help?</g:Label>
-				</g:HorizontalPanel>
-
-				<g:DecoratedTabPanel ui:field="tabPanel">
-					<g:Tab>
-						<g:TabHTML>1.Set up Groups</g:TabHTML>
-						<groups:AllocateGroups />
-					</g:Tab>
-					<g:Tab>
-						<g:TabHTML>2.Upload Workload</g:TabHTML>
-						<workload:WorkloadWidget />
-					</g:Tab>
-					<g:Tab>
-						<g:TabHTML>3.Upload Actors</g:TabHTML>
-						<actors:UploadActorWidget />
-					</g:Tab>
-					<g:Tab>
-						<g:TabHTML>4.Assign Workloads &amp; Actors</g:TabHTML>
-						<g:Label>I am waiting for chris. chriiiiiiiiis!</g:Label>
-					</g:Tab>
-					<g:Tab>
-						<g:TabHTML>5.Start Experiment</g:TabHTML>
-						<g:VerticalPanel>
-							<server:ServerControl />
-							<g:Button ui:field="btnStart" text="Start Experiment" />
-						</g:VerticalPanel>
-					</g:Tab>
-
-				</g:DecoratedTabPanel>
-			</g:VerticalPanel>
+	<g:VerticalPanel>	
+		<g:HorizontalPanel>
+			<g:Label addStyleNames="{style.greentext} {style.spaced3} ">Experiment Setup</g:Label>
+			<g:Label addStyleNames="{style.spaced2} {style.greensmalltext}"> Need help?</g:Label>
 		</g:HorizontalPanel>
-	</g:DecoratorPanel>
+
+		<g:DecoratedTabPanel ui:field="tabPanel">
+			<g:Tab>
+				<g:TabHTML>1.Set up Groups</g:TabHTML>
+				<groups:AllocateGroups />
+			</g:Tab>
+			<g:Tab>
+				<g:TabHTML>2.Upload Workload</g:TabHTML>
+				<workload:WorkloadWidget />
+			</g:Tab>
+			<g:Tab>
+				<g:TabHTML>3.Upload Actors</g:TabHTML>
+				<actors:UploadActorWidget />
+			</g:Tab>
+			<g:Tab>
+				<g:TabHTML>4.Assign Workloads &amp; Actors</g:TabHTML>
+				<g:Label>I am waiting for chris. chriiiiiiiiis!</g:Label>
+			</g:Tab>
+			<g:Tab>
+				<g:TabHTML>5.Start Experiment</g:TabHTML>
+				<g:VerticalPanel>
+					<server:ServerControl />
+					<g:Button ui:field="btnStart" text="Start Experiment" />
+				</g:VerticalPanel>
+			</g:Tab>
+
+		</g:DecoratedTabPanel>
+	</g:VerticalPanel>
 </ui:UiBinder> 

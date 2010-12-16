@@ -1,6 +1,7 @@
 package uk.ac.imperial.vazels.reef.client;
 
 
+import uk.ac.imperial.vazels.reef.client.ui.MainReefPanel;
 import uk.ac.imperial.vazels.reef.client.ui.SetupPhasePanel;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -18,8 +19,8 @@ public class ReefFront implements EntryPoint
 	 */
   public void onModuleLoad()
 	{
-    SimplePanel top = new SimplePanel();
-    top.add(new SetupPhasePanel(top));
-    RootPanel.get("tabPanel").add(top);
+    MainReefPanel main = new MainReefPanel();
+    main.setWidget(new SetupPhasePanel(main));
+    RootPanel.get("tabPanel").add(main);
 	}
 }
