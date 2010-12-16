@@ -2,22 +2,21 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
+	<ui:style field="useful" src="../ui/useful.css"/>
+
 	<g:VerticalPanel>
 
 			<g:HorizontalPanel>
 				<g:VerticalPanel>
 					<g:FlexTable ui:field="groupsFlexTable" cellSpacing="2"
-						cellPadding="30" width="400px" addStyleNames="greentext" />
+						cellPadding="30" width="400px" addStyleNames="{useful.greentext}" />
 
 
 					<g:HorizontalPanel>
-						<!-- <g:Label text="Group Name" addStyleNames="{style.spaced}" /> -->
-						<g:TextBox ui:field="newGroupTextBox" addStyleNames="textbox" />
-						<!-- <g:Label text="Hosts Number" addStyleNames="spaced expel1" 
-							/> -->
+						<g:TextBox ui:field="newGroupTextBox" addStyleNames="{useful.textbox}" />
 						<g:IntegerBox ui:field="newHostsTextBox"
-							addStyleNames="textbox expel1" />
-						<g:Button ui:field="addGroupButton" addStyleNames="expel1"
+							addStyleNames="{useful.textbox} {useful.expel1}" />
+						<g:Button ui:field="addGroupButton" addStyleNames="{useful.expel1}"
 							text="Add Group" />
 					</g:HorizontalPanel>
 				</g:VerticalPanel>
@@ -25,12 +24,12 @@
 			</g:HorizontalPanel>
 			
 		
-			<g:Label ui:field="groupsInfo" addStyleNames="redtxt spaced" />
+			<g:Label ui:field="groupsInfo" addStyleNames="{useful.redtxt} {useful.spaced}" />
 
 			<g:cell horizontalAlignment="right">
 				<g:HorizontalPanel>
 					<g:Button ui:field="btnReset" text="Clear Groups"
-						addStyleNames="expel" />
+						addStyleNames="{useful.expel}" />
 				</g:HorizontalPanel>
 			</g:cell>
 
