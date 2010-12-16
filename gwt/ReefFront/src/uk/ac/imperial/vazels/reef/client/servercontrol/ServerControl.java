@@ -1,7 +1,6 @@
 package uk.ac.imperial.vazels.reef.client.servercontrol;
 
 import uk.ac.imperial.vazels.reef.client.MultipleRequester;
-import uk.ac.imperial.vazels.reef.client.groups.AllocateGroups;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -13,7 +12,6 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ServerControl extends Composite {
@@ -43,7 +41,6 @@ public class ServerControl extends Composite {
   @UiField Button btnStartServer;
   @UiField Button btnStopServer;
 
-
   public ServerControl() {
     initWidget(uiBinder.createAndBindUi(this));
 
@@ -66,7 +63,6 @@ public class ServerControl extends Composite {
     btnStopServer.setEnabled(false);
     serverRun.stop();
   }
-
 
   /**
    * Set the UI elements (buttons, ...) to reflect the new running state
