@@ -6,22 +6,19 @@
 
 	<g:VerticalPanel>
 		<g:FlexTable ui:field="groupsFlexTable" cellSpacing="2"
-			cellPadding="3" width="400px" addStyleNames="{useful.greentext}" />
+			cellPadding="3" addStyleNames="{useful.greentext} {useful.majorComponentWidth}" />
 
 		<g:HorizontalPanel visible="false">
-			<g:TextBox ui:field="newGroupTextBox" addStyleNames="{useful.textbox}" />
-			<g:IntegerBox ui:field="newHostsTextBox"
-				addStyleNames="{useful.textbox} {useful.expel1}" />
-			<g:Button ui:field="addGroupButton" addStyleNames="{useful.expel1}"
-				text="Add Group" />
+			<g:TextBox ui:field="newGroupTextBox" addStyleNames="{useful.mostlyHStretch} {useful.shortInput}" />
+			<g:IntegerBox ui:field="newHostsTextBox" addStyleNames="{useful.mostlyHStretch} {useful.shortInput}" />
+			<g:Button ui:field="addGroupButton" text="Add Group" addStyleNames="{useful.noWrap}" />
 		</g:HorizontalPanel>
 			
 		
-		<g:Label ui:field="groupsInfo" addStyleNames="{useful.redtxt} {useful.spaced}" />
+		<g:Label ui:field="groupsInfo" addStyleNames="{useful.infoText} {useful.spaced}" />
 
 		<g:cell horizontalAlignment="right">
-				<g:Button ui:field="btnReset" text="Clear Groups"
-					addStyleNames="{useful.expel}" />
+				<g:Button ui:field="btnReset" text="Clear Groups" />
 		</g:cell>
 
 	</g:VerticalPanel>

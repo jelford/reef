@@ -6,12 +6,8 @@
 	width: 100%;
 }
 
-.expel {
-	margin: 0.5em;
-}
-
-.expel1 {
-	margin: 0em 0.5em 0em;
+.mostlyHStretch {
+	width: 95%;
 }
 
 .greentext {
@@ -22,21 +18,20 @@
 	text-align: left;
 }
 
-.redtxt {
+.infoText {
 	font-size: 1em;
 	color: #a11010;
 	text-align: left;
 }
 
-.greybck {
-	background: #e3e3e3;
+.noWrap {
+	white-space: nowrap;
 }
 
-.textbox {
-	padding: 2px;
-	width: 99px;
+.shortInput {
+	min-width: 99px;
 }
 
-.alignleft {
-	text-align: left;
+.majorComponentWidth {
+	min-width: 400px;
 }
