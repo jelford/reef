@@ -7,7 +7,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratedTabPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -38,6 +37,6 @@ public class SetupPhasePanel extends Composite {
   
   @UiHandler("btnStart")
   void start(ClickEvent event) {
-    top.setWidget(new AllocateGroups());
+    top.setContent("Running Phase", new AllocateGroups());
   }
 }

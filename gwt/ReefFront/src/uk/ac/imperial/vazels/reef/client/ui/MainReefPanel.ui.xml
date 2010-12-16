@@ -10,9 +10,38 @@
 		.greybck {
 			background: #e3e3e3;
 		}
+		
+		.greentext {
+			color: #476203;
+			font-size: 1.65em;
+			font-weight: bold;
+			margin: 4px 3px 7px;
+			text-align: left;
+		}
+		
+		.spaced2 {
+			padding: 1em 0em 0em;
+		}
+		
+		.spaced3 {
+			padding: 0em 0.5em 0em;
+		}
+		
+		.greensmalltext {
+			font-size: 1em;
+			color: #476203;
+			text-align: right;
+			text-decoration: underline;
+		}
 	</ui:style>
 	
 	<g:DecoratorPanel>
-		<g:SimplePanel ui:field="placeholder" addStyleNames="{style.greybck} {style.uniformMainMargin}" />
+		<g:VerticalPanel addStyleNames="{style.greybck} {style.uniformMainMargin}">
+			<g:HorizontalPanel>
+				<g:Label ui:field="title" addStyleNames="{style.greentext} {style.spaced3} " />
+				<g:Label addStyleNames="{style.spaced2} {style.greensmalltext}"> Need help?</g:Label>
+			</g:HorizontalPanel>
+			<g:SimplePanel ui:field="placeholder" />
+		</g:VerticalPanel>
 	</g:DecoratorPanel>
 </ui:UiBinder> 

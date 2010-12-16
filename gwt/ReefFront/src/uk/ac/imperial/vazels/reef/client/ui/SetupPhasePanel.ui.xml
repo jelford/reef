@@ -5,81 +5,29 @@
 	xmlns:workload="urn:import:uk.ac.imperial.vazels.reef.client.workloads"
 	xmlns:server="urn:import:uk.ac.imperial.vazels.reef.client.servercontrol">
 
-	<ui:style field="useful" src="../ui/useful.css"/>
-
-	<ui:style>
-		.important {
-			font-weight: bold;
-		}
-	
-		.greybck {
-			background: #e3e3e3;
-		}
-		
-		.greenbck {
-			background: red;
-			/*		#476203;*/
-		}
-		
-		.greentext {
-			color: #476203;
-			font-size: 1.65em;
-			font-weight: bold;
-			margin: 4px 3px 7px;
-			text-align: left;
-		}	
-	
-		.spaced {
-			padding: 0em 2em 2em;
-		}
-		
-		.spaced2 {
-			padding: 1em 0em 0em;
-		}
-		
-		.spaced3 {
-			padding: 0em 0.5em 0em;
-		}
-		
-		.greensmalltext {
-			font-size: 1em;
-			color: #476203;
-			text-align: right;
-			text-decoration: underline;
-		}
-	</ui:style>
-
-	<g:VerticalPanel>	
-		<g:HorizontalPanel>
-			<g:Label addStyleNames="{style.greentext} {style.spaced3} ">Experiment Setup</g:Label>
-			<g:Label addStyleNames="{style.spaced2} {style.greensmalltext}"> Need help?</g:Label>
-		</g:HorizontalPanel>
-
-		<g:DecoratedTabPanel ui:field="tabPanel">
-			<g:Tab>
-				<g:TabHTML>1.Set up Groups</g:TabHTML>
-				<groups:AllocateGroups />
-			</g:Tab>
-			<g:Tab>
-				<g:TabHTML>2.Upload Workload</g:TabHTML>
-				<workload:WorkloadWidget />
-			</g:Tab>
-			<g:Tab>
-				<g:TabHTML>3.Upload Actors</g:TabHTML>
-				<actors:UploadActorWidget />
-			</g:Tab>
-			<g:Tab>
-				<g:TabHTML>4.Assign Workloads &amp; Actors</g:TabHTML>
-				<g:Label>I am waiting for chris. chriiiiiiiiis!</g:Label>
-			</g:Tab>
-			<g:Tab>
-				<g:TabHTML>5.Start Experiment</g:TabHTML>
-				<g:VerticalPanel>
-					<server:ServerControl />
-					<g:Button ui:field="btnStart" text="Start Experiment" />
-				</g:VerticalPanel>
-			</g:Tab>
-
-		</g:DecoratedTabPanel>
-	</g:VerticalPanel>
+	<g:DecoratedTabPanel ui:field="tabPanel">
+		<g:Tab>
+			<g:TabHTML>1.Set up Groups</g:TabHTML>
+			<groups:AllocateGroups />
+		</g:Tab>
+		<g:Tab>
+			<g:TabHTML>2.Upload Workload</g:TabHTML>
+			<workload:WorkloadWidget />
+		</g:Tab>
+		<g:Tab>
+			<g:TabHTML>3.Upload Actors</g:TabHTML>
+			<actors:UploadActorWidget />
+		</g:Tab>
+		<g:Tab>
+			<g:TabHTML>4.Assign Workloads &amp; Actors</g:TabHTML>
+			<g:Label>I am waiting for chris. chriiiiiiiiis!</g:Label>
+		</g:Tab>
+		<g:Tab>
+			<g:TabHTML>5.Start Experiment</g:TabHTML>
+			<g:VerticalPanel>
+				<server:ServerControl />
+				<g:Button ui:field="btnStart" text="Start Experiment" />
+			</g:VerticalPanel>
+		</g:Tab>
+	</g:DecoratedTabPanel>
 </ui:UiBinder> 
