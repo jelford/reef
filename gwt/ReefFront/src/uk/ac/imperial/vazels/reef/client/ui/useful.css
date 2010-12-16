@@ -2,6 +2,10 @@
 	padding: 0.5em;
 }
 
+.lrSpaced {
+	padding: 0em 0.5em;
+}
+
 .hStretch {
 	width: 100%;
 }
@@ -10,18 +14,25 @@
 	width: 95%;
 }
 
+.important {
+	font-weight: bold;
+}
+
+.header {
+	font-size: 1.65em;
+	font-weight: bold;
+}
+
 .greentext {
 	color: #4b6901;
-	font-size: 5em;
-	font-weight: bold; 
-/*	margin: 0px 0px 0px;*/ 
-	text-align: left;
 }
 
 .infoText {
-	font-size: 1em;
 	color: #a11010;
-	text-align: left;
+}
+
+.underline {
+	text-decoration: underline;
 }
 
 .noWrap {
@@ -34,4 +45,8 @@
 
 .majorComponentWidth {
 	min-width: 400px;
+}
+
+.alignRight {
+	text-align: right;
 }
