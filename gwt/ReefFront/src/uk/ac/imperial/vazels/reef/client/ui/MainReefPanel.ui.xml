@@ -20,8 +20,12 @@
 			<g:HorizontalPanel addStyleNames="{useful.spaced} {useful.hStretch}">
 				<g:Label ui:field="title"
 					addStyleNames="{useful.header} {useful.lrSpaced}" />
-				<g:cell verticalAlignment="BOTTOM">
-					<g:Label addStyleNames="{useful.underline} {useful.lrSpaced} {useful.alignRight}">Need help?</g:Label>
+				<g:cell verticalAlignment="BOTTOM" horizontalAlignment="RIGHT" >
+					<g:Anchor href="https://github.com/jelford/reef/wiki"
+					addStyleNames="{useful.lrSpaced}"
+					target="_blank">
+						Need help?
+					</g:Anchor>
 				</g:cell>
 			</g:HorizontalPanel>
 			<g:SimplePanel ui:field="placeholder" />

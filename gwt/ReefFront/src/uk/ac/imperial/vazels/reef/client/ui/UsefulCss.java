@@ -11,7 +11,6 @@ public interface UsefulCss extends CssResource {
   public String header();
   public String greentext();
   public String infoText();
-  public String underline();
   public String noWrap();
   public String shortInput();
   public String majorComponentWidth();

@@ -27,12 +27,13 @@
 	color: #4b6901;
 }
 
-.infoText {
-	color: #a11010;
+.greentext a {
+	color: #4b6901;
+	text-decoration: underline;
 }
 
-.underline {
-	text-decoration: underline;
+.infoText {
+	color: #a11010;
 }
 
 .noWrap {
