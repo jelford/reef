@@ -1,5 +1,6 @@
 package uk.ac.imperial.vazels.reef.client.servercontrol;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,7 +11,21 @@ import uk.ac.imperial.vazels.reef.client.util.NotInitialisedException;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.user.client.Timer;
 
+/**
+ * A wrapper class containing Requesters to talk to the server. Really, it's a
+ * package. Except it's not; it's a class. Why have I done this? Well, I thought
+ * we had quite enough packages, and also I wanted them to share a resource: 
+ * {@code mScheduleStatusRequest} at the bottom.
+ * @author james
+ *
+ */
 public class ServerControl {
+  /**
+   * It doesn't make sense to instantiate this. This makes it act like a
+   * package. 
+   */
+  private ServerControl() {}
+
   /**
    * URIs to start and stop the server.
    */
@@ -22,62 +37,162 @@ public class ServerControl {
    * How long to wait between making requests to the server and asking
    * for its new status.
    */
-  private static final int SERVER_UPDATE_DELAY = 2700;
+  private static final int SERVER_UPDATE_DELAY = 3300;
+  
+  /**
+   * How long to wait between periodic checks (when we've no reason to think
+   * anything has happened - JUST IN CASE checks)
+   */
+  private static final int SERVER_PERIODIC_DELAY = 8500;
 
   /**
-   * Stock request to check the server status.
-   * <p>
-   * When a response is received the status in the outer class is updated.
-   * </p>
+   * How long can the server be "starting" for before it's a problem?
+   * (Say 10 seconds)
    */
-  protected static class ServerStatusRequest extends MultipleRequester<ServerStatus> {
+  private static final long SERVER_TIMEOUT = 10000;
+
+  /**
+   * Stock request to check the server status. A singleton class which will
+   * handle any requests to the server regarding the running/ready state.
+   */
+  protected static class ServerStatusRequester extends MultipleRequester<ServerStatus> {
+
+    /**
+     * Store a list of subscribed MessageHandlers
+     */
     private final Set<MessageHandler<ServerStatus>> mStatusHandlers;
-    
-    private ServerStatusRequest(final MessageHandler<ServerStatus> statusHandler) {
+
+    /**
+     * Singleton class; have a private constructor.
+     * @param statusHandler A MessageHandler to be notified when a request 
+     * completes.
+     */
+    private ServerStatusRequester(
+        final MessageHandler<ServerStatus> statusHandler) {
+
       super(RequestBuilder.GET, SERVER_CONTROL_URI, new Converter<ServerStatus>() {
         public ServerStatus convert(String original) {
           return new ServerStatus(original);
         }
       });
+
+      if (statusHandler == null) {
+        throw new NullPointerException("Doesn't make sense to request server" +
+        "status with no callback on completed request");
+      }
+
       mStatusHandlers = new HashSet<MessageHandler<ServerStatus>>();
       mStatusHandlers.add(statusHandler);
+      
+      /*
+       * We want to get the server's status the first time someone registers
+       * interest, and then probably again every so often so we're always on
+       * the ball.
+       * 
+       * @TODO: reviewer - Should this repeat? I'm happy to change it to just
+       * scheduling it the once (in that case, change this to update() instead)
+       * 
+       * In any case, only do this once, in the constructor.
+       */
+      mScheduleStatusRequest.scheduleRepeating(SERVER_PERIODIC_DELAY);
+    }
+
+    /**
+     * Store the single instance of this class.
+     */
+    private static ServerStatusRequester mInstance;
+
+    /**
+     * Get an instance of ServerStatusRequest. Use {@code getInstanceOrThrow()}
+     * if you don't have a new MessageHandler to pass in (existing
+     * MessageHandlers will be notified when requests complete). This setup
+     * ensures we never complete a request with no MessageHandlers to notify
+     * 
+     * @param statusHandler Specify the handler to use for callbacks after
+     * completed calls to the server. {@code NullPointerException} will be 
+     * thrown if this is null.
+     * 
+     * If you're sure you want to get an instance of this Requester and
+     * only send notifications to existing Handlers (rather than adding your
+     * own), then use {@code getInstanceOrThrow()}
+     * 
+     * @return The single instance of ServerStatusRequest.
+     */
+    public static ServerStatusRequester getInstance(final MessageHandler<ServerStatus> statusHandler) {
+      if (statusHandler == null) {
+        throw new NullPointerException();
+      }
+      if (mInstance == null) {
+        mInstance = new ServerStatusRequester(statusHandler);
+      } else {
+        mInstance.mStatusHandlers.add(statusHandler);
+      }
+      return mInstance;
     }
     
-    private static ServerStatusRequest instance;
-    public static ServerStatusRequest getInstance(final MessageHandler<ServerStatus> statusHandler) {
-      if (instance == null) {
-        instance = new ServerStatusRequest(statusHandler);
-      } else {
-        instance.mStatusHandlers.add(statusHandler);
-      }
-      return instance;
-    }
-    public static ServerStatusRequest getInstanceOrThrow() throws NotInitialisedException{
-      if (instance != null) {
-        return instance;
+    /**
+     * Works like {@code getInstance} except you needn't pass in a new
+     * {@code MessageHandler}. Use this when you have already set up handlers
+     * but need to get the class again, sending the results of completed requests
+     * to those existing {@code MessageHandler}s
+     * @see #getInstance(MessageHandler)
+     * @return The single instance of ServerStatusRequest
+     * @throws NotInitialisedException
+     */
+    public static ServerStatusRequester getInstanceOrThrow() throws NotInitialisedException{
+      if (mInstance != null) {
+        return mInstance;
       } else {
         throw new NotInitialisedException("Must initialise ServerStatusRequest with" +
-        		"a handler before trying to get an instance of it!");
+        "a handler before trying to get an instance of it! Try getInstance(" +
+        "MessageHandler<ServerStatus>)");
       }
     }
-    
+
+    /**
+     * When the server is performing a long operation, we'd like to know how
+     * long it's taking to do it. If it's too long, we'll take action.
+     */
+    private Date mHowLongHasServerBeenStarting = null;
+
     @Override
     protected void received(ServerStatus reply, boolean success, String message) {
       if(success) {
+        /*
+         * Intelligently pass notification back to the UI or reschedule another
+         * update if the server is half-way through. Need to keep track of last
+         * how long the server has had the STARTING status.
+         */
         switch (reply.getState()) {
         case STARTING:
-          mScheduleStatusRequest.schedule(SERVER_UPDATE_DELAY);
-          break;
+          // How long has the server been starting? Do we have a problem?
+          if (mHowLongHasServerBeenStarting == null) {
+            mHowLongHasServerBeenStarting = new Date();
+          }
+
+          Date theTimeNow = new Date();
+          Long timeElapsed = theTimeNow.getTime() - 
+          mHowLongHasServerBeenStarting.getTime();
+          if (timeElapsed < SERVER_TIMEOUT) {
+            mScheduleStatusRequest.schedule(SERVER_UPDATE_DELAY);     
+            break;
+          } else {
+            reply = new ServerStatus(ServerStatus.ServerState.TIMEOUT);
+          }
         default:
+          // The operation has not timed out.
+          mHowLongHasServerBeenStarting = null;
+
           for(MessageHandler<ServerStatus> handler : mStatusHandlers) {
             if (handler != null) {
               handler.handle(reply);
             }
           }
         }
+
       }
     }
-    
+
     /**
      * Send request to server to grab server status
      * and update controls based on the result.
@@ -86,46 +201,64 @@ public class ServerControl {
       go(null);
     }
   }
-  
+
   /**
-   * Stock request to update the server running state.
+   * Stock request to update the server running state. A singleton class which
+   * will handle sending requests to the server to start or stop the control
+   * centre. Before using this, be sure to initialise the ServerStatusRequester.
    */
-  protected static class ServerRunRequest extends MultipleRequester<Void> {
-    
-    private ServerRunRequest() {
+  protected static class ServerRunRequester extends MultipleRequester<Void> {
+
+    /**
+     * A singleton class
+     */
+    private ServerRunRequester() {
       super(RequestBuilder.POST, SERVER_CONTROL_URI, null);
     }
+
+    /**
+     * Store the single instance of ServerRunRequester
+     */
+    private static ServerRunRequester mInstance;
     
-    private static ServerRunRequest instance;
-    public static ServerRunRequest getInstance() throws NotInitialisedException {
-      ServerStatusRequest.getInstanceOrThrow();
-      if (instance == null) {
-        instance = new ServerRunRequest();
+    /**
+     * Gets an instance of {@code ServerRunRequester}
+     * @return the single instance of ServerRunRequester
+     * @throws NotInitialisedException if you fail to first initialise the
+     * {@code ServerStatusRequester}.
+     * @see #getInstance(MessageHandler)
+     */
+    public static ServerRunRequester getInstance() throws NotInitialisedException {
+      ServerStatusRequester.getInstanceOrThrow();
+      if (mInstance == null) {
+        mInstance = new ServerRunRequester();
       }
-      return instance;
+      return mInstance;
     }
     /**
-     * Gets an instance of ServerRunRequest and adds @code statusHandler to
+     * Gets an instance of ServerRunRequest and adds {@code statusHandler} to
      * the list of status listeners, initialising ServerStatusRequest if
      * necessary.
-     * @param statusHandler
-     * @return
+     * @param statusHandler Non-null MessageHandler for initialising the
+     * ServerStatusRequester
+     * @return the single instance of ServerRunRequester
      */
-    public static ServerRunRequest getInstance(MessageHandler<ServerStatus> statusHandler) {
-      ServerStatusRequest.getInstance(statusHandler);
-      if (instance == null) {
-        instance = new ServerRunRequest();
+    public static ServerRunRequester getInstance(MessageHandler<ServerStatus> statusHandler) {
+      // Initialise the ServerStatusRequester. We don't actually need the instance.
+      ServerStatusRequester.getInstance(statusHandler);
+      if (mInstance == null) {
+        mInstance = new ServerRunRequester();
       }
-      return instance;
+      return mInstance;
     }
-    
+
     /**
      * Send an async call to start the server.
      */
     public void start() {
       go(null, SERVER_START_URI_SUFFIX);
     }
-    
+
     /**
      * Send an async call to stop the server.
      */
@@ -147,15 +280,18 @@ public class ServerControl {
       mScheduleStatusRequest.schedule(SERVER_UPDATE_DELAY);
     }
   }
-  
-  
+
+  /**
+   * Have a timer so that we can space out sending status requests in a
+   * sensible fashion.
+   */
   private static Timer mScheduleStatusRequest = new Timer(){
     @Override
     public void run() {
       try {
-        ServerStatusRequest.getInstanceOrThrow().update();
+        ServerStatusRequester.getInstanceOrThrow().update();
       } catch (NotInitialisedException e) {
-        // TODO: Fix this
+
         e.printStackTrace();
       }
     }

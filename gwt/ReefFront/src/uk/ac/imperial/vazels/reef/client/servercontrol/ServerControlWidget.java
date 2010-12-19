@@ -22,8 +22,8 @@ public class ServerControlWidget extends Composite {
   }
 
   
-  private final ServerControl.ServerStatusRequest mServerStatus;
-  private final ServerControl.ServerRunRequest mServerRun;
+  //private final ServerControl.ServerStatusRequester mServerStatus;
+  private final ServerControl.ServerRunRequester mServerRun;
 
   @UiField Button btnStartServer;
   @UiField Button btnStopServer;
@@ -34,9 +34,8 @@ public class ServerControlWidget extends Composite {
     
     mStatusUpdateHandler = new StatusMessageHandler();
 
-    mServerStatus = ServerControl.ServerStatusRequest.getInstance(mStatusUpdateHandler);
-    mServerStatus.update();
-    mServerRun = ServerControl.ServerRunRequest.getInstance(mStatusUpdateHandler);
+    //mServerStatus = ServerControl.ServerStatusRequester.getInstance(mStatusUpdateHandler);
+    mServerRun = ServerControl.ServerRunRequester.getInstance(mStatusUpdateHandler);
   }
 
   /*
@@ -84,6 +83,7 @@ public class ServerControlWidget extends Composite {
         setRunningStateUI(false);
         break;
       case TIMEOUT :
+        Window.alert("Server has timed out! There might be a problem on the server end; try restarting the server, clearing and data saved in the working directory, and refreshing this page");
         break;
       default:
         Window.alert("Got an unknown server state - something is wrong. Try restarting the server and refreshing the page");

@@ -18,6 +18,10 @@ public class ServerStatus {
       mServerState = ServerState.TIMEOUT;
     }
   }
+  
+  public ServerStatus(ServerState original) {
+    mServerState = original;
+  }
 
   protected enum ServerState {
     RUNNING,
