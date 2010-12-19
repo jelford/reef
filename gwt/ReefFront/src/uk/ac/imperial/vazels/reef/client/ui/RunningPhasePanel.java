@@ -17,5 +17,4 @@ public class RunningPhasePanel extends Composite {
   public RunningPhasePanel() {
     initWidget(uiBinder.createAndBindUi(this));
   }
-
 }

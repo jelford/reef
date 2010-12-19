@@ -15,4 +15,5 @@ public interface UsefulCss extends CssResource {
   public String shortInput();
   public String majorComponentWidth();
   public String alignRight();
+  public String notMassive();
 }

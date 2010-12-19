@@ -1,6 +1,8 @@
 import authentication
 import restlite
-import vazelsmanager
+import controlcentre
+import commandclient
+import vazelsintegration
 
 ### Manage starting & stopping the server ###
 
@@ -8,15 +10,10 @@ import vazelsmanager
 def control_handler():
   def GET(request):
     authentication.login(request)
-    runningState = vazelsmanager.vazelsRunning()
-    if runningState is True:
-      return request.response({"control_centre_status": "running"})
-    elif runningState is False:
-      return request.response({"control_centre_status": "ready"})
-    else:
-      return request.response({"control_centre_status": runningState})
+    return request.response({"control_centre_status": commandclient.vazelsPhase()})
   
   return locals()
+
 
 @restlite.resource
 def start_handler():
@@ -28,15 +25,16 @@ def start_handler():
   def POST(request, entity):
     authentication.login(request)
       
-    os_call_to_vazels = vazelsmanager.runVazels()
-      
-    if os_call_to_vazels :
+    if controlcentre.startVazels():
       # Need to upadate client to handle 204 as a successful response
       return request.response("")
     else :
       raise restlite.Status("500 Vazels Control Centre failed to start")
     
+    vazelsintegration.setupWhenReady()
+
   return locals()
+
 
 @restlite.resource
 def stop_handler():
@@ -44,45 +42,47 @@ def stop_handler():
   def POST(request,entity):
     authentication.login(request)
     
-    os_call_to_vazels = vazelsmanager.stopVazels()
     
-    if os_call_to_vazels is True :
+    if commandclient.stopVazels():
       return request.response("")
     else :
-      raise restlite.Status("500 "+str(os_call_to_vazels))
+      raise restlite.Status("500 Cannot Stop Non Running Control Centre")
       
   return locals()
   
+
 @restlite.resource
 def getallstatus_handler():
   def GET(request):
     authentication.login(request)
     
-    if vazelsmanager.updateStatuses() is True:
+    if commandclient.updateStatuses():
       return request.response("")
     else :
       raise restlite.Status, "400 Failed to send getallstatus request - don't call this before starting the Control Center"
       
   return locals()
 
+
 @restlite.resource
 def getalloutput_handler():
   def GET(request):
     authentication.login(request)
     
-    if vazelsmanager.getalloutput() is True:
+    if commandclient.getalloutput():
       return request.response("")
     else :
       raise restlite.Status, "400 Failed to get output from Vazels - don't call this before starting the Control Center"
       
   return locals()
   
+
 @restlite.resource
 def startexperiment_handler():
-  def GET(request):
+  def POST(request, entity):
     authentication.login(request)
     
-    if vazelsmanager.startexperiment() is True:
+    if commandclient.startexperiment():
       return request.response("")
     else:
       raise restlite.Status, "400 Failed to start experiment - don't call this before starting the Control Center"

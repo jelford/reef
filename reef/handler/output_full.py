@@ -11,14 +11,14 @@ import authentication
 def output_full_handler():
     import parser
     import os
-    import vazelsmanager
+    import controlcentre
     ## requests will return the entire data available
 
     def GET(request):
         authentication.login(request)
 
         # We want the proper experiment path that vazelsmanager tells us
-        exp_dir = vazelsmanager.getExperimentPath()
+        exp_dir = controlcentre.getExperimentPath()
         path = os.path.join(exp_dir,"Output_Folder")
         parsed = parser.scan_output(path)
         # If the parsing broke in any way we get back None

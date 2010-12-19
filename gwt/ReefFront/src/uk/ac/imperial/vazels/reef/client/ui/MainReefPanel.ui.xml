@@ -18,7 +18,7 @@
 		<g:VerticalPanel
 			addStyleNames="{style.greybck} {style.uniformMainMargin} {useful.greentext}">
 			<g:HorizontalPanel addStyleNames="{useful.spaced} {useful.hStretch}">
-				<g:Label ui:field="title"
+				<g:Label ui:field="mTitle"
 					addStyleNames="{useful.header} {useful.lrSpaced}" />
 				<g:cell verticalAlignment="BOTTOM" horizontalAlignment="RIGHT" >
 					<g:Anchor href="https://github.com/jelford/reef/wiki"
@@ -28,7 +28,7 @@
 					</g:Anchor>
 				</g:cell>
 			</g:HorizontalPanel>
-			<g:SimplePanel ui:field="placeholder" />
+			<g:SimplePanel ui:field="mPlaceholder" />
 		</g:VerticalPanel>
 	</g:DecoratorPanel>
 </ui:UiBinder> 

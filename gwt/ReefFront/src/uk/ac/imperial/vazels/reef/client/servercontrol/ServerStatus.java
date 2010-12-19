@@ -16,14 +16,27 @@ public class ServerStatus {
       mServerState = ServerState.STARTING;
     } else if ("timeout".equals(statusString)) {
       mServerState = ServerState.TIMEOUT;
+    } else if ("started".equals(statusString)) {
+      mServerState = ServerState.EXPERIMENT;
+    } else if ("finished".equals(statusString)) {
+      mServerState = ServerState.FINISHED;
+    } else {
+      mServerState = ServerState.UNKNOWN;
     }
   }
+  
+  public ServerStatus(ServerState original) {
+    mServerState = original;
+  }
 
-  protected enum ServerState {
+  public enum ServerState {
     RUNNING,
     READY,
     STARTING,
-    TIMEOUT;
+    TIMEOUT,
+    EXPERIMENT,
+    FINISHED,
+    UNKNOWN;
   }
   
   public ServerState getState(){
