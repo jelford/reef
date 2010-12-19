@@ -27,6 +27,10 @@ vazels_control_stdout_READ = None
 vazels_command_stdout_WRITE = None
 vazels_command_stdout_READ = None
 
+# Experiment state - use the to know whether the experiment has started.
+# Valid values: None, "started"
+experiment_running_state = None
+
 
 ''' DEFAULT SETTINGS FOR VAZELS - paths, certificates, ... '''
 config.getSettings("command_centre").setdefault("vazels_dir", "vazels")
@@ -70,30 +74,35 @@ def shutdownFiles():
 def vazelsRunning():
   global vazels_control_process
   global vazels_control_stdout_READ
+  global experiment_running_state
   
   # If we haven't yet started the control centre
   if vazels_control_process is None:
-    return False
+    return "ready"
   
   # If we have started the control centre, but it has terminated
   vazels_control_process.poll()
-  if vazels_control_process.returncode != None :
+  if vazels_control_process.returncode != None or vazels_control_stdout_READ is None:
     vazels_control_process = None # So we don't get problems when we start it again
-    return False
+    return "ready"
   
-  # If the control centre is not yet ready to receive commands. The only
-  # way we have to tell is to look at the 13th line of output and compare it
-  # to a string literal (in this case, just check it's there)
-  cur_line = None
+  # Check whether the experiment has already started
+  if experiment_running_state == "started" :
+    return "started"
+  
+  # Read through what the control centre's told us & get the state from that
+  # (if it is not any of the above cases it is either running or starting)
   vazels_control_stdout_READ.seek(0)
-  for i in range(13):
-    new_line = vazels_control_stdout_READ.readline()
-    if new_line == "": break
-    cur_line = new_line
+  cur_line = None
+  state = "starting"
+  while cur_line != "": #Read through the whole thing
+    cur_line = vazels_control_stdout_READ.readline()
     if cur_line.find("[OK]") != -1:
-      return True
-   
-  return "starting"
+      state = "running"
+      break # We don't care about the rest here.
+
+  print state
+  return state
   
 def getVazelsPath():
   return os.path.join(
@@ -151,6 +160,7 @@ def runVazels():
   
 def stopVazels():
   __issueControlCentreCommand('stop')
+  experiment_running_state = None
   
   shutdownFiles()
   
@@ -158,6 +168,8 @@ def stopVazels():
   return True
 
 def startexperiment():
+  global experiment_running_state
+  experiment_running_state = "started"
   return __issueControlCentreCommand('start')
   
 def getalloutput():

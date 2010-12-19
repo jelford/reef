@@ -20,9 +20,8 @@ def __applyWorkloadsToControlCentre(interval) :
   while(True): # Keep checking until we don't have to anymore
     runningState = vazelsmanager.vazelsRunning()
     
-    #Don't use a dict/switch structure because we want to control flow
-    if runningState is True:
-      
+    #Don't use a dict/switch structure because we want to control (outer) flow
+    if runningState == "running":
       #### Apply the workload files themselves ####
       workloads = config.getSettings("workloads")
       workloadDefs = workloads["defs"]
@@ -74,7 +73,7 @@ def __applyWorkload(workload_def, target_group):
 def __extractActors(workload_def, target_group):
   print("Extracting actors")
   group_number = target_group['group_number']
-  experiment_dir = config.getSettings("global")['experiment_dir']
+  experiment_dir = config.getSettings("command_centre")['experiment_dir']
   
   print("workload_def: " + str(workload_def))
   for actor_name in workload_def['actors']:

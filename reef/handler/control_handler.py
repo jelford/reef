@@ -9,12 +9,7 @@ def control_handler():
   def GET(request):
     authentication.login(request)
     runningState = vazelsmanager.vazelsRunning()
-    if runningState is True:
-      return request.response({"control_centre_status": "running"})
-    elif runningState is False:
-      return request.response({"control_centre_status": "ready"})
-    else:
-      return request.response({"control_centre_status": runningState})
+    return request.response({"control_centre_status": runningState})
   
   return locals()
 

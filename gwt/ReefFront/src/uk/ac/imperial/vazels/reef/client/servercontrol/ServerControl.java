@@ -14,8 +14,7 @@ import com.google.gwt.user.client.Timer;
 /**
  * A wrapper class containing Requesters to talk to the server. Really, it's a
  * package. Except it's not; it's a class. Why have I done this? Well, I thought
- * we had quite enough packages, and also I wanted them to share a resource: 
- * {@code mScheduleStatusRequest} at the bottom.
+ * we had quite enough packages, and also I wanted them to share bunch of resources.
  * @author james
  *
  */
@@ -26,11 +25,27 @@ public class ServerControl {
    */
   private ServerControl() {}
 
-  /**
+  /*
    * URIs to start and stop the server.
    */
+  /**
+   * Start the Control Centre
+   */
   private static final String SERVER_START_URI_SUFFIX="/start";
+  
+  /**
+   * Stop the Control Centre
+   */
   private static final String SERVER_STOP_URI_SUFFIX="/stop";
+  
+  /**
+   * Start the experiment running (not to be confused with above)
+   */
+  private static final String SERVER_RUN_URI_SUFFIX="/startexperiment";
+  
+  /**
+   * The main URI for all control-based commands
+   */
   private static final String SERVER_CONTROL_URI="/control";
 
   /**
@@ -50,6 +65,11 @@ public class ServerControl {
    * (Say 10 seconds)
    */
   private static final long SERVER_TIMEOUT = 10000;
+  
+  /**
+   * We sometimes need to update status from other classes.
+   */
+  private static ServerStatusRequester mStatusRequester;
 
   /**
    * Stock request to check the server status. A singleton class which will
@@ -90,10 +110,12 @@ public class ServerControl {
        * the ball.
        * 
        * @TODO: reviewer - Should this repeat? I'm happy to change it to just
-       * scheduling it the once (in that case, change this to update() instead)
+       * scheduling it the once (in that case, change this to only update() 
+       * instead)
        * 
        * In any case, only do this once, in the constructor.
        */
+      this.update();
       mScheduleStatusRequest.scheduleRepeating(SERVER_PERIODIC_DELAY);
     }
 
@@ -207,47 +229,47 @@ public class ServerControl {
    * will handle sending requests to the server to start or stop the control
    * centre. Before using this, be sure to initialise the ServerStatusRequester.
    */
-  protected static class ServerRunRequester extends MultipleRequester<Void> {
+  protected static class ControlCentreRequester extends MultipleRequester<Void> {
 
     /**
      * A singleton class
      */
-    private ServerRunRequester() {
+    private ControlCentreRequester() {
       super(RequestBuilder.POST, SERVER_CONTROL_URI, null);
     }
 
     /**
      * Store the single instance of ServerRunRequester
      */
-    private static ServerRunRequester mInstance;
+    private static ControlCentreRequester mInstance;
     
     /**
-     * Gets an instance of {@code ServerRunRequester}
-     * @return the single instance of ServerRunRequester
+     * Gets an instance of {@code ControlCentreRequester}
+     * @return the single instance of ControlCentreRequester
      * @throws NotInitialisedException if you fail to first initialise the
      * {@code ServerStatusRequester}.
      * @see #getInstance(MessageHandler)
      */
-    public static ServerRunRequester getInstance() throws NotInitialisedException {
-      ServerStatusRequester.getInstanceOrThrow();
+    public static ControlCentreRequester getInstanceOrThrow() throws NotInitialisedException {
+      mStatusRequester = ServerStatusRequester.getInstanceOrThrow();
       if (mInstance == null) {
-        mInstance = new ServerRunRequester();
+        mInstance = new ControlCentreRequester();
       }
       return mInstance;
     }
     /**
-     * Gets an instance of ServerRunRequest and adds {@code statusHandler} to
-     * the list of status listeners, initialising ServerStatusRequest if
-     * necessary.
+     * Gets an instance of {@code ControlCentreRequester} and adds {@code 
+     * statusHandler} to the list of status listeners, initialising 
+     * ServerStatusRequest if necessary.
      * @param statusHandler Non-null MessageHandler for initialising the
      * ServerStatusRequester
-     * @return the single instance of ServerRunRequester
+     * @return the single instance of {@code ControlCentreRequester}
      */
-    public static ServerRunRequester getInstance(MessageHandler<ServerStatus> statusHandler) {
+    public static ControlCentreRequester getInstance(MessageHandler<ServerStatus> statusHandler) {
       // Initialise the ServerStatusRequester. We don't actually need the instance.
-      ServerStatusRequester.getInstance(statusHandler);
+      mStatusRequester = ServerStatusRequester.getInstance(statusHandler);
       if (mInstance == null) {
-        mInstance = new ServerRunRequester();
+        mInstance = new ControlCentreRequester();
       }
       return mInstance;
     }
@@ -277,8 +299,62 @@ public class ServerControl {
      */
     @Override
     protected void received(Void reply, boolean success, String message) {
-      mScheduleStatusRequest.schedule(SERVER_UPDATE_DELAY);
+      mStatusRequester.update();
     }
+  }
+  
+  private static class ExperimentStartRequester extends MultipleRequester<Void>{
+    /**
+     * A singleton class
+     */
+    private ExperimentStartRequester() {
+      super(RequestBuilder.POST, SERVER_RUN_URI_SUFFIX, null);
+    }
+    
+    /**
+     * Store the single instance of {@code ExperimentStartRequester}
+     */
+    private static ExperimentStartRequester instance;
+    
+    /**
+     * Gets an instance of {@code ExperimentStartRequester}
+     * @return the single instance of {@code ServerRunRequester}
+     * @throws NotInitialisedException if you fail to first initialise the
+     * {@code ServerStatusRequester}.
+     * @see #getInstance(MessageHandler)
+     */
+    public ExperimentStartRequester getInstanceOrThrow() throws NotInitialisedException {
+      mStatusRequester = ServerStatusRequester.getInstanceOrThrow();
+      if (instance == null) {
+        instance = new ExperimentStartRequester();
+      }
+      return instance;
+    }
+    
+    /**
+     * Gets an instance of {@code ExperimentStartRequester}
+     * @return the single instance of {@code ServerRunRequester}
+     * @param a {@code MessageHandler} with which to initialise the 
+     * {@code StatusRequester}.
+     * @see #getInstance(MessageHandler)
+     */
+    public ExperimentStartRequester getInstance(MessageHandler<ServerStatus> statusHandler) {
+      mStatusRequester = ServerStatusRequester.getInstance(statusHandler);
+      if (instance == null) {
+        instance = new ExperimentStartRequester();
+      }
+      return instance;
+    }
+    
+    public void runExperiment() {
+      go(null);
+    }
+    
+    @Override
+    public void received(Void reply, boolean success, String message) {
+      mStatusRequester.update();
+    }
+    
   }
 
   /**
@@ -291,9 +367,10 @@ public class ServerControl {
       try {
         ServerStatusRequester.getInstanceOrThrow().update();
       } catch (NotInitialisedException e) {
-
         e.printStackTrace();
       }
     }
   };
+  
+  
 }
