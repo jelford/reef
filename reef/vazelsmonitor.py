@@ -74,7 +74,7 @@ def __applyWorkload(workload_def, target_group):
 def __extractActors(workload_def, target_group):
   print("Extracting actors")
   group_number = target_group['group_number']
-  experiment_dir = config.getSettings("global")['expdir']
+  experiment_dir = config.getSettings("global")['experiment_dir']
   
   print("workload_def: " + str(workload_def))
   for actor_name in workload_def['actors']:
