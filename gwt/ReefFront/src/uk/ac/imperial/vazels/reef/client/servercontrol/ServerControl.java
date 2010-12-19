@@ -1,85 +1,28 @@
 package uk.ac.imperial.vazels.reef.client.servercontrol;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import uk.ac.imperial.vazels.reef.client.MultipleRequester;
+import uk.ac.imperial.vazels.reef.client.util.MessageHandler;
+import uk.ac.imperial.vazels.reef.client.util.NotInitialisedException;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Widget;
 
-public class ServerControl extends Composite {
-
-  private static ServerControlUiBinder uiBinder = GWT
-  .create(ServerControlUiBinder.class);
-
-  interface ServerControlUiBinder extends UiBinder<Widget, ServerControl> {
-  }
-
+public class ServerControl {
   /**
    * URIs to start and stop the server.
    */
   private static final String SERVER_START_URI_SUFFIX="/start";
   private static final String SERVER_STOP_URI_SUFFIX="/stop";
   private static final String SERVER_CONTROL_URI="/control";
-  
+
   /**
    * How long to wait between making requests to the server and asking
    * for its new status.
    */
   private static final int SERVER_UPDATE_DELAY = 2700;
-  
-  private final ServerStatusRequest serverStatus;
-  private final ServerRunRequest serverRun;
-
-  @UiField Button btnStartServer;
-  @UiField Button btnStopServer;
-
-  public ServerControl() {
-    initWidget(uiBinder.createAndBindUi(this));
-
-    serverRun = new ServerRunRequest();
-    serverStatus = new ServerStatusRequest();
-    serverStatus.update();
-  }
-
-  /*
-   * Add ClickHandlers for the buttons
-   */
-  @UiHandler("btnStartServer")
-  void startClick(ClickEvent event) {
-    btnStartServer.setEnabled(false);
-    serverRun.start();
-  }
-
-  @UiHandler("btnStopServer")
-  void stopClick(ClickEvent event) {
-    btnStopServer.setEnabled(false);
-    serverRun.stop();
-  }
-
-  /**
-   * Set the UI elements (buttons, ...) to reflect the new running state
-   * of the control centre.
-   * @param running
-   */
-  private void setRunningStateUI(boolean running) {
-    btnStartServer.setEnabled(!running);
-    btnStopServer.setEnabled(running);
-  }
-  
-  protected Timer mScheduleStatusRequest = new Timer(){
-    @Override
-    public void run() {
-      serverStatus.update();
-    }
-  };
 
   /**
    * Stock request to check the server status.
@@ -87,33 +30,50 @@ public class ServerControl extends Composite {
    * When a response is received the status in the outer class is updated.
    * </p>
    */
-  private class ServerStatusRequest extends MultipleRequester<ServerStatus> {
-    public ServerStatusRequest() {
+  protected static class ServerStatusRequest extends MultipleRequester<ServerStatus> {
+    private final Set<MessageHandler<ServerStatus>> mStatusHandlers;
+    
+    private ServerStatusRequest(final MessageHandler<ServerStatus> statusHandler) {
       super(RequestBuilder.GET, SERVER_CONTROL_URI, new Converter<ServerStatus>() {
         public ServerStatus convert(String original) {
           return new ServerStatus(original);
         }
       });
+      mStatusHandlers = new HashSet<MessageHandler<ServerStatus>>();
+      mStatusHandlers.add(statusHandler);
+    }
+    
+    private static ServerStatusRequest instance;
+    public static ServerStatusRequest getInstance(final MessageHandler<ServerStatus> statusHandler) {
+      if (instance == null) {
+        instance = new ServerStatusRequest(statusHandler);
+      } else {
+        instance.mStatusHandlers.add(statusHandler);
+      }
+      return instance;
+    }
+    public static ServerStatusRequest getInstanceOrThrow() throws NotInitialisedException{
+      if (instance != null) {
+        return instance;
+      } else {
+        throw new NotInitialisedException("Must initialise ServerStatusRequest with" +
+        		"a handler before trying to get an instance of it!");
+      }
     }
     
     @Override
     protected void received(ServerStatus reply, boolean success, String message) {
       if(success) {
         switch (reply.getState()) {
-        case RUNNING:
-          setRunningStateUI(true);
-          break;
-        case READY:
-          setRunningStateUI(false);
-          break;
         case STARTING:
           mScheduleStatusRequest.schedule(SERVER_UPDATE_DELAY);
           break;
-        case TIMEOUT:
-          // TODO: Figure out what we're going to do in this case (probably shut down the server)
-          break;
         default:
-          Window.alert("Got unknown server state");
+          for(MessageHandler<ServerStatus> handler : mStatusHandlers) {
+            if (handler != null) {
+              handler.handle(reply);
+            }
+          }
         }
       }
     }
@@ -130,10 +90,33 @@ public class ServerControl extends Composite {
   /**
    * Stock request to update the server running state.
    */
-  private class ServerRunRequest extends MultipleRequester<Void> {
+  protected static class ServerRunRequest extends MultipleRequester<Void> {
     
-    public ServerRunRequest() {
+    private ServerRunRequest() {
       super(RequestBuilder.POST, SERVER_CONTROL_URI, null);
+    }
+    
+    private static ServerRunRequest instance;
+    public static ServerRunRequest getInstance() throws NotInitialisedException {
+      ServerStatusRequest.getInstanceOrThrow();
+      if (instance == null) {
+        instance = new ServerRunRequest();
+      }
+      return instance;
+    }
+    /**
+     * Gets an instance of ServerRunRequest and adds @code statusHandler to
+     * the list of status listeners, initialising ServerStatusRequest if
+     * necessary.
+     * @param statusHandler
+     * @return
+     */
+    public static ServerRunRequest getInstance(MessageHandler<ServerStatus> statusHandler) {
+      ServerStatusRequest.getInstance(statusHandler);
+      if (instance == null) {
+        instance = new ServerRunRequest();
+      }
+      return instance;
     }
     
     /**
@@ -164,4 +147,17 @@ public class ServerControl extends Composite {
       mScheduleStatusRequest.schedule(SERVER_UPDATE_DELAY);
     }
   }
+  
+  
+  private static Timer mScheduleStatusRequest = new Timer(){
+    @Override
+    public void run() {
+      try {
+        ServerStatusRequest.getInstanceOrThrow().update();
+      } catch (NotInitialisedException e) {
+        // TODO: Fix this
+        e.printStackTrace();
+      }
+    }
+  };
 }
