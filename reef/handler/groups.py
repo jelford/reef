@@ -1,6 +1,5 @@
 import config
 import restlite
-from restlite import tojson
 import urlparse
 import authentication
 
