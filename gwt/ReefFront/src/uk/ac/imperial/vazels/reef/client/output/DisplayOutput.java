@@ -2,43 +2,33 @@ package uk.ac.imperial.vazels.reef.client.output;
 
 import uk.ac.imperial.vazels.reef.client.MultipleRequester;
 import uk.ac.imperial.vazels.reef.client.RequestHandler;
+
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 public class DisplayOutput extends Composite {
   
-  private final Label testLabel = new Label("Hello World");
-  private final Button refreshButton = new Button("Refresh");
-  private OutputView view = new OutputView();
+  private static DisplayOutputUiBinder uiBinder = GWT
+  .create(DisplayOutputUiBinder.class);
+
+  interface DisplayOutputUiBinder extends UiBinder<Widget, DisplayOutput> {
+  }
+  
+  @UiField OutputView view = new OutputView();
   
   public DisplayOutput() {
-    
-    VerticalPanel mainPanel = new VerticalPanel();
-    
-    initWidget(mainPanel);
-    mainPanel.setSize("521px", "100px");
-    
-    Panel temp = new HorizontalPanel();
-    temp.setSize("521px", "22px");
-    temp.add(testLabel);
-    temp.add(refreshButton);
-    
-    refreshButton.addClickHandler(new ClickHandler() {
-        @Override
-        public void onClick(ClickEvent event) {
-          refresh();
-        }
-    });
-    
-    mainPanel.add(temp);
-    mainPanel.add(view); //placeholder for data to be put into
+    initWidget(uiBinder.createAndBindUi(this));
+  }
+  
+  @UiHandler("refresher")
+  void onClick(ClickEvent event) {
+    refresh();
   }
   
   private void refresh() {
