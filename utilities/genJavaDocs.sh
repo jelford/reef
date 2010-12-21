@@ -50,7 +50,7 @@ echo "Clearing the javadoc directory..."
 git rm -r javadoc
 rm -rf javadoc
 echo "..and filling it with the new docs..."
-javadoc -quiet -d javadoc -windowtitle "Reef JavaDocs" -private -sourcepath "../../gwt/ReefFront/src" -classpath "../jdoclibs/*:../../gwt/*" -subpackages uk.ac.imperial.vazels.reef
+javadoc -quiet -d javadoc -windowtitle "Reef JavaDocs" -private -sourcepath "../../gwt/ReefFront/src" -classpath "../jdoclibs/*:../../gwt/*" -subpackages uk.ac.imperial.vazels.reef 2> javadoc.out
 echo "Done."
 
 # Commit and push changes
