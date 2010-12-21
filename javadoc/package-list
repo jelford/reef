@@ -1,0 +1,9 @@
+uk.ac.imperial.vazels.reef.client
+uk.ac.imperial.vazels.reef.client.actors
+uk.ac.imperial.vazels.reef.client.groups
+uk.ac.imperial.vazels.reef.client.managers
+uk.ac.imperial.vazels.reef.client.output
+uk.ac.imperial.vazels.reef.client.servercontrol
+uk.ac.imperial.vazels.reef.client.ui
+uk.ac.imperial.vazels.reef.client.workloads
+uk.ac.imperial.vazels.reef.server
