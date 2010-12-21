@@ -39,23 +39,23 @@ echo "Grabbing most up to date version of the current documentation..."
 git checkout master &> /dev/null
 # Then remove the pages branch
 git branch -D gh-pages &> /dev/null
-# And fetch the new version
-git fetch origin gh-pages
 # Finally check it out
-git checkout gh-pages 
+git checkout gh-pages &> /dev/null
+# And fetch the new version
+git pull origin gh-pages &> /dev/null
 echo "Got it, sorry if that took a while."
 
 # Get rid of the current javadoc dir and replace the contents
 echo "Clearing the javadoc directory..."
-git rm -r javadoc
+git rm -r javadoc &> /dev/null
 rm -rf javadoc
 echo "..and filling it with the new docs..."
-javadoc -quiet -d javadoc -windowtitle "Reef JavaDocs" -private -sourcepath "../../gwt/ReefFront/src" -classpath "../jdoclibs/*:../../gwt/*" -subpackages uk.ac.imperial.vazels.reef 2> javadoc.out
+javadoc -quiet -d javadoc -windowtitle "Reef JavaDocs" -private -sourcepath "../../gwt/ReefFront/src" -classpath "../jdoclibs/*:../../gwt/*" -subpackages uk.ac.imperial.vazels.reef 2> ../javadoc.out
 echo "Done."
 
 # Commit and push changes
 git add javadoc
-git commit -m "Added JavaDocs for the branch \"$branchname\" at commit: $commitsha"
+git commit -m "Added JavaDocs for the branch \"$branchname\" at commit: $commitsha" > /dev/null
 git push origin gh-pages
 
 # Remove remnants
