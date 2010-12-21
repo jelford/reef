@@ -40,7 +40,7 @@ git checkout master &> /dev/null
 # Then remove the pages branch
 git branch -D gh-pages &> /dev/null
 # And fetch the new version
-#git fetch origin gh-pages
+git fetch origin gh-pages
 # Finally check it out
 git checkout gh-pages 
 echo "Got it, sorry if that took a while."
