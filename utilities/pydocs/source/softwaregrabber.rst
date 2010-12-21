@@ -1,0 +1,4 @@
+``softwaregrabber`` Module
+==========================
+
+.. automodule:: softwaregrabber

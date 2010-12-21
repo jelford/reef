@@ -1,0 +1,4 @@
+``handlers`` Module
+===================
+
+.. automodule:: handlers

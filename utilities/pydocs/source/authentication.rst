@@ -1,0 +1,4 @@
+``authentication`` Module
+=========================
+
+.. automodule:: authentication
