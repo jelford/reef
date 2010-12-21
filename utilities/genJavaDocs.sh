@@ -19,8 +19,6 @@ echo -n "Getting latest commit..."
 commitsha="$(git rev-parse $branchname)"
 echo "$commitsha"
 
-exit
-
 # Clear page-repo directory
 echo -n "Clearing repo space..."
 rm -rf $repo &> /dev/null
