@@ -16,8 +16,10 @@ echo "$branchname"
 
 # Get the current commit
 echo -n "Getting latest commit..."
-commitsha="$(git rev-parse master)"
+commitsha="$(git rev-parse $branchname)"
 echo "$commitsha"
+
+exit
 
 # Clear page-repo directory
 echo -n "Clearing repo space..."
