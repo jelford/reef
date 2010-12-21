@@ -1,0 +1,13 @@
+body{
+  background-color: #ccc;
+}
+
+#container {
+  width: 70%;
+  margin: 1em auto;
+  -moz-border-radius: 2em;
+  border-radius: 2em;
+  background-color: white;
+  padding: 2em;
+}
+

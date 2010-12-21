@@ -1,5 +1,6 @@
 ---
 title: Reef Documentation
+layout: default
 ---
 
 Reef Documentation
