@@ -1,5 +1,17 @@
 #!/bin/bash
 
+# Check for necessary tools
+function ensureInstalled {
+  if [ ! $(which $1) ]; then
+    echo "Cannot find $1!"
+    echo "Make sure this is installed and on the system path and try again."
+    exit
+  fi
+}
+
+ensureInstalled which
+ensureInstalled javadoc
+
 # To use later
 repo="page-repo"
 rundir=`dirname $0`
