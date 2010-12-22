@@ -11,6 +11,10 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   srv.rst
+   vazels.rst
+   
+
 Indices and tables
 ==================
 
