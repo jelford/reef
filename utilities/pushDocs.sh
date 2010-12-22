@@ -1,16 +1,20 @@
 #!/bin/bash
 
-# Check for necessary tools
-function ensureInstalled {
-  if [ ! $(which $1) ]; then
-    echo "Cannot find $1!"
-    echo "Make sure this is installed and on the system path and try again."
+if [ $# -eq 0 ]; then
+  echo "Usage: $0 doctype1 doctype2 ..."
+  echo "Example: $0 java python"
+  exit
+fi
+
+# Test for doc types
+for type in "$@"; do
+  scr=./getDocs_$type.sh
+  if [ ! -e "$scr" ]; then
+    echo "$type is not a valid type of documentation. Terminating."
     exit
   fi
-}
+done
 
-ensureInstalled which
-ensureInstalled javadoc
 
 # To use later
 repo="page-repo"
@@ -54,23 +58,16 @@ git branch -D gh-pages &> /dev/null
 # Finally check it out
 git checkout gh-pages &> /dev/null
 # And fetch the new version
-git pull origin gh-pages &> /dev/null
+#git pull origin gh-pages &> /dev/null
 echo "Got it, sorry if that took a while."
 
-# Get rid of the current javadoc dir and replace the contents
-echo -n "Clearing the javadoc directory..."
-git rm -r javadoc &> /dev/null
-rm -rf javadoc &> /dev/null
-echo "and filling it with the new docs..."
-javadoc -quiet -d javadoc -windowtitle "Reef JavaDocs" -private -sourcepath "../../gwt/ReefFront/src" -classpath "../jdoclibs/*:../../gwt/*" -subpackages uk.ac.imperial.vazels.reef 2> ../javadoc.out
-echo "Done."
+# Perform the documentation grabbing
+for type in "$@"; do
+  ../getDocs_$type.sh
+done
 
-# Commit and push changes
-echo -n "Committing new pages..."
-git add javadoc &> /dev/null
-git commit -m "Added JavaDocs for the branch \"$branchname\" at commit: $commitsha" &> /dev/null
-echo "and pushing them"
-git push origin gh-pages
+echo "Pushing all changes..."
+#git push origin gh-pages
 echo "Finished!"
 
 # Remove remnants
