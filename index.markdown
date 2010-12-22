@@ -10,4 +10,4 @@ If you want anything else go to the [wiki](https://github.com/jelford/reef/wiki)
 Either go to
 
 * [JavaDocs](./javadoc/)
-* PyDocs
+* [PyDocs](./pydoc/)
