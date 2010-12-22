@@ -1,7 +1,27 @@
+"""
+:synopsis: Simple persistent storage for the reef backend.
+
+This is (possibly) maldesigned as it can only be used once in any application.
+
+"""
+
 location = None
 settings = {}
 
 def getSettings(type, create=True):
+    """
+    Grab the settings ``dict`` for the given type.
+
+    :param type: The section (or type) of settings to grab.
+    :type type: ``str``
+    :param create: If ``type`` does not exist do we create it or explode?
+    :type create: ``bool``
+    :returns: A dictionary containing the settings for the given section.
+    :rtype: ``dict``
+    :raises: ``KeyError`` If the type does not exist and is not set to be created.
+
+    """
+
     global settings
     if type not in settings:
         if create:
@@ -11,15 +31,42 @@ def getSettings(type, create=True):
     return settings[type]
 
 def hasSettings(type):
+    """
+    Check if the given section exists in the settings.
+
+    :param type: The settings section.
+    :type type: ``str``
+    :returns: ``True`` if and only if the section already exists.
+    :rtype: ``bool``
+
+    """
+
     global settings
     return type in settings
 
 def getSections():
+    """
+    Grab a list of currently available settings sections.
+
+    :returns: A list of settings sections.
+    :rtype: ``list`` of ``str``
+
+    """
+
     global settings
     return settings.keys()
 
 def setConfig(cfgpath):
-# Create new config here or load existing
+    """
+    Either load a config from the given path or create a new one there.
+
+    After running this method the path will be saved for other functions
+    like :func:`saveConfig()`.
+
+    :param cfgpath: The path to the config file.
+    :type cfgpath: ``str``
+    """
+
     global location, settings
     location = cfgpath
     try:
@@ -31,6 +78,11 @@ def setConfig(cfgpath):
         settings = {}
 
 def saveConfig():
+    """
+    Save the config file if a location has been set with :func:`setConfig()`.
+
+    """
+
     global location, settings
     if location:
         try:
@@ -41,6 +93,18 @@ def saveConfig():
             print "Couldn't save config...whoopsy"
 
 def onDisk():
+    """
+    Check if the config is currently on the disk.
+
+    This is for example if we have used :func:`setConfig()` to set a file
+    but do not know whether it was there before or not.
+
+    :returns: ``True`` if and only if a location has been set and a file 
+              exists there.
+    :rtype: ``bool``
+
+    """
+
     global location
     try:
         with open(location, 'r') as test : pass

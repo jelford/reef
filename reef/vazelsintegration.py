@@ -83,7 +83,7 @@ def _extractActors(group_number, actors):
 
     """
 
-    experiment_dir = config.getSettings("command_centre")['experiment_dir']
+    experiment_dir = controlcentre.getExperimentPath()
 
     for actor_name in actors:
         actor = config.getSettings('actors')['defs'][actor_name]

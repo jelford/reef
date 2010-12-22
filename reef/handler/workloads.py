@@ -1,25 +1,55 @@
+"""
+:synopsis: Deals with most workload-related requests.
+
+"""
+
 import restlite
 import config
 import authentication
 import os
 
-### Accepts workload files or text fields ###
-#
-# GETting the base of this handler gives a list of workloads
-# GETting more than the base gives workload data by that name
-# GETting the base / name .wkld gives the workload file
-# POSTing can create a new workloads
-# - wkld_name gives the name
-# - wkld_file gives the file
-# - wkld_text gives the test
-# wkld_text has priority over wkld_file
+from handler.dochandler import DocHandler
 
 config.getSettings("workloads").setdefault("dir","workloads")
 config.getSettings("workloads").setdefault("defs",{})
 
-@restlite.resource
-def workload_handler():
-    def GET(request):
+class WorkloadHandler(DocHandler):
+    """Handles workload related requests."""
+
+    def GET(self, request):
+        """
+        Get either a list of workloads or details of a specific workload.
+
+        If the base address of this handlers is called:
+
+        :returns: A list of workloads currently uploaded to the server.
+        :rtype: ``list(str)``
+
+        If more than the base is called, the extra chunk of the address
+        is assumed to be the name of the workload you are requesting and:
+
+        :returns: The JSON representation of the current data for the
+                  requested workload.
+        :rtype: ``json``
+        :raises: :exc:`restlite.Status` 404 if the requested workload does not
+                 exist.
+
+        Actually if there is more requested than the base address **and** the
+        requested address ends in '.wkld' then we are requesting the file for
+        the workload specified before the suffix. In this case:
+
+        :returns: The workload file for the requested workload.
+        :rtype: ``text/plain``
+        :raises: :exc:`restlite.Status` 404 if the workload is not found.
+
+                 :exc:`restlite.Status` 410 if the recorded file is missing
+                 from its expected location.
+
+                 :exc:`restlite.Status` 500 if the file is in the location
+                 expected but cannot be read.
+
+        """
+
         authentication.login(request)
 
         wkld = request['PATH_INFO']
@@ -58,7 +88,36 @@ def workload_handler():
         del wkld["file"]
         return request.response(wkld)
 
-    def POST(request, entity):
+
+    def POST(self, request, entity):
+        """
+        Create a new or update an existing workload.
+
+        Anything requested after the base address of this handler is assumed to
+        be the workload name. This is expected to be called at the base address
+        of this handler with multipart form data encoding.
+
+        :param wkld_name: The name of the workload being modified.
+        :type wkld_name: ``str``
+        :param wkld_file: The workload file being uploaded.
+        :type wkld_file: As POSTed from a HTML file upload form.
+        :param wkld_text: Actual text for the workload being uploaded.
+        :type wkld_text: ``str``
+
+        Only one of ``wkld_file`` or ``wkld_text`` have to be given. If both are
+        received then the text will take priority.
+
+        :returns: The name of the modifed workload.
+        :raises: :exc:`restlite.Status` 400 if the entity could not be parsed.
+
+                 :exc:`restlite.Status` 403 if editing of workload is not
+                 permitted and you have tried to reuse a name.
+
+                 :exc:`restlite.Status` 400 if valid workload content could
+                 not be found.
+
+        """
+
         authentication.login(request)
 
         fields = parseMultipart(request, entity)
@@ -90,10 +149,21 @@ def workload_handler():
         saveWorkload(wkldname, wkld)
         return request.response(wkldname, "text/plain")
 
-    return locals()
-
 
 def parseMultipart(request, entity):
+    """
+    Try to parse a POST entity encoded as multipart form data.
+
+    :param request: The request data that the entity arrived with.
+    :type request: :class:`restlite.Request`
+    :param entity: The POST entity to parse.
+    :type entity: ``str``
+    :returns: The parsed version of the entity, or ``None`` if it cannot be
+              parsed.
+    :rtype: :mod:`cgi` ``.FieldStorage``
+
+    """
+
     import cgi
     import StringIO
     # Dicts for the entity parser to work
@@ -111,8 +181,17 @@ def parseMultipart(request, entity):
     )
     
 
-# Save a workload to a new file and add to naming list
 def saveWorkload(name, content):
+    """
+    Save a workload to a new file and add it to the naming list.
+
+    :param name: The name of the workload to save.
+    :type name: ``str``
+    :param content: The content to place in the workload file.
+    :type content: ``str``
+
+    """
+
     import tempfile
     wkld_dir = os.path.join(
         config.getSettings("global")["projdir"],
@@ -146,5 +225,13 @@ def saveWorkload(name, content):
 
 
 def ensureDir(dir):
+    """
+    Make sure a directory exists.
+
+    :param dir: The path to the directory we are ensuring exists.
+    :type dir: ``str``
+
+    """
+
     if not os.path.isdir(dir):
         os.makedirs(dir)

@@ -1,4 +1,0 @@
-``asyncPopen`` Module
-=====================
-
-.. automodule:: asyncPopen

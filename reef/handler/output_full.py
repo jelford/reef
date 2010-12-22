@@ -1,30 +1,38 @@
+"""
+:synopsis: Provides parsed experiment data through Rest.
+
+"""
+
 import restlite
 import config
 import authentication
+import pbparser
+import os
+import controlcentre
 
-### Collects data from OutputFolder and returns JSON object with data in ###
-#
-# GET to fetch data
-#
+from handler.dochandler import DocHandler
 
-@restlite.resource
-def output_full_handler():
-    import parser
-    import os
-    import controlcentre
-    ## requests will return the entire data available
+class OutputFullHandler(DocHandler):
+    """Handles requests for experiment output data."""
 
-    def GET(request):
+    def GET(self, request):
+        """
+        Grab the experiment output data.
+
+        :returns: JSON representation of the experiment output data.
+        :rtype: ``json``
+        :raises: :exc:`restlite.Status` 500 if the output could not be parsed.
+
+        """
+
         authentication.login(request)
 
         # We want the proper experiment path that vazelsmanager tells us
         exp_dir = controlcentre.getExperimentPath()
         path = os.path.join(exp_dir,"Output_Folder")
-        parsed = parser.scan_output(path)
+        parsed = pbparser.scan_output(path)
         # If the parsing broke in any way we get back None
         if parsed is None:
             raise restlite.Status, "500 Could Not Read Output Data"
         return request.response(parsed)
-
-    return locals()
 
