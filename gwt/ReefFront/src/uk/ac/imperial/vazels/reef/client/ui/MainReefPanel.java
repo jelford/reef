@@ -11,6 +11,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class MainReefPanel extends Composite {
+  
+  private static MainReefPanel sInstance;
 
   private static MainReefPanelUiBinder uiBinder = GWT
       .create(MainReefPanelUiBinder.class);
@@ -21,7 +23,7 @@ public class MainReefPanel extends Composite {
   @UiField Label title;
   @UiField SimplePanel placeholder;
 
-  public MainReefPanel() {
+  private MainReefPanel() {
     initWidget(uiBinder.createAndBindUi(this));
     this.setContent("Experiment Setup", new SetupPhasePanel(this));
   }
@@ -33,5 +35,18 @@ public class MainReefPanel extends Composite {
   
   public void startRunningPhase() {
     this.setContent("Running phase", new AllocateGroups());
+  }
+  
+  /**
+   * Today, we will be accessing a class that should only exist once using the
+   * "Singleton" design pattern. There's no reason to get two 
+   * {@code MainReefPanel}s.
+   * @return The single instance of MainReefPanel.
+   */
+  public static MainReefPanel getInstance() {
+    if (sInstance == null) {
+      sInstance = new MainReefPanel();
+    }
+    return sInstance;
   }
 }
