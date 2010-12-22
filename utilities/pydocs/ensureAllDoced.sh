@@ -81,7 +81,6 @@ function createRst {
 }
 
 pydocs=$(cd `dirname $0`; pwd)
-echo $pydocs
 docsrc="$pydocs/source"
 
 echo "Creating corresponding files for all the python source."
