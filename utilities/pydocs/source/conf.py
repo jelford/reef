@@ -218,3 +218,13 @@ man_pages = [
 
 autodoc_member_order = 'bysource'
 autodoc_default_flags = ['members', 'undoc-members', 'show_inheritance']
+
+# ------------ Options for coverage -----------------
+
+coverage_ignore_modules = []
+coverage_ignore_functions = []
+coverage_ignore_classes = []
+
+# -------- Options for TODO ----------
+
+todo_include_todos = True
