@@ -13,4 +13,7 @@ public interface ServerControlStrings extends Constants {
   String controlCentreTimeout();
   String experimentRunning();
   String unknownServerState();
+  String setupInstructions();
+  String setupCheckBox();
+  String startExperiment();
 }

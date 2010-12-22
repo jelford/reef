@@ -1,7 +1,10 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
-	<g:HorizontalPanel>
-		<g:Button ui:field="btnStartServer" text="Finished setup - start up the Vazels Control Center" enabled="false" />
-	</g:HorizontalPanel>
+	<g:VerticalPanel>
+		<g:Button ui:field="btnToggleControlCenterRunning" enabled="false" />
+		<g:Label ui:field="lblProbeInstructions" visible="false" />
+		<g:CheckBox ui:field="ckbDoneWithProbes" visible="false" />
+		<g:Button ui:field="btnStartExperiment" enabled="false" visible="false" />
+	</g:VerticalPanel>
 </ui:UiBinder> 

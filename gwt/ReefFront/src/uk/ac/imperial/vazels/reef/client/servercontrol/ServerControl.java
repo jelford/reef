@@ -10,67 +10,51 @@ import uk.ac.imperial.vazels.reef.client.util.NotInitialisedException;
 
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 
 /**
  * A wrapper class containing Requesters to talk to the server. Really, it's a
  * package. Except it's not; it's a class. Why have I done this? Well, I thought
  * we had quite enough packages, and also I wanted them to share bunch of resources.
+ * 
+ * Don't inherit from this; it will end badly.
  * @author james
  *
  */
-public class ServerControl {
+public final class ServerControl {
   /**
    * It doesn't make sense to instantiate this. This makes it act like a
    * package. 
    */
   private ServerControl() {}
 
-  /*
-   * URIs to start and stop the server.
-   */
-  /**
-   * Start the Control Centre
-   */
-  private static final String SERVER_START_URI_SUFFIX="/start";
-  
-  /**
-   * Stop the Control Centre
-   */
-  private static final String SERVER_STOP_URI_SUFFIX="/stop";
-  
-  /**
-   * Start the experiment running (not to be confused with above)
-   */
-  private static final String SERVER_RUN_URI_SUFFIX="/startexperiment";
-  
   /**
    * The main URI for all control-based commands
    */
   private static final String SERVER_CONTROL_URI="/control";
-
-  /**
-   * How long to wait between making requests to the server and asking
-   * for its new status.
-   */
-  private static final int SERVER_UPDATE_DELAY = 3300;
   
-  /**
-   * How long to wait between periodic checks (when we've no reason to think
-   * anything has happened - JUST IN CASE checks)
-   */
-  private static final int SERVER_PERIODIC_DELAY = 8500;
-
-  /**
-   * How long can the server be "starting" for before it's a problem?
-   * (Say 10 seconds)
-   */
-  private static final long SERVER_TIMEOUT = 10000;
-
-  /**
+ /**
    * Stock request to check the server status. A singleton class which will
    * handle any requests to the server regarding the running/ready state.
    */
   protected static class ServerStatusRequester extends MultipleRequester<ServerStatus> {
+    /**
+     * How long to wait between making requests to the server and asking
+     * for its new status.
+     */
+    private static final int SERVER_UPDATE_DELAY = 3300;
+    
+    /**
+     * How long can the server be "starting" for before it's a problem?
+     * (Say 10 seconds)
+     */
+    private static final long SERVER_TIMEOUT = 10000;
+
+    /**
+     * How long to wait between periodic checks (when we've no reason to think
+     * anything has happened - JUST IN CASE checks)
+     */
+    private static final int SERVER_PERIODIC_DELAY = 8500;
 
     /**
      * Store a list of subscribed MessageHandlers
@@ -225,6 +209,18 @@ public class ServerControl {
    * centre. Before using this, be sure to initialise the ServerStatusRequester.
    */
   protected static class ControlCentreRequester extends MultipleRequester<Void> {
+    /*
+     * URIs to start and stop the server.
+     */
+    /**
+     * Start the Control Centre
+     */
+    private static final String SERVER_START_URI_SUFFIX="/start";
+    
+    /**
+     * Stop the Control Centre
+     */
+    private static final String SERVER_STOP_URI_SUFFIX="/stop";
     
     /**
      * Have the Status Requester as a final, so we know it's initialised before
@@ -311,7 +307,12 @@ public class ServerControl {
     }
   }
   
-  private static class ExperimentStartRequester extends MultipleRequester<Void> {
+  public static class ExperimentStartRequester extends MultipleRequester<Void> {    
+    /**
+     * Start the experiment running (not to be confused with above)
+     */
+    private static final String SERVER_RUN_URI=SERVER_CONTROL_URI + "/startexperiment";
+    
     /**
      * We don't want to risk that we haven't initialised our Status Requester
      * before using this class.
@@ -322,7 +323,7 @@ public class ServerControl {
      * A singleton class
      */
     private ExperimentStartRequester() throws NotInitialisedException {
-      super(RequestBuilder.POST, SERVER_RUN_URI_SUFFIX, null);
+      super(RequestBuilder.POST, SERVER_RUN_URI, null);
       mServerStatusRequester = ServerStatusRequester.getInstanceOrThrow();
     }
     
@@ -331,7 +332,7 @@ public class ServerControl {
      * @param statusHandler
      */
     public ExperimentStartRequester(MessageHandler<ServerStatus> statusHandler) {
-      super(RequestBuilder.POST, SERVER_RUN_URI_SUFFIX, null);
+      super(RequestBuilder.POST, SERVER_RUN_URI, null);
       mServerStatusRequester = ServerStatusRequester.getInstance(statusHandler);
     }
 
@@ -347,7 +348,7 @@ public class ServerControl {
      * {@code ServerStatusRequester}.
      * @see #getInstance(MessageHandler)
      */
-    public ExperimentStartRequester getInstanceOrThrow() throws NotInitialisedException {
+    public static ExperimentStartRequester getInstanceOrThrow() throws NotInitialisedException {
       if (sInstance == null) {
         sInstance = new ExperimentStartRequester();
       }
@@ -361,7 +362,7 @@ public class ServerControl {
      * {@code StatusRequester}.
      * @see #getInstance(MessageHandler)
      */
-    public ExperimentStartRequester getInstance(MessageHandler<ServerStatus> statusHandler) {
+    public static ExperimentStartRequester getInstance(MessageHandler<ServerStatus> statusHandler) {
       if (sInstance == null) {
         sInstance = new ExperimentStartRequester(statusHandler);
       }
@@ -393,4 +394,13 @@ public class ServerControl {
       }
     }
   };
+  
+  /**
+   * The big red button to stop doing stuff if things go wrong.
+   */
+  public static void fail() {
+    // Oh no! This is very bad indeed!
+    Window.alert("It's all gone very wrong!");
+    mScheduleStatusRequest.cancel();
+  }
 }

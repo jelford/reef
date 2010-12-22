@@ -16,7 +16,7 @@ public class ServerStatus {
       mServerState = ServerState.STARTING;
     } else if ("timeout".equals(statusString)) {
       mServerState = ServerState.TIMEOUT;
-    } else if ("experiment".equals(statusString)) {
+    } else if ("started".equals(statusString)) {
       mServerState = ServerState.EXPERIMENT;
     } else {
       mServerState = ServerState.UNKNOWN;
