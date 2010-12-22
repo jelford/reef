@@ -1,0 +1,177 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>config Module &mdash; Reef Backend v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Reef Backend v0.1 documentation" href="index.html" />
+    <link rel="up" title="Server Related Modules" href="srv.html" />
+    <link rel="next" title="handlers Module" href="handlers.html" />
+    <link rel="prev" title="authentication Module" href="authentication.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="handlers.html" title="handlers Module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="authentication.html" title="authentication Module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
+          <li><a href="srv.html" accesskey="U">Server Related Modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-config">
+<span id="config-module"></span><h1><tt class="docutils literal"><span class="pre">config</span></tt> Module<a class="headerlink" href="#module-config" title="Permalink to this headline">¶</a></h1>
+<p>Allows for easy persistent storage.</p>
+<p>This is (possibly) maldesigned as it can only be used once in any application.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">synopsis:</th><td class="field-body">Persistent storage for the reef backend.</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="config.getSettings">
+<tt class="descclassname">config.</tt><tt class="descname">getSettings</tt><big>(</big><em>type</em>, <em>create=True</em><big>)</big><a class="headerlink" href="#config.getSettings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Grab the settings <cite>dict</cite> for the given type</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>type</strong> (<em>str</em>) &#8211; The section (or type) of settings to grab.</li>
+<li><strong>create</strong> (<em>bool</em>) &#8211; If <tt class="docutils literal"><span class="pre">type</span></tt> does not exist do we create it or explode?</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A dictionary containing the settings for the given section.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last">KeyError</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="config.hasSettings">
+<tt class="descclassname">config.</tt><tt class="descname">hasSettings</tt><big>(</big><em>type</em><big>)</big><a class="headerlink" href="#config.hasSettings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="config.getSections">
+<tt class="descclassname">config.</tt><tt class="descname">getSections</tt><big>(</big><big>)</big><a class="headerlink" href="#config.getSections" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="config.setConfig">
+<tt class="descclassname">config.</tt><tt class="descname">setConfig</tt><big>(</big><em>cfgpath</em><big>)</big><a class="headerlink" href="#config.setConfig" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="config.saveConfig">
+<tt class="descclassname">config.</tt><tt class="descname">saveConfig</tt><big>(</big><big>)</big><a class="headerlink" href="#config.saveConfig" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="config.onDisk">
+<tt class="descclassname">config.</tt><tt class="descname">onDisk</tt><big>(</big><big>)</big><a class="headerlink" href="#config.onDisk" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="authentication.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">authentication</span></tt> Module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="handlers.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">handlers</span></tt> Module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/config.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="handlers.html" title="handlers Module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="authentication.html" title="authentication Module"
+             >previous</a> |</li>
+        <li><a href="index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
+          <li><a href="srv.html" >Server Related Modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, James Elford, Andy Gurden, Simon Evans, Chris Dillon, Andreea Babiuc.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

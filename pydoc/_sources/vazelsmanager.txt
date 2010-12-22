@@ -1,0 +1,4 @@
+``vazelsmanager`` Module
+========================
+
+.. automodule:: vazelsmanager

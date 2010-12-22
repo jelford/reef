@@ -1,0 +1,377 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>restlite Module &mdash; Reef Backend v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Reef Backend v0.1 documentation" href="index.html" />
+    <link rel="up" title="Server Related Modules" href="srv.html" />
+    <link rel="next" title="permanent_bits Module" href="permanent_bits.html" />
+    <link rel="prev" title="myserver Module" href="myserver.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="permanent_bits.html" title="permanent_bits Module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="myserver.html" title="myserver Module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
+          <li><a href="srv.html" accesskey="U">Server Related Modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-restlite">
+<span id="restlite-module"></span><h1><tt class="docutils literal"><span class="pre">restlite</span></tt> Module<a class="headerlink" href="#module-restlite" title="Permalink to this headline">¶</a></h1>
+<p>restlite: REST + Python + JSON + XML + SQLite + authentication.</p>
+<p><a class="reference external" href="http://code.google.com/p/restlite">http://code.google.com/p/restlite</a>
+Copyright (c) 2009, Kundan Singh, <a class="reference external" href="mailto:kundan10&#37;&#52;&#48;gmail&#46;com">kundan10<span>&#64;</span>gmail<span>&#46;</span>com</a>. All rights reserved. 
+License: released under LGPL (Lesser GNU Public License).</p>
+<p>This light-weight module allows quick prototyping of web services using the RESTful architecture and allows easy 
+integration with sqlite3 database, and JSON and XML representation format. The approach is to provide all the 
+appropriate tools which you can use to build your own application, instead of providing a intrusive framework.</p>
+<p>Features:
+1. Very lightweight module in pure Python and no other dependencies hence ideal for quick prototyping.
+2. Two levels of API: one is not intrusive (for low level WSGI) and other is intrusive (for high level &#64;resource).
+3. High level API can conveniently use sqlite3 database for resource storage.
+4. Common list and tuple-based representation that is converted to JSON and/or XML.
+5. Supports pure REST as well as allows browser and Flash Player access (with GET, POST only).
+6. Integrates unit testing using doctest module.
+7. Handles HTTP cookies and authentication.</p>
+<p>Dependencies: Python 2.6.</p>
+<dl class="function">
+<dt id="restlite.router">
+<tt class="descclassname">restlite.</tt><tt class="descname">router</tt><big>(</big><em>routes</em><big>)</big><a class="headerlink" href="#restlite.router" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the main low level REST router function that takes a list of routes and sequentially tries to match the
+request method and URL pattern. If a valid route is matched, request transformation is applied. If an application
+is specified for a route, then the (wsgiref) application is invoked and the response is returned. This is used
+together with wsgiref.make_server to launch a RESTful service.</p>
+<p>Your can use the routes to do several things: identify the response type (JSON, XML) from the URL, identify 
+some parts in the URL as variables available to your application handler, modify some HTTP header or message body
+based on the URL, convert a GET or POST URL from the browser with URL suffix of /put or /delete to PUT or DELETE
+URL to handle these commands from the browser, etc. For more details see the project web page.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">files_handler</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span> 
+<span class="gp">... </span>   <span class="k">return</span> <span class="s">&#39;&lt;files&gt;&lt;type&gt;&#39;</span> <span class="o">+</span> <span class="n">env</span><span class="p">[</span><span class="s">&#39;ACCEPT&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39;&lt;/type&gt;&lt;file&gt;somefile.txt&lt;/file&gt;&lt;/files&gt;&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">routes</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">... </span> <span class="p">(</span><span class="s">r&#39;GET,PUT,POST /xml/(?P&lt;path&gt;.*)$&#39;</span><span class="p">,</span> <span class="s">&#39;GET,PUT,POST /</span><span class="si">%(path)s</span><span class="s">&#39;</span><span class="p">,</span> <span class="s">&#39;ACCEPT=text/xml&#39;</span><span class="p">),</span>
+<span class="gp">... </span> <span class="p">(</span><span class="s">r&#39;GET /files$&#39;</span><span class="p">,</span> <span class="n">files_handler</span><span class="p">)</span> <span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">router</span><span class="p">(</span><span class="n">routes</span><span class="p">)</span>   <span class="c"># create the router using these routes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># and test using the following code</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="p">,</span> <span class="n">start_response</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;REQUEST_METHOD&#39;</span><span class="p">:</span> <span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;PATH_INFO&#39;</span><span class="p">:</span> <span class="s">&#39;/xml/files&#39;</span><span class="p">,</span> <span class="s">&#39;SCRIPT_NAME&#39;</span><span class="p">:</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;QUERY_STRING&#39;</span><span class="p">:</span> <span class="s">&#39;&#39;</span><span class="p">},</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">r</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">start_response</span><span class="p">)</span>
+<span class="go">&lt;files&gt;&lt;type&gt;text/xml&lt;/type&gt;&lt;file&gt;somefile.txt&lt;/file&gt;&lt;/files&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="restlite.tojson">
+<tt class="descclassname">restlite.</tt><tt class="descname">tojson</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#restlite.tojson" title="Permalink to this definition">¶</a></dt>
+<dd><p>The function converts the supplied value to JSON representation. It assumes the unified list format of value. 
+Typically you just call represent(value, type=request[&#8216;ACCEPT&#8217;]) instead of manually invoking this method. 
+To be consistent with str(obj) function which uses obj.__str__() method if available, tojson() uses obj._json_()
+method if available on value. Otherwise it checks obj._list_() method if available to get the unified list format.
+Otherwise it assumes that the value is in unified list format. The _json_ and _list_ semantics allow you to 
+customize the JSON representation of your object, if needed.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;file&#39;</span><span class="p">,</span> <span class="p">((</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;myfile.txt&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;acl&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="s">&#39;allow&#39;</span><span class="p">,</span> <span class="s">&#39;kundan&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;allow&#39;</span><span class="p">,</span> <span class="s">&#39;admin&#39;</span><span class="p">)])))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tojson</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+<span class="go">&#39;{&quot;file&quot;: {&quot;name&quot;: &quot;myfile.txt&quot;, &quot;acl&quot;: [{&quot;allow&quot;: &quot;kundan&quot;}, {&quot;allow&quot;: &quot;admin&quot;}]}}&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="restlite.xml">
+<tt class="descclassname">restlite.</tt><tt class="descname">xml</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#restlite.xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>The function converts the supplied value to XML representation. It assumes the unified list format of value.
+Typically you just call represent(value, type=request[&#8216;ACCEPT&#8217;]) instead of manually invoking this method.
+To be consistent with str(obj) function which uses obj.__str__() method if available, xml() uses obj._xml_()
+method if available on value. Otherwise it checks obj._list_() method if available to get the unified list format.
+Otherwise it assumes that the value is in unified list format. The _xml_ and _list_ semantics allow you to 
+customize the XML representation of your object, if needed.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;file&#39;</span><span class="p">,</span> <span class="p">((</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;myfile.txt&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;acl&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="s">&#39;allow&#39;</span><span class="p">,</span> <span class="s">&#39;kundan&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;allow&#39;</span><span class="p">,</span> <span class="s">&#39;admin&#39;</span><span class="p">)])))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xml</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+<span class="go">&#39;&lt;file&gt;&lt;name&gt;myfile.txt&lt;/name&gt;&lt;acl&gt;&lt;allow&gt;kundan&lt;/allow&gt;&lt;allow&gt;admin&lt;/allow&gt;&lt;/acl&gt;&lt;/file&gt;&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="restlite.prettyxml">
+<tt class="descclassname">restlite.</tt><tt class="descname">prettyxml</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#restlite.prettyxml" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is similar to xml except that it invokes minidom&#8217;s toprettyxml() function. Note that due to the
+addition of spaces even in text nodes of prettyxml result, you cannot use this reliably for structured data
+representation, and should use only for debug trace of XML.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="restlite.represent">
+<tt class="descclassname">restlite.</tt><tt class="descname">represent</tt><big>(</big><em>value</em>, <em>type='*/*'</em><big>)</big><a class="headerlink" href="#restlite.represent" title="Permalink to this definition">¶</a></dt>
+<dd><p>You can use this method to convert a unified value to JSON, XML or text based on the type. The JSON representation
+is preferred if type is default, otherwise the type values of &#8220;application/json&#8221;, &#8220;text/xml&#8221; and 
+&#8220;text/plain&#8221; map to tojson, xml and str functions, respectively. If you would like to customize the representation of 
+your object, you can define _json_(), _xml_() and/or __str__() methods on your object. Note that _json_ and _xml_ 
+fall back to _list_ if available for getting the unified list representation, and __str__ falls back to __repr__ if 
+available. The return value is a tuple containing type and value.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">user</span><span class="p">:</span> 
+<span class="gp">... </span>   <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+<span class="gp">... </span>   <span class="k">def</span> <span class="nf">_list_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span>  <span class="p">(</span><span class="s">&#39;allow&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u1</span><span class="p">,</span> <span class="n">u2</span> <span class="o">=</span> <span class="n">user</span><span class="p">(</span><span class="s">&#39;kundan&#39;</span><span class="p">),</span> <span class="n">user</span><span class="p">(</span><span class="s">&#39;admin&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;file&#39;</span><span class="p">,</span> <span class="p">((</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;myfile.txt&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;acl&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">])))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">represent</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&#39;application/json&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">&#39;{&quot;file&quot;: {&quot;name&quot;: &quot;myfile.txt&quot;, &quot;acl&quot;: [{&quot;allow&quot;: &quot;kundan&quot;}, {&quot;allow&quot;: &quot;admin&quot;}]}}&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">represent</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&#39;text/xml&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">&#39;&lt;file&gt;&lt;name&gt;myfile.txt&lt;/name&gt;&lt;acl&gt;&lt;allow&gt;kundan&lt;/allow&gt;&lt;allow&gt;admin&lt;/allow&gt;&lt;/acl&gt;&lt;/file&gt;&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="restlite.Request">
+<em class="property">class </em><tt class="descclassname">restlite.</tt><tt class="descname">Request</tt><big>(</big><em>env</em>, <em>start_response</em><big>)</big><a class="headerlink" href="#restlite.Request" title="Permalink to this definition">¶</a></dt>
+<dd><p>A request object is supplied to the resource definition in various methods: GET, PUT, POST, DELETE.
+It is a dictionary containing env information. Additionally, all the matching attributes from the router are
+stored as properties of this object, extracted from env[&#8216;wsgiorg.routing_args&#8217;].</p>
+<dl class="method">
+<dt id="restlite.Request.response">
+<tt class="descname">response</tt><big>(</big><em>value</em>, <em>type=None</em><big>)</big><a class="headerlink" href="#restlite.Request.response" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="restlite.Status">
+<em class="property">exception </em><tt class="descclassname">restlite.</tt><tt class="descname">Status</tt><a class="headerlink" href="#restlite.Status" title="Permalink to this definition">¶</a></dt>
+<dd><p>The exception object that is used to throw HTTP response exception, e.g., raise Status, &#8216;404 Not Found&#8217;. 
+The resource definition can throw this exception.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="restlite.resource">
+<tt class="descclassname">restlite.</tt><tt class="descname">resource</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#restlite.resource" title="Permalink to this definition">¶</a></dt>
+<dd><p>A decorator to convert a function with nested function GET, PUT, POST and/or DELETE to a resource. The resource
+object allows you to write applications in high-level semantics and translate it to wsgiref compatible handler that
+is handled the router. The GET and DELETE methods take one argument (request) of type Request, whereas PUT and POST
+take additional argument (first is request of type Request, and second is) entity extracted from message body.
+Note that the function definition that is made as a resource, must have a &#8220;return locals()&#8221; at the end so that all
+the methods GET, PUT, POST and/or DELETE are returned when function is called with no arguments.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nd">@resource</span>
+<span class="gp">... </span><span class="k">def</span> <span class="nf">files</span><span class="p">():</span>
+<span class="gp">... </span>   <span class="k">def</span> <span class="nf">GET</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+<span class="gp">... </span>       <span class="k">return</span> <span class="n">represent</span><span class="p">((</span><span class="s">&#39;files&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="s">&#39;file&#39;</span><span class="p">,</span> <span class="s">&#39;myfile.txt&#39;</span><span class="p">)]),</span> <span class="nb">type</span><span class="o">=</span><span class="s">&#39;text/xml&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+<span class="gp">... </span>   <span class="k">def</span> <span class="nf">PUT</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">entity</span><span class="p">):</span>
+<span class="gp">... </span>       <span class="k">pass</span>
+<span class="gp">... </span>   <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># test using the following code</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="p">,</span> <span class="n">start_response</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;REQUEST_METHOD&#39;</span><span class="p">:</span> <span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;PATH_INFO&#39;</span><span class="p">:</span> <span class="s">&#39;/xml/files&#39;</span><span class="p">,</span> <span class="s">&#39;SCRIPT_NAME&#39;</span><span class="p">:</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;QUERY_STRING&#39;</span><span class="p">:</span> <span class="s">&#39;&#39;</span><span class="p">},</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">files</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">start_response</span><span class="p">)</span>
+<span class="go">[&#39;&lt;files&gt;&lt;file&gt;myfile.txt&lt;/file&gt;&lt;/files&gt;&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="restlite.bind">
+<tt class="descclassname">restlite.</tt><tt class="descname">bind</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#restlite.bind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bind the given object to a resource. It returns a wsgiref compliant application for that resource.
+Suppose an object obj={&#8216;kundan&#8217;: user1, &#8216;singh&#8217;: user2} is bound to a resource &#8216;/users&#8217; 
+then GET, PUT, POST and DELETE are implemented on that obj as 
+&#8216;GET /users&#8217; returns the obj description with its properties and methods.
+&#8216;GET /users/kundan&#8217; returns the user1 object description.
+&#8216;PUT /users/kundan&#8217; replaces user1 with the supplied value.
+&#8216;POST /users&#8217; adds a new property, attribute or list element.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="restlite.Model">
+<em class="property">class </em><tt class="descclassname">restlite.</tt><tt class="descname">Model</tt><big>(</big><em>conn=None</em><big>)</big><a class="headerlink" href="#restlite.Model" title="Permalink to this definition">¶</a></dt>
+<dd><p>A data model that abstracts the SQL table creation and uses sqlite3. Instead of defining a ORM (object-relation
+mapping), this just lets the application handle the SQL commands. The only convenience of this class is to allow
+creating the SQL tables using text description of the data model, define python class for each table that can
+constructed using all the values of a row of that table, and define sql and sql1 convenience methods.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">desc</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="gp">... </span><span class="s">user</span>
+<span class="gp">... </span><span class="s">    id        integer        primary key</span>
+<span class="gp">... </span><span class="s">    name      text</span>
+<span class="gp">... </span><span class="s">    </span>
+<span class="gp">... </span><span class="s">files</span>
+<span class="gp">... </span><span class="s">    id        integer        primary key</span>
+<span class="gp">... </span><span class="s">    name      text           not null</span>
+<span class="gp">... </span><span class="s">    owner     int</span>
+<span class="gp">... </span><span class="s">    created   datetime</span>
+<span class="gp">... </span><span class="s">    size      int            default 0</span>
+<span class="gp">... </span><span class="s">    foreign key (owner) references user(id)</span>
+<span class="gp">... </span><span class="s">&quot;&quot;&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m1</span> <span class="o">=</span> <span class="n">Model</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m1</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c1</span> <span class="o">=</span> <span class="n">m1</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s">&#39;INSERT INTO user VALUES (NULL, ?)&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;Kundan Singh&#39;</span><span class="p">,))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c2</span> <span class="o">=</span> <span class="n">m1</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s">&#39;INSERT INTO user VALUES (NULL, ?)&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;Alok Singh&#39;</span><span class="p">,))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">row</span> <span class="o">=</span> <span class="n">m1</span><span class="o">.</span><span class="n">sql1</span><span class="p">(</span><span class="s">&#39;SELECT * FROM user WHERE id=?&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u1</span> <span class="o">=</span> <span class="n">m1</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">](</span><span class="o">*</span><span class="n">row</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">u1</span>
+<span class="go">&#39;id&#39;=1, &#39;name&#39;=u&#39;Kundan Singh&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">u1</span><span class="o">.</span><span class="n">_list_</span><span class="p">()</span>
+<span class="go">(&#39;user&#39;, ((&#39;id&#39;, 1), (&#39;name&#39;, u&#39;Kundan Singh&#39;)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="s">&#39;table=</span><span class="si">%r</span><span class="s"> attrs=</span><span class="si">%r</span><span class="s"> properties=</span><span class="si">%r</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">u1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">_table_</span><span class="p">,</span> <span class="n">u1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">_attrs_</span><span class="p">,</span> <span class="n">u1</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+<span class="go">table=&#39;user&#39; attrs=[&#39;id&#39;, &#39;name&#39;] properties={&#39;id&#39;: 1, &#39;name&#39;: u&#39;Kundan Singh&#39;}</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="restlite.Model.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#restlite.Model.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the connection with the database.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="restlite.Model.sql">
+<tt class="descname">sql</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#restlite.Model.sql" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute a single SQL command and return the cursor. For select commands application should use the 
+cursor as an iterator, or invoke fetchone or fetchall as applicable.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="restlite.Model.sql1">
+<tt class="descname">sql1</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#restlite.Model.sql1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute a single SELECT SQL command and return a single row of the result.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="restlite.Model.create">
+<tt class="descname">create</tt><big>(</big><em>data_model</em>, <em>createTable=True</em>, <em>createType=True</em><big>)</big><a class="headerlink" href="#restlite.Model.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the SQL tables using the data_model text description. An example text description is shown below. It
+defines two tables, user and files. Note that the primary key of id must be defined as &#8220;integer&#8221; instead of
+&#8220;int&#8221; or other variation for auto-increment of the id to work.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="restlite.AuthModel">
+<em class="property">class </em><tt class="descclassname">restlite.</tt><tt class="descname">AuthModel</tt><big>(</big><em>conn=None</em><big>)</big><a class="headerlink" href="#restlite.AuthModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Authenticated Model class, which creates a database table of type user_login and uses that to provide various
+authentication methods.</p>
+<dl class="method">
+<dt id="restlite.AuthModel.hash">
+<tt class="descname">hash</tt><big>(</big><em>email</em>, <em>realm</em>, <em>password</em><big>)</big><a class="headerlink" href="#restlite.AuthModel.hash" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="restlite.AuthModel.token">
+<tt class="descname">token</tt><big>(</big><em>user_id</em><big>)</big><a class="headerlink" href="#restlite.AuthModel.token" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="restlite.AuthModel.valid">
+<tt class="descname">valid</tt><big>(</big><em>user_id</em>, <em>token</em><big>)</big><a class="headerlink" href="#restlite.AuthModel.valid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="restlite.AuthModel.register">
+<tt class="descname">register</tt><big>(</big><em>email</em>, <em>realm</em>, <em>password=''</em>, <em>hash=None</em><big>)</big><a class="headerlink" href="#restlite.AuthModel.register" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="restlite.AuthModel.login">
+<tt class="descname">login</tt><big>(</big><em>request</em><big>)</big><a class="headerlink" href="#restlite.AuthModel.login" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="restlite.AuthModel.logout">
+<tt class="descname">logout</tt><big>(</big><em>request</em><big>)</big><a class="headerlink" href="#restlite.AuthModel.logout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="myserver.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">myserver</span></tt> Module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="permanent_bits.html"
+                        title="next chapter"><tt class="docutils literal docutils literal"><span class="pre">permanent_bits</span></tt> Module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/restlite.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="permanent_bits.html" title="permanent_bits Module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="myserver.html" title="myserver Module"
+             >previous</a> |</li>
+        <li><a href="index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
+          <li><a href="srv.html" >Server Related Modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, James Elford, Andy Gurden, Simon Evans, Chris Dillon, Andreea Babiuc.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,158 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>asyncPopen Module &mdash; Reef Backend v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Reef Backend v0.1 documentation" href="index.html" />
+    <link rel="up" title="Vazels Related Modules" href="other.html" />
+    <link rel="next" title="parser Module" href="parser.html" />
+    <link rel="prev" title="Vazels Related Modules" href="other.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="parser.html" title="parser Module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="other.html" title="Vazels Related Modules"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
+          <li><a href="other.html" accesskey="U">Vazels Related Modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-asyncPopen">
+<span id="asyncpopen-module"></span><h1><tt class="docutils literal"><span class="pre">asyncPopen</span></tt> Module<a class="headerlink" href="#module-asyncPopen" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="asyncPopen.Popen">
+<em class="property">class </em><tt class="descclassname">asyncPopen.</tt><tt class="descname">Popen</tt><big>(</big><em>args</em>, <em>bufsize=0</em>, <em>executable=None</em>, <em>stdin=None</em>, <em>stdout=None</em>, <em>stderr=None</em>, <em>preexec_fn=None</em>, <em>close_fds=False</em>, <em>shell=False</em>, <em>cwd=None</em>, <em>env=None</em>, <em>universal_newlines=False</em>, <em>startupinfo=None</em>, <em>creationflags=0</em><big>)</big><a class="headerlink" href="#asyncPopen.Popen" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="asyncPopen.Popen.recv">
+<tt class="descname">recv</tt><big>(</big><em>maxsize=None</em><big>)</big><a class="headerlink" href="#asyncPopen.Popen.recv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncPopen.Popen.recv_err">
+<tt class="descname">recv_err</tt><big>(</big><em>maxsize=None</em><big>)</big><a class="headerlink" href="#asyncPopen.Popen.recv_err" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncPopen.Popen.send_recv">
+<tt class="descname">send_recv</tt><big>(</big><em>input=''</em>, <em>maxsize=None</em><big>)</big><a class="headerlink" href="#asyncPopen.Popen.send_recv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncPopen.Popen.get_conn_maxsize">
+<tt class="descname">get_conn_maxsize</tt><big>(</big><em>which</em>, <em>maxsize</em><big>)</big><a class="headerlink" href="#asyncPopen.Popen.get_conn_maxsize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="asyncPopen.Popen.send">
+<tt class="descname">send</tt><big>(</big><em>input</em><big>)</big><a class="headerlink" href="#asyncPopen.Popen.send" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="asyncPopen.recv_some">
+<tt class="descclassname">asyncPopen.</tt><tt class="descname">recv_some</tt><big>(</big><em>p</em>, <em>t=0.10000000000000001</em>, <em>e=1</em>, <em>tr=5</em>, <em>stderr=0</em><big>)</big><a class="headerlink" href="#asyncPopen.recv_some" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="asyncPopen.send_all">
+<tt class="descclassname">asyncPopen.</tt><tt class="descname">send_all</tt><big>(</big><em>p</em>, <em>data</em><big>)</big><a class="headerlink" href="#asyncPopen.send_all" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="other.html"
+                        title="previous chapter">Vazels Related Modules</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="parser.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">parser</span></tt> Module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/asyncPopen.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="parser.html" title="parser Module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="other.html" title="Vazels Related Modules"
+             >previous</a> |</li>
+        <li><a href="index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
+          <li><a href="other.html" >Vazels Related Modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, James Elford, Andy Gurden, Simon Evans, Chris Dillon, Andreea Babiuc.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>
