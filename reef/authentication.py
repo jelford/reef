@@ -1,14 +1,40 @@
+"""
+:synopsis: Simple authentication management.
+
+This allows any part of the server to add users or authenticate against
+them without even thinking about it.
+
+"""
+
 import restlite
 import config
 
 config.getSettings("auth").setdefault("users", {})
 
-# the model cannot be stored in the config, but cache it here
-# This should always match the users dict (None is empty)
+"""
+This is the authentication model used by the server.
+
+We cannot store it in the config.
+Instead we store the information used to create it and cache
+the finished thing here.
+
+"""
 authModel = None
 
-# Add user to the config and update the model
 def addUser(name, password):
+    """
+    Add a user to the current authentication model.
+
+    This will also get update the configuration with the information
+    needed to recreate itself.
+
+    :param name: The name of the user to add.
+    :type name: str
+    :param password: The password to use for this user.
+    :type password: str
+    :raises: `KeyError` if the name exists
+
+    """
     global authModel
     users = config.getSettings("auth")["users"]
 
@@ -22,8 +48,12 @@ def addUser(name, password):
     else:
         addUserToModel(name, password)
 
-# Refresh the model
 def refresh():
+    """
+    Refresh the cached authentication model with the information stored
+    in `config`.
+
+    """
     global authModel
 
     users = config.getSettings("auth")["users"]
@@ -37,6 +67,14 @@ def refresh():
 
 # Add user to the current model (assuming it exists)
 def addUserToModel(user, password):
+    """
+    Add a user to the cached authentication model.
+
+    .. note:: This function expects the authentication model to exist.
+              i.e. it should not be `None`!
+
+    """
+
     global authModel
     authModel.register(
         user,
@@ -45,22 +83,42 @@ def addUserToModel(user, password):
     )
 
 
-# Login with the given request
 def login(request):
+    """
+    Try to authenticate against the current model.
+
+    This is usually called from a restlite handler.
+
+    :param request: The request we are authenticating against.
+    :type request: restlite.Request
+
+    """
+
     global authModel
     # If there are not users, don't ask for login
     if authModel is not None:
         authModel.login(request)
 
 
-# Clear all authentication (removes users and turns auth off)
 def clear():
+    """
+    Clear all authentication data.
+
+    This removes all saved users and turn authentication off so that
+    :func:`login` will do nothing.
+
+    """
+
     config.getSettings("auth")["users"] = {}
     refresh()
 
 
-# Is authentication being used?
 def active():
+    """
+    Check if authentication is currently active.
+
+    :returns: `True` only if authentication is currently active.
+    """
     return authModel is not None
 
 
