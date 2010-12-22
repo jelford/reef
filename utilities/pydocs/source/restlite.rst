@@ -1,0 +1,4 @@
+``restlite`` Module
+===================
+
+.. automodule:: restlite

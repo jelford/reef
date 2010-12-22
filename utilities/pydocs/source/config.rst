@@ -1,0 +1,4 @@
+``config`` Module
+=================
+
+.. automodule:: config
