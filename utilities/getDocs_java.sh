@@ -11,6 +11,6 @@ cp -r ../javadoc javadoc &> /dev/null
 echo "Done."
 
 # Commit changes
-echo -n "Committing new pages..."
+echo "Committing new pages..."
 git add javadoc &> /dev/null
 git commit -m "Added JavaDocs for the branch \"$branchname\" at commit: $commitsha" &> /dev/null

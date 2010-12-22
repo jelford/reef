@@ -11,6 +11,6 @@ cp -r ../pydocs/build/html pydoc &> /dev/null
 echo "Done."
 
 # Commit changes
-echo -n "Committing new pages..."
+echo "Committing new pages..."
 git add pydoc &> /dev/null
 git commit -m "Added PyDocs for the branch \"$branchname\" at commit: $commitsha" &> /dev/null
