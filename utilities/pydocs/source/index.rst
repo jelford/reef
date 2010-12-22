@@ -12,7 +12,7 @@ Contents:
    :maxdepth: 2
 
    srv.rst
-   vazels.rst
+   other.rst
    
 
 Indices and tables
