@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd `dirname $0`
-rm -rf javadoc
-rm javadoc.out
+rm -rf javadoc &> /dev/null
+rm javadoc.out &> /dev/null
 cd pydocs
 make clean &> /dev/null
