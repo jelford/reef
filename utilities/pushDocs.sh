@@ -58,7 +58,7 @@ git branch -D gh-pages &> /dev/null
 # Finally check it out
 git checkout gh-pages &> /dev/null
 # And fetch the new version
-#git pull origin gh-pages &> /dev/null
+git pull origin gh-pages &> /dev/null
 echo "Got it, sorry if that took a while."
 
 # Perform the documentation grabbing
@@ -67,7 +67,7 @@ for type in "$@"; do
 done
 
 echo "Pushing all changes..."
-#git push origin gh-pages
+git push origin gh-pages
 echo "Finished!"
 
 # Remove remnants
