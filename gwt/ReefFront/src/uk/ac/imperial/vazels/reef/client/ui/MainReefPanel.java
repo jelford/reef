@@ -1,5 +1,7 @@
 package uk.ac.imperial.vazels.reef.client.ui;
 
+import uk.ac.imperial.vazels.reef.client.groups.AllocateGroups;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -21,10 +23,15 @@ public class MainReefPanel extends Composite {
 
   public MainReefPanel() {
     initWidget(uiBinder.createAndBindUi(this));
+    this.setContent("Experiment Setup", new SetupPhasePanel(this));
   }
 
-  public void setContent(String titleText, Widget w) {
+  private void setContent(String titleText, Widget w) {
     title.setText(titleText);
     placeholder.setWidget(w);
+  }
+  
+  public void startRunningPhase() {
+    this.setContent("Running phase", new AllocateGroups());
   }
 }
