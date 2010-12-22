@@ -75,7 +75,6 @@ def getalloutput_handler():
 @restlite.resource
 def startexperiment_handler():
   def POST(request, entity):
-    print("GOT A START EXPERIMENT POST REQUEST")
     authentication.login(request)
     
     if vazelsmanager.startexperiment() is True:

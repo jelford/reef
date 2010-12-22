@@ -401,6 +401,14 @@ public final class ServerControl {
   public static void fail() {
     // Oh no! This is very bad indeed!
     Window.alert("It's all gone very wrong!");
+    cancelTimers();
+  }
+  
+  /**
+   * This needs to be done either if we fail, or when we enter the running
+   * phase.
+   */
+  public static void cancelTimers() {
     mScheduleStatusRequest.cancel();
   }
 }

@@ -18,6 +18,8 @@ public class ServerStatus {
       mServerState = ServerState.TIMEOUT;
     } else if ("started".equals(statusString)) {
       mServerState = ServerState.EXPERIMENT;
+    } else if ("finished".equals(statusString)) {
+      mServerState = ServerState.FINISHED;
     } else {
       mServerState = ServerState.UNKNOWN;
     }
@@ -33,6 +35,7 @@ public class ServerStatus {
     STARTING,
     TIMEOUT,
     EXPERIMENT,
+    FINISHED,
     UNKNOWN;
   }
   
