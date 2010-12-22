@@ -1,19 +1,15 @@
 package uk.ac.imperial.vazels.reef.client.ui;
 
+import uk.ac.imperial.vazels.reef.client.util.NotInitialisedException;
+
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratedTabPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class SetupPhasePanel extends Composite {
-  private final MainReefPanel top;
-  
-  @UiField Button btnStart;
   @UiField DecoratedTabPanel tabPanel;
 
   private static SetupPhasePanelUiBinder uiBinder = GWT
@@ -23,16 +19,24 @@ public class SetupPhasePanel extends Composite {
   }
 
   @SuppressWarnings("deprecation")
-  public SetupPhasePanel(MainReefPanel top) {
+  private SetupPhasePanel(MainReefPanel top) {
     initWidget(uiBinder.createAndBindUi(this));
-
-    this.top = top;
-    
     tabPanel.selectTab(0);
   }
   
-  @UiHandler("btnStart")
-  void start(ClickEvent event) {
-    top.startRunningPhase();
+  private static SetupPhasePanel sInstance;
+  
+  public static SetupPhasePanel getInstance(MainReefPanel top) {
+    if (sInstance == null) {
+      sInstance = new SetupPhasePanel(top);
+    }
+    return sInstance;
+  }
+  
+  public static SetupPhasePanel getInstanceOrThrow() throws NotInitialisedException {
+    if (sInstance == null) {
+      throw new NotInitialisedException("You must properly initialise the SetupPhasePanel.");
+    }
+    return sInstance;
   }
 }

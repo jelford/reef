@@ -2,7 +2,6 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<g:HorizontalPanel>
-		<g:Button ui:field="btnStartServer" text="Start Control Centre" enabled="false" />
-		<g:Button ui:field="btnStopServer" text="Stop Control Centre" enabled="false" />
+		<g:Button ui:field="btnStartServer" text="Finished setup - start up the Vazels Control Center" enabled="false" />
 	</g:HorizontalPanel>
 </ui:UiBinder> 

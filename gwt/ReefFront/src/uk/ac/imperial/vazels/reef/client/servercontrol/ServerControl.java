@@ -65,11 +65,6 @@ public class ServerControl {
    * (Say 10 seconds)
    */
   private static final long SERVER_TIMEOUT = 10000;
-  
-  /**
-   * We sometimes need to update status from other classes.
-   */
-  private static ServerStatusRequester mStatusRequester;
 
   /**
    * Stock request to check the server status. A singleton class which will
@@ -122,7 +117,7 @@ public class ServerControl {
     /**
      * Store the single instance of this class.
      */
-    private static ServerStatusRequester mInstance;
+    private static ServerStatusRequester sInstance;
 
     /**
      * Get an instance of ServerStatusRequest. Use {@code getInstanceOrThrow()}
@@ -144,12 +139,12 @@ public class ServerControl {
       if (statusHandler == null) {
         throw new NullPointerException();
       }
-      if (mInstance == null) {
-        mInstance = new ServerStatusRequester(statusHandler);
+      if (sInstance == null) {
+        sInstance = new ServerStatusRequester(statusHandler);
       } else {
-        mInstance.mStatusHandlers.add(statusHandler);
+        sInstance.mStatusHandlers.add(statusHandler);
       }
-      return mInstance;
+      return sInstance;
     }
     
     /**
@@ -162,8 +157,8 @@ public class ServerControl {
      * @throws NotInitialisedException
      */
     public static ServerStatusRequester getInstanceOrThrow() throws NotInitialisedException{
-      if (mInstance != null) {
-        return mInstance;
+      if (sInstance != null) {
+        return sInstance;
       } else {
         throw new NotInitialisedException("Must initialise ServerStatusRequest with" +
         "a handler before trying to get an instance of it! Try getInstance(" +
@@ -230,18 +225,34 @@ public class ServerControl {
    * centre. Before using this, be sure to initialise the ServerStatusRequester.
    */
   protected static class ControlCentreRequester extends MultipleRequester<Void> {
+    
+    /**
+     * Have the Status Requester as a final, so we know it's initialised before
+     * we use this class.
+     */
+    private final ServerStatusRequester mServerStatusRequester;
 
     /**
      * A singleton class
      */
-    private ControlCentreRequester() {
+    private ControlCentreRequester() throws NotInitialisedException {
       super(RequestBuilder.POST, SERVER_CONTROL_URI, null);
+      mServerStatusRequester = ServerStatusRequester.getInstanceOrThrow();
+    }
+
+    /**
+     * A singleton class. Also initialised the StatusRequester
+     * @param statusHandler
+     */
+    public ControlCentreRequester(MessageHandler<ServerStatus> statusHandler) {
+      super(RequestBuilder.POST, SERVER_CONTROL_URI, null);
+      mServerStatusRequester = ServerStatusRequester.getInstance(statusHandler);
     }
 
     /**
      * Store the single instance of ServerRunRequester
      */
-    private static ControlCentreRequester mInstance;
+    private static ControlCentreRequester sInstance;
     
     /**
      * Gets an instance of {@code ControlCentreRequester}
@@ -251,11 +262,10 @@ public class ServerControl {
      * @see #getInstance(MessageHandler)
      */
     public static ControlCentreRequester getInstanceOrThrow() throws NotInitialisedException {
-      mStatusRequester = ServerStatusRequester.getInstanceOrThrow();
-      if (mInstance == null) {
-        mInstance = new ControlCentreRequester();
+      if (sInstance == null) {
+        sInstance = new ControlCentreRequester();
       }
-      return mInstance;
+      return sInstance;
     }
     /**
      * Gets an instance of {@code ControlCentreRequester} and adds {@code 
@@ -266,12 +276,10 @@ public class ServerControl {
      * @return the single instance of {@code ControlCentreRequester}
      */
     public static ControlCentreRequester getInstance(MessageHandler<ServerStatus> statusHandler) {
-      // Initialise the ServerStatusRequester. We don't actually need the instance.
-      mStatusRequester = ServerStatusRequester.getInstance(statusHandler);
-      if (mInstance == null) {
-        mInstance = new ControlCentreRequester();
+      if (sInstance == null) {
+        sInstance = new ControlCentreRequester(statusHandler);
       }
-      return mInstance;
+      return sInstance;
     }
 
     /**
@@ -299,22 +307,38 @@ public class ServerControl {
      */
     @Override
     protected void received(Void reply, boolean success, String message) {
-      mStatusRequester.update();
+      mServerStatusRequester.update();
     }
   }
   
-  private static class ExperimentStartRequester extends MultipleRequester<Void>{
+  private static class ExperimentStartRequester extends MultipleRequester<Void> {
+    /**
+     * We don't want to risk that we haven't initialised our Status Requester
+     * before using this class.
+     */
+    private final ServerStatusRequester mServerStatusRequester;
+    
     /**
      * A singleton class
      */
-    private ExperimentStartRequester() {
+    private ExperimentStartRequester() throws NotInitialisedException {
       super(RequestBuilder.POST, SERVER_RUN_URI_SUFFIX, null);
+      mServerStatusRequester = ServerStatusRequester.getInstanceOrThrow();
     }
     
     /**
+     * A singleton class. Initialise the ServerStatusRequester too.
+     * @param statusHandler
+     */
+    public ExperimentStartRequester(MessageHandler<ServerStatus> statusHandler) {
+      super(RequestBuilder.POST, SERVER_RUN_URI_SUFFIX, null);
+      mServerStatusRequester = ServerStatusRequester.getInstance(statusHandler);
+    }
+
+    /**
      * Store the single instance of {@code ExperimentStartRequester}
      */
-    private static ExperimentStartRequester instance;
+    private static ExperimentStartRequester sInstance;
     
     /**
      * Gets an instance of {@code ExperimentStartRequester}
@@ -324,11 +348,10 @@ public class ServerControl {
      * @see #getInstance(MessageHandler)
      */
     public ExperimentStartRequester getInstanceOrThrow() throws NotInitialisedException {
-      mStatusRequester = ServerStatusRequester.getInstanceOrThrow();
-      if (instance == null) {
-        instance = new ExperimentStartRequester();
+      if (sInstance == null) {
+        sInstance = new ExperimentStartRequester();
       }
-      return instance;
+      return sInstance;
     }
     
     /**
@@ -339,11 +362,10 @@ public class ServerControl {
      * @see #getInstance(MessageHandler)
      */
     public ExperimentStartRequester getInstance(MessageHandler<ServerStatus> statusHandler) {
-      mStatusRequester = ServerStatusRequester.getInstance(statusHandler);
-      if (instance == null) {
-        instance = new ExperimentStartRequester();
+      if (sInstance == null) {
+        sInstance = new ExperimentStartRequester(statusHandler);
       }
-      return instance;
+      return sInstance;
     }
     
     public void runExperiment() {
@@ -352,7 +374,7 @@ public class ServerControl {
     
     @Override
     public void received(Void reply, boolean success, String message) {
-      mStatusRequester.update();
+      mServerStatusRequester.update();
     }
     
   }
@@ -371,6 +393,4 @@ public class ServerControl {
       }
     }
   };
-  
-  
 }

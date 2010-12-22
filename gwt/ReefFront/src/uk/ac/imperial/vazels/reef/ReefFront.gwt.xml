@@ -25,5 +25,6 @@
 	<source path='client' />
 	<inherits name="uk.ac.imperial.vazels.reef.ReefFront" />
 	<entry-point class="uk.ac.imperial.vazels.reef.client.ReefFront" />
+	<inherits name="com.google.gwt.requestfactory.RequestFactory"/>
 
 </module>

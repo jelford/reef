@@ -21,12 +21,12 @@ public class ServerControlWidget extends Composite {
   interface ServerControlUiBinder extends UiBinder<Widget, ServerControlWidget> {
   }
 
+  private static final ServerControlStrings sStringConstants = 
+    (ServerControlStrings) GWT.create(ServerControlStrings.class);
   
-  //private final ServerControl.ServerStatusRequester mServerStatus;
   private final ServerControl.ControlCentreRequester mServerRun;
 
   @UiField Button btnStartServer;
-  @UiField Button btnStopServer;
 
   public ServerControlWidget() {
     initWidget(uiBinder.createAndBindUi(this));
@@ -43,20 +43,17 @@ public class ServerControlWidget extends Composite {
     mServerRun.start();
   }
 
-  @UiHandler("btnStopServer")
-  void stopClick(ClickEvent event) {
-    btnStopServer.setEnabled(false);
-    mServerRun.stop();
-  }
-
   /**
    * Set the UI elements (buttons, ...) to reflect the new running state
    * of the control centre.
    * @param running
    */
-  private void setRunningStateUI(boolean running) {
-    btnStartServer.setEnabled(!running);
-    btnStopServer.setEnabled(running);
+  private void setRunningState(boolean running) {
+    if (running) {
+      btnStartServer.setText(sStringConstants.goBackToSetup());
+    } else {
+      btnStartServer.setText(sStringConstants.startControlCentre());
+    }
   }
   
   /**
@@ -73,19 +70,19 @@ public class ServerControlWidget extends Composite {
     public void handle(ServerStatus incoming) {
       switch (incoming.getState()) {
       case RUNNING :
-        setRunningStateUI(true);
+        setRunningState(true);
         break;
       case READY :
-        setRunningStateUI(false);
+        setRunningState(false);
         break;
       case TIMEOUT :
-        Window.alert("Server has timed out! There might be a problem on the server end; try restarting the server, clearing and data saved in the working directory, and refreshing this page");
+        Window.alert(sStringConstants.controlCentreTimeout());
         break;
       case EXPERIMENT :
-        Window.alert("The experiment is running!");
+        Window.alert(sStringConstants.experimentRunning());
         break;
       default:
-        Window.alert("Got an unknown server state - something is wrong. Try restarting the server and refreshing the page");
+        Window.alert(sStringConstants.unknownServerState());
       }
     }
     

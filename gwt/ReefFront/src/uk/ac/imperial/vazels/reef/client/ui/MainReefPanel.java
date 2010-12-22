@@ -13,6 +13,12 @@ import com.google.gwt.user.client.ui.Widget;
 public class MainReefPanel extends Composite {
   
   private static MainReefPanel sInstance;
+  
+  /**
+   * Let's have some localised string constants!
+   */
+  private static final UIStrings sStringConstants =
+    (UIStrings) GWT.create(UIStrings.class);
 
   private static MainReefPanelUiBinder uiBinder = GWT
       .create(MainReefPanelUiBinder.class);
@@ -20,21 +26,21 @@ public class MainReefPanel extends Composite {
   interface MainReefPanelUiBinder extends UiBinder<Widget, MainReefPanel> {
   }
   
-  @UiField Label title;
-  @UiField SimplePanel placeholder;
+  @UiField Label mTitle;
+  @UiField SimplePanel mPlaceholder;
 
   private MainReefPanel() {
     initWidget(uiBinder.createAndBindUi(this));
-    this.setContent("Experiment Setup", new SetupPhasePanel(this));
+    this.setContent(sStringConstants.experimentSetup(), SetupPhasePanel.getInstance(this));
   }
 
   private void setContent(String titleText, Widget w) {
-    title.setText(titleText);
-    placeholder.setWidget(w);
+    mTitle.setText(titleText);
+    mPlaceholder.setWidget(w);
   }
   
   public void startRunningPhase() {
-    this.setContent("Running phase", new AllocateGroups());
+    this.setContent(sStringConstants.runningPhase(), new AllocateGroups());
   }
   
   /**

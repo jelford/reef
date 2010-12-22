@@ -26,7 +26,6 @@
 			<g:TabHTML>5.Start Experiment</g:TabHTML>
 			<g:VerticalPanel>
 				<server:ServerControlWidget />
-				<g:Button ui:field="btnStart" text="Start Experiment" />
 			</g:VerticalPanel>
 		</g:Tab>
 	</g:DecoratedTabPanel>
