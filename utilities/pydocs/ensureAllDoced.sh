@@ -83,7 +83,7 @@ function createRst {
 pydocs=$(cd `dirname $0`; pwd)
 docsrc="$pydocs/source"
 
-echo "Creating corresponding files for all the python source."
+echo "Creating corresponding files for all new python source."
 echo "This should ensure we at least get a warning if we forget to document"
 
 cd `dirname $0`
