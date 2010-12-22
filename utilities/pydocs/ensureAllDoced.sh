@@ -70,7 +70,7 @@ function createRst {
 
   echo "  Creating doc file for $module..."
 
-  title="\`\`$module\`\` Module"
+  title=":mod:\`$module\` Module"
   underline=$(echo "$title" | sed 's/./=/g')
 
   mkdir -p `dirname $rstfile`
