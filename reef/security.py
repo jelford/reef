@@ -1,3 +1,9 @@
+"""
+:synopsis: Deals with security for the server.
+
+This mainly involves setting up and tearing down :program:`ssh` authentication used by vazels.
+"""
+
 import config
 import shutil
 import subprocess
@@ -8,8 +14,16 @@ config.getSettings("security").setdefault("backedup", False)
 config.getSettings("security").setdefault("certificate", os.path.expanduser("~/.ssh/id_rsa"))
 config.getSettings("security").setdefault("customkey", False)
 
-# Generates a new insecure key
 def makeKey():
+    """
+    Generate a new :program:`ssh` key to be used by vazels.
+
+    This will be very insecure as Vazels requires a passwordless key.
+    If you wish to inspect the generated product, it will be saved to
+    the path returned by :func:`keyPath()`.
+
+    """
+
     ensureSecurityDir()
     try:
         os.remove(keyPath())
@@ -32,8 +46,17 @@ def makeKey():
     config.getSettings("security")["customkey"] = True
     config.getSettings("security")["certificate"] = keyPath()
 
-# Authorises key in authorized_hosts
 def authoriseKey():
+    """
+    Add our key to the :program:`ssh` authorized_hosts file.
+
+    This will first back up the current file so we can't damage anything too
+    badly.
+    This means we should be safe if we forgot to create the key as we'll just
+    receive an error message and the backup will be restored.
+
+    """
+
     backup()
     try:
         with open(authKeysFile(), 'a') as dst:
@@ -44,8 +67,16 @@ def authoriseKey():
         restore()
     
 
-# Backs up old authorised keys if not already backed up
 def backup():
+    """
+    Back up the :program:`ssh` authorized_keys file if it is not already
+    backed up.
+
+    You can then fiddle about with it and restore the backup when
+    you're done using :func:`restore()`.
+
+    """
+
     if not config.getSettings("security")["backedup"]:
         ensureSecurityDir()
         try:
@@ -58,8 +89,13 @@ def backup():
         config.getSettings("security")["backedup"] = True
 
 
-# Restores old authorised keys if they've been backed up
 def restore():
+    """
+    Restore the backed up version of the :program:`ssh` authorized_hosts file if
+    a backup has been created by :func:`backup`.
+
+    """
+
     if config.getSettings("security")["backedup"]:
         ensureSecurityDir()
         try:
@@ -71,10 +107,32 @@ def restore():
         config.getSettings("security")["backedup"] = True
 
 def authKeysFile():
+    """
+    Get the location of :program:`ssh`'s authorized_keys file.
+
+    .. todo:: This is currently very naive and searches only in the
+              default location. Maybe we should make this a little
+              more intelligent.
+
+    :returns: Absolute path to the :program:`ssh` authorized_keys file.
+    :rtype: ``str``
+
+    """
+
     return os.path.expanduser("~/.ssh/authorized_keys")
     
 
 def backupFile():
+    """
+    Get the location to store or retrieve our backup file.
+
+    This is used by :func:`backup()` and :func:`restore()`.
+
+    :returns: Absolute path to our authorized_hosts backup file.
+    :rtype: ``str``
+
+    """
+
     return os.path.join(
         securityDir(),
         "authorized_hosts"
@@ -82,6 +140,14 @@ def backupFile():
 
 
 def keyPath():
+    """
+    Get the location of our generated key file.
+
+    :returns: Absolute path to our generated key file.
+    :rtype: ``str``
+
+    """
+
     return os.path.join(
         securityDir(),
         "key"
@@ -89,6 +155,17 @@ def keyPath():
 
 
 def securityDir():
+    """
+    Get the location of our security directory.
+
+    This should be somewhere inside our project directory as described
+    `here <https://github.com/jelford/reef/wiki/Directory-Structure>`_.
+
+    :returns: Absolute path to the security directory.
+    :rtype: ``str``
+
+    """
+
     return os.path.join(
         config.getSettings("global")["projdir"],
         config.getSettings("security")["dir"],
@@ -96,5 +173,9 @@ def securityDir():
 
 
 def ensureSecurityDir():
+    """
+    Make sure the security directory exists.
+    """
+
     if not os.path.isdir(securityDir()):
         os.mkdir(securityDir())
