@@ -11,15 +11,15 @@ import config
 
 config.getSettings("auth").setdefault("users", {})
 
+authModel = None
 """
 This is the authentication model used by the server.
 
-We cannot store it in the config.
+We cannot store it with :mod:`config`.
 Instead we store the information used to create it and cache
 the finished thing here.
 
 """
-authModel = None
 
 def addUser(name, password):
     """
