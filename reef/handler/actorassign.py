@@ -82,8 +82,8 @@ class ActorAssignHandler(DocHandler):
 
         try:
             {
-                "add" : addActor,
-                "rem" : remActor,
+                "add" : self.addActor,
+                "rem" : self.remActor,
             }[do](workload, actor)
         except KeyError:
             raise restlite.Status, "400 Invalid Action"            
