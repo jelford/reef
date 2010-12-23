@@ -1,21 +1,47 @@
-import restlite
+"""
+:synopsis: Handler to allow assignment of actors to workloads.
+
+"""
+
 import config
 import authentication
 
-### Assigns actors to workloads ###
-#
-# POST to assign or unassign an actor from a workload
-# - do is add or rem
-# - workload is the name of the workload
-# - actor is the name of the actor
+from dochandler import DocHandler
 
 import handler.workloads # to grab defaults
 #config.getSettings("workloads").setdefault("dir","workloads")
 #config.getSettings("workloads").setdefault("defs",{})
 
-@restlite.resource
-def actorassign_handler():
-    def POST(request, entity):
+class ActorAssignHandler(DocHandler):
+    """
+    Documented handler for assignment of actors to workloads.
+    """
+
+    def POST(self, request, entity):
+        """
+        (Un)assign actors (from/)to workloads.
+
+        The parameters listed are part of the url encoded ``entity``.
+
+        :param do: What to do, either ``"add"`` or ``"rem"`` to add or remove
+                   respectively
+        :param workload: The name of the workload to affect.
+        :param actor: The name of the actor to add or remove.
+        :raises: :exc:`restlite.Status` 400 if a parameter is given multiple
+                 times.
+
+                 :exc:`restlite.Status` 400 if a parameter is missing.
+
+                 :exc:`restlite.Status` 404 if the actor or workload does
+                 not exist.
+
+                 :exc:`restlite.Status` 400 if the action (``do``) is invalid.
+
+                 :exc:`restlite.Status` 409 if the action cannot be completed
+                 do to the state of currently attached workloads.
+
+        """
+
         authentication.login(request)
 
         import urlparse
@@ -65,15 +91,36 @@ def actorassign_handler():
 
         return request.response(workload)
 
-    return locals()
 
+    def addActor(self, workload, actor):
+        """
+        Add an actor to the given workload.
 
-def addActor(workload, actor):
-    if actor in workload["actors"]:
-        raise restlite.Status, "409 Actor Already Attached"
-    workload["actors"].append(actor)
+        :param workload: The workload (from :mod:`config`) to add to.
+        :type workload: ``dict``
+        :param actor: The name of the actor to add.
+        :type actor: ``str``
+        :raises: :exc:`restlite.Status` 409 if the actor is already attached.
 
-def remActor(workload, actor):
-    if actor not in workload["actors"]:
-        raise restlite.Status, "409 Cannot Remove Non-Attached Actor"
-    workload["actors"].remove(actor)
+        """
+
+        if actor in workload["actors"]:
+            raise restlite.Status, "409 Actor Already Attached"
+        workload["actors"].append(actor)
+
+    def remActor(workload, actor):
+        """
+        Remove an actor from the given workload.
+
+        :param workload: The workload (from :mod:`config`) to remove from.
+        :type workload: ``dict``
+        :param actor: The name of the actor to remove.
+        :type actor: ``str``
+        :raises: :exc:`restlite.Status` 409 if the actor to remove is
+                 not attached.
+
+        """
+
+        if actor not in workload["actors"]:
+            raise restlite.Status, "409 Cannot Remove Non-Attached Actor"
+        workload["actors"].remove(actor)
