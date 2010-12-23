@@ -3,6 +3,7 @@
 
 """
 
+import restlite
 import config
 import authentication
 
