@@ -7,7 +7,7 @@ import restlite
 import config
 import authentication
 
-from dochandler import DocHandler
+from handler.dochandler import DocHandler
 
 import handler.workloads # to grab defaults
 #config.getSettings("workloads").setdefault("dir","workloads")
