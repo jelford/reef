@@ -1,3 +1,12 @@
+"""
+:synopsis: Supplies reef server routing table.
+
+This is used by the server when setting up. All it does it provide a
+nice place for us to add new handlers without delving through a pile of code
+to get there.
+
+"""
+
 import config
 
 from handler.settings import settings_editor
@@ -17,6 +26,14 @@ This module is responsible for routing the different possible paths to their
 associated handlers.
 '''
 def getRouting():
+    """
+    Get the routing table for the server.
+
+    This will be in the format used in :func:`restlite.router()`.
+
+    :returns: A routing table to be used by the reef backend.
+    """
+
     return [
         #(r'GET,POST /settings$', 'GET,POST /settings/'),
         #(r'GET,POST /settings/', settings_editor),
