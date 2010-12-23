@@ -27,6 +27,8 @@ def getRouting():
     This will be in the format used in :func:`restlite.router()`.
 
     :returns: A routing table to be used by the reef backend.
+    :rtype: ``list`` of ``tuple`` as in :func:`restlite.router()`.
+
     """
 
     return [
