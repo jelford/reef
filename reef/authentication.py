@@ -29,10 +29,10 @@ def addUser(name, password):
     needed to recreate itself.
 
     :param name: The name of the user to add.
-    :type name: str
+    :type name: ``str``
     :param password: The password to use for this user.
-    :type password: str
-    :raises: `KeyError` if the name exists
+    :type password: ``str``
+    :raises: ``KeyError`` if the name exists
 
     """
     global authModel
@@ -51,7 +51,7 @@ def addUser(name, password):
 def refresh():
     """
     Refresh the cached authentication model with the information stored
-    in `config`.
+    in :mod:`config`.
 
     """
     global authModel
@@ -71,7 +71,7 @@ def addUserToModel(user, password):
     Add a user to the cached authentication model.
 
     .. note:: This function expects the authentication model to exist.
-              i.e. it should not be `None`!
+              i.e. it should not be ``None``!
 
     """
 
@@ -90,7 +90,7 @@ def login(request):
     This is usually called from a restlite handler.
 
     :param request: The request we are authenticating against.
-    :type request: restlite.Request
+    :type request: :class:`restlite.Request`
 
     """
 
@@ -117,7 +117,7 @@ def active():
     """
     Check if authentication is currently active.
 
-    :returns: `True` only if authentication is currently active.
+    :returns: ``True`` only if authentication is currently active.
     """
     return authModel is not None
 
