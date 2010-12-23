@@ -33,6 +33,12 @@ public final class ServerControl {
    */
   private static final String SERVER_CONTROL_URI="/control";
   
+  /**
+   * How long to wait between periodic checks (when we've no reason to think
+   * anything has happened - JUST IN CASE checks)
+   */
+  private static final int SERVER_PERIODIC_DELAY = 8500;
+  
  /**
    * Stock request to check the server status. A singleton class which will
    * handle any requests to the server regarding the running/ready state.
@@ -49,12 +55,6 @@ public final class ServerControl {
      * (Say 10 seconds)
      */
     private static final long SERVER_TIMEOUT = 10000;
-
-    /**
-     * How long to wait between periodic checks (when we've no reason to think
-     * anything has happened - JUST IN CASE checks)
-     */
-    private static final int SERVER_PERIODIC_DELAY = 8500;
 
     /**
      * Store a list of subscribed MessageHandlers
@@ -384,7 +384,7 @@ public final class ServerControl {
    * Have a timer so that we can space out sending status requests in a
    * sensible fashion.
    */
-  private static Timer mScheduleStatusRequest = new Timer(){
+  private static Timer mScheduleStatusRequest = new Timer(){    
     @Override
     public void run() {
       try {
@@ -410,5 +410,12 @@ public final class ServerControl {
    */
   public static void cancelTimers() {
     mScheduleStatusRequest.cancel();
+  }
+  
+  /**
+   * Occassionally we might want to re-start our timery things.
+   */
+  public static void restartTimers() {
+    mScheduleStatusRequest.scheduleRepeating(SERVER_PERIODIC_DELAY);
   }
 }

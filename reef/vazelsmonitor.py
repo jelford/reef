@@ -15,7 +15,7 @@ def applyWorkloads(pause=3) :
   # Dispatch it in a new thread with a slight delay as the control centre
   # probably isn't finished initializing yet.
   Timer(interval=1, function=__applyWorkloadsToControlCentre, args=[pause]).start()
-  
+
 def __applyWorkloadsToControlCentre(interval) :
   while(True): # Keep checking until we don't have to anymore
     runningState = vazelsmanager.vazelsRunning()

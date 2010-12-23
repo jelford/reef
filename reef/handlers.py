@@ -10,12 +10,18 @@ from handler.control_handler import control_handler, start_handler, stop_handler
 from handler.groups import group_handler, group_batch_handler
 from handler.status import status_handler
 from handler.output_full import output_full_handler
+from handler.probe import probe_handler
 
+'''
+This module is responsible for routing the different possible paths to their
+associated handlers.
+'''
 def getRouting():
     return [
         #(r'GET,POST /settings$', 'GET,POST /settings/'),
         #(r'GET,POST /settings/', settings_editor),
         (r'GET /status$', status_handler),
+        (r'GET /probe/?$', probe_handler),
         (r'GET,POST /actors$', 'GET,POST /actors/'),
         (r'GET,POST /actors/', actors_handler),
         (r'POST /actorassign$', 'POST /actorassign/'),

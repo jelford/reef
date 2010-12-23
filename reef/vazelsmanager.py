@@ -40,6 +40,12 @@ config.getSettings("command_centre").setdefault("rmi_host", "localhost")
 config.getSettings("command_centre").setdefault("rmi", "-start_rmi")
 config.getSettings("command_centre").setdefault("siena", "-start_siena")
 
+''' Some constants for reflecting state info '''
+Statuses = {"STATUS_RUNNING": "running",
+            "STATUS_READY": "ready",
+            "STATUS_EXPERIMENT_STARTED" : "started",
+            "STATUS_FINISHED" : "finished"}
+
 def setupFiles():
   global vazels_control_stdout_WRITE
   global vazels_control_stdout_READ
@@ -75,20 +81,21 @@ def vazelsRunning():
   global vazels_control_process
   global vazels_control_stdout_READ
   global experiment_running_state
+  global Statuses
   
   # If we haven't yet started the control centre
   if vazels_control_process is None:
-    return "ready"
+    return Statuses["STATUS_READY"]
   
   # If we have started the control centre, but it has terminated
   vazels_control_process.poll()
   if vazels_control_process.returncode != None or vazels_control_stdout_READ is None:
     vazels_control_process = None # So we don't get problems when we start it again
-    return "ready"
+    return Statuses["STATUS_READY"]
   
   # Check whether the experiment has already started
-  if experiment_running_state == "started" :
-    return "started"
+  if experiment_running_state == Statuses["STATUS_EXPERIMENT_STARTED"] :
+    return Statuses["STATUS_EXPERIMENT_STARTED"]
   
   # Read through what the control centre's told us & get the state from that
   # (if it is not any of the above cases it is either running or starting)
@@ -98,7 +105,7 @@ def vazelsRunning():
   while cur_line != "": #Read through the whole thing
     cur_line = vazels_control_stdout_READ.readline()
     if cur_line.find("[OK]") != -1:
-      state = "running"
+      state = Statuses["STATUS_RUNNING"]
       break # We don't care about the rest here.
 
   print state
@@ -169,7 +176,8 @@ def stopVazels():
 
 def startexperiment():
   global experiment_running_state
-  experiment_running_state = "started"
+  global Statuses
+  experiment_running_state = Statuses["STATUS_EXPERIMENT_STARTED"]
   return __issueControlCentreCommand('start')
   
 def getalloutput():

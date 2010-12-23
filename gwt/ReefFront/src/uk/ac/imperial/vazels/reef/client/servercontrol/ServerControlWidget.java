@@ -125,6 +125,7 @@ public class ServerControlWidget extends Composite {
 
     @Override
     public void handle(ServerStatus incoming) {
+      ServerControl.restartTimers();
       switch (incoming.getState()) {
       case RUNNING :
         setRunningState(true);
@@ -136,6 +137,7 @@ public class ServerControlWidget extends Composite {
         Window.alert(sStringConstants.controlCentreTimeout());
         break;
       case EXPERIMENT :
+        ServerControl.cancelTimers();
         MainReefPanel.getInstance().startRunningPhase();
         break;
       default:
