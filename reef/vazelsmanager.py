@@ -108,7 +108,6 @@ def vazelsRunning():
       state = Statuses["STATUS_RUNNING"]
       break # We don't care about the rest here.
 
-  print state
   return state
   
 def getVazelsPath():

@@ -15,11 +15,9 @@ def probe_handler():
     
     tempFile = mkstemp(prefix="probe",suffix=".tgz")[1]
     probePath = os.path.join(config.getSettings("command_centre")["experiment_dir"], "Probe_Folder")
-    probeFullPath = os.path.join(os.getcwd(),probePath)
     tar = tarfile.open(tempFile, "w:gz")
-    for file in [os.path.join(probeFullPath, x) for x in os.listdir(probeFullPath)]:
-      tar.add(file)
-      print file
+    tar.add(name=probePath, arcname="Probe_Folder")
+    tar.close()
     with open(tempFile, "rb") as file:
       return request.response(file.read(), "application/x-gtar")
   

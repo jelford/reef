@@ -29,20 +29,16 @@ def __applyWorkloadsToControlCentre(interval) :
       groups = config.getSettings("groups")
       # For each group, scan through its workloads & apply each one in turn
       for group in groups:
-        print("Managing group: " + group)
         for wkld in groups[group]["workloads"]:
-          print ("Adding workload(" + wkld + ") to group("+group+")")
           if wkld != "SUE" : __applyWorkload(workload_def=workloadDefs[wkld], target_group=groups[group])
           __extractActors(workload_def=workloadDefs[wkld], target_group=groups[group])
 
     elif runningState == "starting":
       # Go round again, after a quick pause
-      print("Control Centre not yet started")
       sleep(interval)
       continue
     elif runningState == "timeout":
       # TODO: Do we really want to terminate it in this case? I'd say so.
-      print("Doing ssh stuff...")
       sleep(interval)
       continue
     else:
@@ -51,10 +47,8 @@ def __applyWorkloadsToControlCentre(interval) :
       print runningState
       
     break;
-  print("Finished monitoring for startup")
   
 def __applyWorkload(workload_def, target_group):
-  print("Applying workload")
   wkld_dir = os.path.join(
         config.getSettings("global")["projdir"],
         config.getSettings("workloads")["dir"]
@@ -68,16 +62,12 @@ def __applyWorkload(workload_def, target_group):
   args.append(workload_def['file'])
   
   subprocess.Popen(args, cwd=vazelsmanager.getVazelsPath()+'/client')
-  print("Workload dispatched")
 
 def __extractActors(workload_def, target_group):
-  print("Extracting actors")
   group_number = target_group['group_number']
   experiment_dir = config.getSettings("command_centre")['experiment_dir']
   
-  print("workload_def: " + str(workload_def))
   for actor_name in workload_def['actors']:
-    print("Extracting actor: " + actor_name)
     actor = config.getSettings('actors')['defs'][actor_name]
     type=actor['type'].upper()
     actorTGZ = tarfile.open(actor['file'],'r:gz')
