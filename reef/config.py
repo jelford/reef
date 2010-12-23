@@ -17,7 +17,9 @@ def getSettings(type, create=True):
     :param create: If ``type`` does not exist do we create it or explode?
     :type create: ``bool``
     :returns: A dictionary containing the settings for the given section.
+    :rtype: ``dict``
     :raises: ``KeyError`` If the type does not exist and is not set to be created.
+
     """
 
     global settings
@@ -35,6 +37,7 @@ def hasSettings(type):
     :param type: The settings section.
     :type type: ``str``
     :returns: ``True`` if and only if the section already exists.
+    :rtype: ``bool``
 
     """
 
@@ -46,6 +49,7 @@ def getSections():
     Grab a list of currently available settings sections.
 
     :returns: A list of settings sections.
+    :rtype: ``list`` of ``str``
 
     """
 
@@ -97,6 +101,7 @@ def onDisk():
 
     :returns: ``True`` if and only if a location has been set and a file 
               exists there.
+    :rtype: ``bool``
 
     """
 
