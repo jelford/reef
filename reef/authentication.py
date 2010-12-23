@@ -118,6 +118,7 @@ def active():
     Check if authentication is currently active.
 
     :returns: ``True`` only if authentication is currently active.
+    :rtype: ``bool``
     """
     return authModel is not None
 
