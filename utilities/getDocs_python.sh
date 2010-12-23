@@ -1,8 +1,10 @@
 #!/bin/bash
 
-# This will be run inside the git repo
+# This will be run inside the git repo and given the vars
+# - branchname
+# - commit
 
-# Get rid of the current javadoc dir and replace the contents
+# Get rid of the current pydoc dir and replace the contents
 echo -n "Clearing the pydoc directory..."
 git rm -r pydoc &> /dev/null
 rm -rf pydoc &> /dev/null

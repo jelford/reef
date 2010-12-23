@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# This will be run inside the git repo
+# This will be run inside the git repo and given the vars
+# - branchname
+# - commit
 
 # Get rid of the current javadoc dir and replace the contents
 echo -n "Clearing the javadoc directory..."
