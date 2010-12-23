@@ -14,9 +14,7 @@ import handler.workloads # to grab defaults
 #config.getSettings("workloads").setdefault("defs",{})
 
 class ActorAssignHandler(DocHandler):
-    """
-    Documented handler for assignment of actors to workloads.
-    """
+    """Documented handler for assignment of actors to workloads."""
 
     def POST(self, request, entity):
         """
@@ -40,6 +38,7 @@ class ActorAssignHandler(DocHandler):
 
                  :exc:`restlite.Status` 409 if the action cannot be completed
                  do to the state of currently attached workloads.
+        :returns: The JSON representation of the workload.
 
         """
 
@@ -72,7 +71,7 @@ class ActorAssignHandler(DocHandler):
 
         # Validate workload
         if workload not in config.getSettings("workloads")["defs"]:
-            raise restlite.Status, "404 Workload Not Found"            
+            raise restlite.Status, "404 Workload Not Found"
 
         # Validate actor
         if actor not in config.getSettings("actors")["defs"]:
