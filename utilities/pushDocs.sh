@@ -1,20 +1,29 @@
 #!/bin/bash
 
-if [ $# -eq 0 ]; then
+types=( )
+
+# Grab doc types
+for type in $@; do
+  if [ $type == "--force" ]; then
+    force=true
+  else
+    # Check if this is a valid type
+    scr="./getDocs_$type.sh"
+    if [ -e "$scr" ]; then
+      # Add to type list
+      types=( "${types[@]}" "$type" )
+    else
+      echo "$type is not a valid type of documentation. Terminating."
+      exit
+    fi
+  fi
+done
+
+if [ ${#types[*]} -eq 0 ]; then
   echo "Usage: $0 doctype1 doctype2 ..."
   echo "Example: $0 java python"
   exit
 fi
-
-# Test for doc types
-for type in "$@"; do
-  scr=./getDocs_$type.sh
-  if [ ! -e "$scr" ]; then
-    echo "$type is not a valid type of documentation. Terminating."
-    exit
-  fi
-done
-
 
 # To use later
 repo="page-repo"
@@ -35,6 +44,15 @@ echo -n "Getting latest commit..."
 commitsha="$(git rev-parse $branchname)"
 echo "$commitsha"
 
+echo
+
+if [ "$branchname" != "master" -a ! "$force" ]; then
+  echo "You are on $branchname, not master!"
+  echo "By pushing your documentation, you will overwrite the current information."
+  echo "If you really wish to push, use the \"--force\" option."
+  exit
+fi
+
 # Clear page-repo directory
 echo -n "Clearing push space..."
 rm -rf $repo &> /dev/null
@@ -51,10 +69,14 @@ git remote add -t gh-pages -f origin git@github.com:jelford/reef.git
 git checkout gh-pages &> /dev/null
 echo "Got it, sorry if that took a while."
 
+echo
+
 # Perform the documentation grabbing
 for type in "$@"; do
   ../getDocs_$type.sh
 done
+
+echo
 
 echo "Pushing all changes..."
 git push origin gh-pages
