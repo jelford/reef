@@ -36,29 +36,19 @@ commitsha="$(git rev-parse $branchname)"
 echo "$commitsha"
 
 # Clear page-repo directory
-echo -n "Clearing repo space..."
+echo -n "Clearing push space..."
 rm -rf $repo &> /dev/null
 mkdir $repo &> /dev/null
 echo "All gone."
 
-# Move our repo in
-echo -n "Copying our current repo into itself..."
-cp -r ../.git $repo &> /dev/null
-echo "Done."
-
-# Move to our new repo and checkout gh-pages
-cd $repo &> /dev/null
-
 # Get up to date pages repo
-echo -n "Grabbing most up to date version of the current documentation..."
-# Go to master so we can remove the current doc repo
-git checkout master &> /dev/null
-# Then remove the pages branch
-git branch -D gh-pages &> /dev/null
-# Finally check it out
+echo "Grabbing most up to date version of the current documentation..."
+# Does similar to line below but clone downloads too much of the rest of the repo
+# git clone -b gh-pages git@github.com:jelford/reef.git $repo
+cd $repo &> /dev/null
+git init &> /dev/null
+git remote add -t gh-pages -f origin git@github.com:jelford/reef.git
 git checkout gh-pages &> /dev/null
-# And fetch the new version
-git pull origin gh-pages &> /dev/null
 echo "Got it, sorry if that took a while."
 
 # Perform the documentation grabbing
