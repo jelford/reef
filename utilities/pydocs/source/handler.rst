@@ -10,6 +10,7 @@
    handler/actors.rst
    handler/auth_page.rst
    handler/control_handler.rst
+   handler/dochandler.rst
    handler/generic.rst
    handler/groups.rst
    handler/output_full.rst
