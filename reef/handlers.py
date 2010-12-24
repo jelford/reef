@@ -16,7 +16,7 @@ from handler.workloads import workload_handler
 from handler.actors import ActorsHandler
 from handler.actorassign import ActorAssignHandler
 from handler.control_handler import ControlHandler, StartHandler, StopHandler, GetAllStatusHandler, GetAllOutputHandler, StartExperimentHandler
-from handler.groups import group_handler, group_batch_handler
+from handler.groups import GroupHandler, GroupBatchHandler
 from handler.status import status_handler
 from handler.output_full import output_full_handler
 from handler.probe import probe_handler
@@ -46,8 +46,8 @@ def getRouting():
         (r'POST /actorassign$', 'POST /actorassign/'),
         (r'POST /actorassign/', ActorAssignHandler().getHandler()),
 #        (r'GET,POST /testing/', test_handler),
-        (r'GET,POST /groups/?$', group_batch_handler),
-        (r'GET,POST /groups/', group_handler),
+        (r'GET,POST /groups/?$', GroupBatchHandler().getHandler()),
+        (r'GET,POST /groups/', GroupHandler().getHandler()),
         (r'POST /control/start/?$', StartHandler().getHandler()),
         (r'POST /control/stop/?$', StopHandler().getHandler()),
         (r'GET /control/?$', ControlHandler().getHandler()),
