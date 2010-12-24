@@ -11,7 +11,7 @@ You are in the section dealing with the other systems.
    :maxdepth: 1
    
    asyncPopen.rst
-   parser.rst
+   pbparser.rst
    softwaregrabber.rst
    vazelsmanager.rst
    vazelsmonitor.rst
