@@ -16,6 +16,15 @@ class Group(dict):
 
     This way Python won't cry when we try to serialise it as JSON.
 
+    We expect this class to contain the following ``dict`` attributes:
+
+    * ``name`` : The name of the group.
+    * ``size`` : The size of the group.
+    * ``workloads`` : A list of attached workloads.
+    * ``filters`` : A list of relevant(?) mapping restrictions.
+    * ``online_hosts`` : List of hostnames for connected hosts.
+    * ``evolving_hosts`` : List of hostnames for evolving hosts.
+
     """
 
     def __init__(self, name):
