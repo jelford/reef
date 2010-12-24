@@ -11,7 +11,7 @@ import config
 
 from handler.settings import settings_editor
 from handler.testing import test_handler
-from handler.auth_page import auth_page_handler
+from handler.auth_page import AuthPageHandler
 from handler.workloads import workload_handler
 from handler.actors import ActorsHandler
 from handler.actorassign import ActorAssignHandler
@@ -50,7 +50,7 @@ def getRouting():
         (r'GET /control/startexperiment/?$', startexperiment_handler),
         (r'GET,POST /workloads/?', workload_handler),
         (r'GET /output/$', output_full_handler),
-        (r'GET,POST /', auth_page_handler),
+        (r'GET,POST /', AuthPageHandler().getHandler()),
     ]
 
 
