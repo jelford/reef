@@ -18,7 +18,7 @@ from handler.actorassign import ActorAssignHandler
 from handler.control_handler import ControlHandler, StartHandler, StopHandler, GetAllStatusHandler, GetAllOutputHandler, StartExperimentHandler
 from handler.groups import GroupHandler, GroupBatchHandler
 from handler.status import status_handler
-from handler.output_full import output_full_handler
+from handler.output_full import OutputFullHandler
 
 def getRouting():
     """
@@ -49,7 +49,7 @@ def getRouting():
         (r'GET /control/getalloutput/?$', GetAllOutputHandler().getHandler()),
         (r'GET /control/startexperiment/?$', StartExperimentHandler().getHandler()),
         (r'GET,POST /workloads/?', workload_handler),
-        (r'GET /output/$', output_full_handler),
+        (r'GET /output/$', OutputFullHandler().getHandler()),
         (r'GET,POST /', AuthPageHandler().getHandler()),
     ]
 
