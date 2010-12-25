@@ -9,7 +9,7 @@ to get there.
 
 import config
 
-from handler.settings import settings_editor
+from handler.settings import SettingsEditor
 #from handler.testing import test_handler
 from handler.auth_page import AuthPageHandler
 from handler.workloads import workload_handler
@@ -33,7 +33,7 @@ def getRouting():
 
     return [
         #(r'GET,POST /settings$', 'GET,POST /settings/'),
-        #(r'GET,POST /settings/', settings_editor),
+        #(r'GET,POST /settings/', SettingsEditor().getHandler()),
         (r'GET /status$', status_handler),
         (r'GET,POST /actors$', 'GET,POST /actors/'),
         (r'GET,POST /actors/', ActorsHandler().getHandler()),
