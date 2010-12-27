@@ -1,12 +1,25 @@
+"""
+:synopsis: Allows the client to assess whether or not the server is alive.
+
+"""
+
 import restlite
 import authentication
 
-# Ping this to find out whether the server is up and running.
-#  If you don't get a response from this, you're in trouble.
-@restlite.resource
-def status_handler():
-  def GET(request):
-    authentication.login(request)
-    return restlite.response("")
-    
-  return locals()
+from handler.dochandler import DocHandler
+
+class StatusHandler(DocHandler):
+    """Deals with server status requests."""
+
+    def GET(self, request):
+        """
+        Check if the server is alive.
+
+        :returns: Code \"200 OK\" if alive.
+
+        Obviously if the server is down it will not respond.
+
+        """
+
+        authentication.login(request)
+        return restlite.response("")
