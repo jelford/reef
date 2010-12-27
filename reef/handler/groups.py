@@ -44,15 +44,6 @@ class Group(dict):
                 "evolving_hosts" : list(self["evolving_hosts"])
                 }
 
-### Allows for submitting groups ###
-
-''' URIs of the form /groups/$ are used for batch handling, whereas
-those of the form /groups/somethingMore are used for individual groups'''
-
-### Don't need anymore ###
-# # Blank newgroup with some values initialized
-# def __newGroup() :
-#   return Group()
 
 class GroupBatchHandler(DocHandler):
     """Handles requests for general group information."""
