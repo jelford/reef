@@ -10,7 +10,7 @@ to get there.
 import config
 
 from handler.settings import SettingsEditor
-#from handler.testing import test_handler
+from handler.testing import TestHandler
 from handler.auth_page import AuthPageHandler
 from handler.workloads import workload_handler
 from handler.actors import ActorsHandler
@@ -45,7 +45,7 @@ def getRouting():
         (r'GET,POST /actors/', ActorsHandler().getHandler()),
         (r'POST /actorassign$', 'POST /actorassign/'),
         (r'POST /actorassign/', ActorAssignHandler().getHandler()),
-#        (r'GET,POST /testing/', test_handler),
+        (r'GET,POST /testing/', TestHandler().getHandler()),
         (r'GET,POST /groups/?$', GroupBatchHandler().getHandler()),
         (r'GET,POST /groups/', GroupHandler().getHandler()),
         (r'POST /control/start/?$', StartHandler().getHandler()),
