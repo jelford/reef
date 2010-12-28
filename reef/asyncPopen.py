@@ -1,3 +1,13 @@
+"""
+:synopsis: An extension of :class:`subprocess.Popen` to allow easy
+           asynchronous subprocessing.
+
+This module was lifted directly from
+`this recipe <http://code.activestate.com/recipes/440554/>`_ so look there for
+more information.
+
+"""
+
 import os
 import subprocess
 import errno
