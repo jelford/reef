@@ -1,6 +1,5 @@
 package uk.ac.imperial.vazels.reef.client.ui;
 
-import uk.ac.imperial.vazels.reef.client.groups.AllocateGroups;
 import uk.ac.imperial.vazels.reef.client.servercontrol.ServerControl;
 
 import com.google.gwt.core.client.GWT;
@@ -41,7 +40,7 @@ public class MainReefPanel extends Composite {
   }
   
   public void startRunningPhase() {
-    this.setContent(sStringConstants.runningPhase(), new AllocateGroups());
+    this.setContent(sStringConstants.runningPhase(), RunningPhasePanel.getInstance(this));
     ServerControl.cancelTimers();
   }
   

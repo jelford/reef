@@ -13,9 +13,23 @@ public class RunningPhasePanel extends Composite {
   interface RunningPhasePanelUiBinder extends
       UiBinder<Widget, RunningPhasePanel> {
   }
+  
+  /**
+   * Just in case we need the parent.
+   */
+  private final MainReefPanel top;
 
-  public RunningPhasePanel() {
+  public RunningPhasePanel(MainReefPanel top) {
     initWidget(uiBinder.createAndBindUi(this));
+    this.top = top;
   }
+  
+  private static RunningPhasePanel sInstance;
 
+  public static RunningPhasePanel getInstance(MainReefPanel top) {
+    if (sInstance == null) {
+      sInstance = new RunningPhasePanel(top);
+    }
+    return sInstance;
+  }
 }

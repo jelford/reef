@@ -91,6 +91,7 @@ def vazelsRunning():
   vazels_control_process.poll()
   if vazels_control_process.returncode != None or vazels_control_stdout_READ is None:
     vazels_control_process = None # So we don't get problems when we start it again
+    experiment_running_state = None # Likewise
     return Statuses["STATUS_READY"]
   
   # Check whether the experiment has already started
