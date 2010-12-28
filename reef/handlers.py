@@ -12,7 +12,7 @@ import config
 from handler.settings import SettingsEditor
 from handler.testing import TestHandler
 from handler.auth_page import AuthPageHandler
-from handler.workloads import workload_handler
+from handler.workloads import WorkloadHandler
 from handler.actors import ActorsHandler
 from handler.actorassign import ActorAssignHandler
 from handler.control_handler import ControlHandler, StartHandler, StopHandler, GetAllStatusHandler, GetAllOutputHandler, StartExperimentHandler
@@ -48,7 +48,7 @@ def getRouting():
         (r'GET /control/getallstatus/?$', GetAllStatusHandler().getHandler()),
         (r'GET /control/getalloutput/?$', GetAllOutputHandler().getHandler()),
         (r'GET /control/startexperiment/?$', StartExperimentHandler().getHandler()),
-        (r'GET,POST /workloads/?', workload_handler),
+        (r'GET,POST /workloads/?', WorkloadHandler().getHandler()),
         (r'GET /output/$', OutputFullHandler().getHandler()),
         (r'GET,POST /', AuthPageHandler().getHandler()),
     ]
