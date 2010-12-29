@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 :synopsis: Entry point for the Reef server.
 
