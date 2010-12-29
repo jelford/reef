@@ -3,7 +3,6 @@
 # Excluded directories and files
 function writeExcluded {
   echo "./google"
-  echo "./startup.py"
 }
 
 # Take a file path and echo a module name
