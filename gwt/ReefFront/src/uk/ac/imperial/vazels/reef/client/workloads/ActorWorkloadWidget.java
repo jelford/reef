@@ -3,7 +3,6 @@ package uk.ac.imperial.vazels.reef.client.workloads;
 import java.util.Set;
 
 import uk.ac.imperial.vazels.reef.client.MultipleRequester;
-import uk.ac.imperial.vazels.reef.client.EasyRequest.QueryArg;
 import uk.ac.imperial.vazels.reef.client.actors.ActorManager;
 import uk.ac.imperial.vazels.reef.client.managers.IManager;
 import uk.ac.imperial.vazels.reef.client.managers.ManagerChangeHandler;
@@ -80,7 +79,6 @@ public class ActorWorkloadWidget extends Composite {
       args[2] = new QueryArg("actor", actorsBox.getItemText(actorsBox.getSelectedIndex()));
       return args;
     }
-
   }
   void assignActor() {
     String wkldAssignTo = wkldsBox.getItemText(wkldsBox.getSelectedIndex());
@@ -169,7 +167,7 @@ public class ActorWorkloadWidget extends Composite {
 
   private void updateAttachedActorsBox() {
     attachedActors.clear();
-    //need there to be a group present to have a group selected
+    //need there to be a workload present to have a workload selected
     if(wkldsBox.getItemCount() > 0) {
       WorkloadManager manager = WorkloadManager.getManager();
       final SingleWorkloadManager singleWkldManager = manager.getWorkloadManager(wkldsBox.getItemText(wkldsBox.getSelectedIndex()));
