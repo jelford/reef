@@ -58,8 +58,6 @@ public class WorkloadGroupsWidget extends Composite {
     
     //obtain current workloads assigned to selected group
     updateAttachedWklds();    
-
-  
   }
 
   /* 
