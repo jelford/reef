@@ -1,5 +1,5 @@
-Vazels Related Modules
-======================
+Other Modules
+=============
 
 The python source at the base level of the server is split into two halves.
 These are the half dealing more directly with setting up the server and 
