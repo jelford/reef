@@ -62,8 +62,18 @@ public class SingleWorkloadManager extends Manager<Workload, Void> {
    * @return {@code true} if the actor was newly added
    */
   public boolean addActor(String actor) {
-    change();
+    
+    //    change(); change not good enough atm possibly adaptable for better code - need to use different handler
     return wkld.addActor(actor);
+  }
+  /**
+   * Add actor to the workload.
+   * @param actor The name of the actor to add
+   * @return {@code true} if the actor was newly added
+   */
+  public boolean remActor(String actor) {
+//    change();
+    return wkld.remActor(actor);
   }
   
   

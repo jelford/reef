@@ -67,6 +67,7 @@ public class WorkloadWidget extends Composite {
     Button button = new Button ("Submit", new ClickHandler() {
       public void onClick(ClickEvent event) {
         formPanel.submit();
+        //TODO: HANDLER!!!
 //assuming success, give new workload to workloads class
         listWklds.addItem(wkld_name.getText());
         wkld_name.setText("");
@@ -74,6 +75,4 @@ public class WorkloadWidget extends Composite {
     });
     uploadPanel.add(button);  
   }
-  
- 
 }
