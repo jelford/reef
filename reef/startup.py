@@ -6,91 +6,159 @@ import permanent_bits as pb
 # If do you, they will be overwritten when config is loaded
 
 
-# Don't even bother loading on Windows - there's no point.
-import platform
-
-if platform.system == 'Windows':
-  raise EnvironmentError('It looks like you\'re trying to run this program on' + \
-                         ' the "Microsoft Windows" operating system - Vazels' + \
-                         ' won\'t run there.')
-
-# Stuff for writing messages easily
-
 def show_break():
-  print ""
-  print "------------------"
-  print ""
+    """Display a break in the text output."""
 
-# Welcome message
+    print ""
+    print "------------------"
+    print ""
 
-print ""
-print "Welcome to " + pb.appname_long + "! The web GUI for Vazels."
-print ""
-print pb.app_desc
 
-show_break()
+def windowsWarning():
+    """
+    Warn if the user is running windows and quit.
 
-# Set up base directories
+    Don't even bother loading on Windows - there's no point.
 
-base_dir = os.path.join(os.path.dirname(sys.argv[0]),os.path.pardir)
-base_dir = os.path.abspath(base_dir)
+    """
 
-proj_dir = os.path.abspath(os.curdir)
-print "Using project directory: " + proj_dir
-print "If you're not happy with this then press CTRL+C to kill me and run me from somewhere better"
-print "Otherwise you can hit return to carry on..."
+    import platform
 
-try:
-    raw_input()
-except KeyboardInterrupt:
-    print "\nBye Bye..."
-    sys.exit()
+    if platform.system == 'Windows':
+        sys.exit('It looks like you\'re trying to run this program on' +
+                 ' the "Microsoft Windows" operating system - Vazels' +
+                 ' won\'t run there.')
 
-print "Oh good, let's continue then"
 
-show_break()
+def showWelcome():
+    """Show a welcome message for the reef server."""
 
-# Load / Create config
+    print ""
+    print "Welcome to " + pb.appname_long + "! The web GUI for Vazels."
+    print ""
+    print pb.app_desc
 
-config_file = os.path.join(proj_dir, pb.appname_file+".config")
-print "Using " + config_file + " as the config file."
 
-config.setConfig(config_file)
+def getBaseDir():
+    """
+    Get the base directory (the server installation directory).
 
-new_config = not config.onDisk()
+    :returns: The base directory.
+    :rtype: ``str``
 
-config.getSettings("global")["basedir"] = base_dir
+    """
 
-if new_config:
-    config.getSettings("global")["projdir"] = proj_dir
-else:
-    print "Config Loaded"
+    base_dir = os.path.join(os.path.dirname(sys.argv[0]),os.path.pardir)
+    base_dir = os.path.abspath(base_dir)
 
-show_break()
+    return base_dir
 
-# Security Setup
 
-# Has to be imported after config is set up
-import security
+def getProjDir():
+    """
+    Get the project directory (the directory we run from).
 
-if not config.getSettings("security")["customkey"]:
-    print "Creating new SSH key..."
-    security.makeKey()
+    :returns: The project directory.
+    :rtype: ``str``
 
-print "Backing up and authorising custom key..."
-security.backup()
-security.authoriseKey()
-atexit.register(security.restore)
-print "Done."
+    """
 
-show_break()
+    proj_dir = os.path.abspath(os.curdir)
+    return proj_dir
 
-# Pre-Server Launch Setup
 
-import authentication
+def offerDirOrQuit(dir):
+    """
+    Offer a particular directory as the project directory.
 
-if new_config:
-# Ask only if we're looking at a new file
+    If the user wishes to decline they can type CTRL+C to quit the application
+    cleanly.
+
+    :param dir: The directory to offer.
+    :type dir: ``str``
+
+    """
+
+    print "Using project directory: " + dir
+    print "If you're not happy with this then press CTRL+C to kill me and run me from somewhere better"
+    print "Otherwise you can hit return to carry on..."
+
+    try:
+        raw_input()
+    except KeyboardInterrupt:
+        print "\nBye Bye..."
+        sys.exit()
+
+    print "Oh good, let's continue then"
+
+
+def setupConfig(proj_dir, base_dir):
+    """
+    Setup the :mod:`config` module using the config file that will be or is in
+    the project directory.
+
+    The project and base directories will only be stored if the config is new.
+
+    :param proj_dir: The absolute path to the project directory.
+    :type proj_dir: ``str``
+    :param base_dir: The absolute path to the base (server installation) 
+                     directory.
+    :type base_dir: ``str``
+    :returns: ``True`` if there was not an existing config file. (i.e. this was
+              a new configuration.)
+    :rtype: ``bool``
+
+    """
+
+    config_file = os.path.join(proj_dir, pb.appname_file+".config")
+    print "Using " + config_file + " as the config file."
+    config.setConfig(config_file)
+
+    new_config = not config.onDisk()
+
+    if new_config:
+        print "Storing essential directories."
+        config.getSettings("global")["basedir"] = base_dir
+        config.getSettings("global")["projdir"] = proj_dir
+    else:
+        print "Config Loaded."
+
+    return new_config
+
+
+def setupSecurity():
+    """
+    Set up SSH security ready for Vazels to play with.
+
+    This should be run after any config setup as a module it imports defines a
+    number of :mod:`config` defaults and it plays with the configuration itself.
+
+    """
+
+    # Imported here as it sets defaults.
+    import security
+
+    if not config.getSettings("security")["customkey"]:
+        print "Creating new SSH key..."
+        security.makeKey()
+
+    print "Backing up and authorising custom key..."
+    security.backup()
+    security.authoriseKey()
+    atexit.register(security.restore)
+    print "Done."
+
+
+def setupAuthentication():
+    """
+    Set up :mod:`authentication` ready for the server.
+
+    This should only be run after config setup is complete as one of the
+    imported modules provides config defaults.
+
+    """
+
+    import authentication
     from getpass import getpass
 
     password = getpass("Please give a passkey for accessing the interface (Blank for none): ")
@@ -99,38 +167,88 @@ if new_config:
     else:
         authentication.clear()
 
+
+def setupServer():
+    """
+    Set up the server and print relevant information.
+
+    This should be called after the config is set up. It gets and sets config
+    values.
+
+    """
+
+    import myserver
+    import authentication
+
+    myserver.getServer().setup()
+
+    print "Now you can log on to the server with the following credentials:"
+    print ""
+    print "Location: http://localhost:" + str(config.getSettings("server")["port"])
+
+    if authentication.active():
+        print "User: " + pb.app_user
+        print "Password: <You should know>"
+        print ""
+        print "If I displayed the password back to you then the small amount of security during the input would be wasted."
+        print "(You can just read it in the config file though, that's a problem.)"
+
+
+def finaliseConfig():
+    """Save config and ask it to save on any normal exit."""
+
+    config.saveConfig()
+    print "Config written to disk"
+
+    # Set automatic save on close
+    atexit.register(config.saveConfig)
+
+
+def startServer():
+    """Set the server running and allow it to close normally (with no exception)."""
+
+    import myserver
+
+    print "Starting server...press CTRL+C to stop."
+    print ""
+
+    # This lets the server be stopped with CTRL+C
+    # As it runs to finish, exit handlers are called
+    try:
+        myserver.getServer().start()
+    except KeyboardInterrupt: pass
+
+
+if __name__ == "__main__":
+    windowsWarning()
+
+    showWelcome()
     show_break()
 
-# Start server
+    base_dir = getBaseDir()
+    proj_dir = getProjDir()
 
-import myserver
+    offerDirOrQuit(proj_dir)
+    show_break()
 
-myserver.getServer().setup()
+    new_config = setupConfig(proj_dir, base_dir)
+    show_break()
 
-print "Now you can log on to the server with the following credentials:"
-print ""
-print "Location: http://localhost:" + str(config.getSettings("server")["port"])
-if authentication.active():
-    print "User: " + pb.app_user
-    print "Password: <You should know>"
-print ""
-print "If I displayed the password back to you then the small amount of security during the input would be wasted."
-print "(You can just read it in the config file though, that's a problem.)"
+    setupSecurity()
+    show_break()
 
-show_break()
+    if new_config:
+        # In any other config this would have already been done
+        setupAuthentication()
+        show_break()
 
-config.saveConfig()
-print "Config written to disk"
+    setupServer()
+    show_break()
 
-# Set automatic save on close
-atexit.register(config.saveConfig)
+    finaliseConfig()
+    show_break()
 
-show_break()
+    startServer()
+    show_break()
 
-print "Starting server...press CTRL+C to stop."
-
-# This lets the server be stopped with CTRL+C
-# As it runs to finish, exit handlers are called
-try:
-    myserver.getServer().start()
-except KeyboardInterrupt: pass
+    print "All done, see you next time!"
