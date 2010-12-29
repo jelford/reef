@@ -51,6 +51,9 @@ public class Workload {
   public boolean addActor(String actor) {
     return actors.add(actor);
   }
+  public boolean remActor(String actor) {
+    return actors.remove(actor);
+  }
   
   /**
    * Try to parse json string into actual json.

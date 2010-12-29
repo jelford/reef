@@ -22,16 +22,16 @@ public class Actor {
   }
 
   /**
-   * Get the name of the workload.
-   * @return Name of the workload.
+   * Get the name of the actor.
+   * @return Name of the actor.
    */
   public String getName() {
     return this.name;
   }
   
   /**
-   * Get the programming language/type of the workload.
-   * @return Type of the workload.
+   * Get the programming language/type of the actor.
+   * @return Type of the actor.
    */
   public String getLanguage() {
     return this.language;

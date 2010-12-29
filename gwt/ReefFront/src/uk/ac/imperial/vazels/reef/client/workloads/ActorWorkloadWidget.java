@@ -2,8 +2,9 @@ package uk.ac.imperial.vazels.reef.client.workloads;
 
 import java.util.Set;
 
+import uk.ac.imperial.vazels.reef.client.MultipleRequester;
+import uk.ac.imperial.vazels.reef.client.EasyRequest.QueryArg;
 import uk.ac.imperial.vazels.reef.client.actors.ActorManager;
-import uk.ac.imperial.vazels.reef.client.groups.GroupManager;
 import uk.ac.imperial.vazels.reef.client.managers.IManager;
 import uk.ac.imperial.vazels.reef.client.managers.ManagerChangeHandler;
 import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
@@ -12,6 +13,8 @@ import uk.ac.imperial.vazels.reef.client.managers.PushCallback;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestBuilder.Method;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -19,7 +22,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-//future, would like deletion ability
+//future, would like deletion ability, possibly an option within this widget is best
 
 public class ActorWorkloadWidget extends Composite {
   ListBox wkldsBox, actorsBox, attachedActors;
@@ -66,11 +69,30 @@ public class ActorWorkloadWidget extends Composite {
     assignmentTab.add(submitButton);
   }
 
+  protected class ActorAssignment extends MultipleRequester<Workload> {
+    public ActorAssignment() {
+      super(RequestBuilder.POST, "/actorassign/", null);
+    }
+    protected QueryArg[] getArgs() {
+      QueryArg[] args = new QueryArg[3]; //do -add/rem, actorName, workloadName
+      args[0] = new QueryArg("do", "add"); //TODO allow for "rem"
+      args[1] = new QueryArg("workload", wkldsBox.getItemText(wkldsBox.getSelectedIndex()));
+      args[2] = new QueryArg("actor", actorsBox.getItemText(actorsBox.getSelectedIndex()));
+      return args;
+    }
+
+  }
   void assignActor() {
+    String wkldAssignTo = wkldsBox.getItemText(wkldsBox.getSelectedIndex());
+    String actorToAssign = actorsBox.getItemText(actorsBox.getSelectedIndex());
+    
+    //this line does all the assigning to the server
+    new ActorAssignment().go(null);
+    
     //add selected actor to selected workload and then push this new data to server
     WorkloadManager manager = WorkloadManager.getManager();
-    SingleWorkloadManager wkldManager = manager.getWorkloadManager(wkldsBox.getItemText(wkldsBox.getSelectedIndex()));
-    wkldManager.addActor(wkldsBox.getItemText(wkldsBox.getSelectedIndex()));
+    SingleWorkloadManager wkldManager = manager.getWorkloadManager(wkldAssignTo);
+    wkldManager.addActor(actorToAssign);
     try {
       wkldManager.pushLocalData(new PushCallback() {
         //show submission occurred
