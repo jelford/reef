@@ -14,6 +14,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
 import com.google.gwt.user.client.ui.ListBox;
@@ -68,10 +70,21 @@ public class UploadActorWidget extends Composite {
     formPanel.addSubmitHandler(new SubmitHandler() {
       public void onSubmit(SubmitEvent event) {
         actorLang.setText(actorLanguage.getValue(actorLanguage.getSelectedIndex()));
-        Actors.add(actorLang.getText());
       }
-    });    
+    });
     
+    formPanel.addSubmitCompleteHandler(new SubmitCompleteHandler() {
+      public void onSubmitComplete(SubmitCompleteEvent event) {
+        ActorManager.getManager().actorUploaded(event.getResults());
+        try {
+          ActorManager.getManager().getServerData();
+          actorList.addItem(actorLang.getText());
+        } catch (MissingRequesterException e) {
+          e.printStackTrace();
+        }
+      }
+    });
+
     Button button = new Button ("Submit", new ClickHandler() {
       public void onClick(ClickEvent event) {
         formPanel.submit();

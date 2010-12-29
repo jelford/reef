@@ -3,7 +3,7 @@ package uk.ac.imperial.vazels.reef.client.actors;
 import java.util.LinkedList;
 
 public class Actors {
-  static LinkedList <String> actors = null;
+/*  static LinkedList <String> actors = null;
 
   private Actors() {
   }
@@ -24,4 +24,4 @@ public class Actors {
   static void remove(String actor) {
     actors.remove(actor);
   }
-}
+*/}
