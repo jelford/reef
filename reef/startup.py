@@ -1,3 +1,12 @@
+"""
+:synopsis: Entry point for the Reef server.
+
+To run the server execute this script. It can also be safely imported into
+other modules however there's not much use for that other than to document the
+module.
+
+"""
+
 import sys, os
 import config
 import atexit
