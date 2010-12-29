@@ -10,6 +10,8 @@ import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
 import uk.ac.imperial.vazels.reef.client.managers.PullCallback;
 import uk.ac.imperial.vazels.reef.client.managers.PushCallback;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.http.client.RequestBuilder;
@@ -43,6 +45,12 @@ public class ActorWorkloadWidget extends Composite {
       @Override
       public void change(IManager man) {
         updateWkldsBox();
+      }
+    });
+    wkldsBox.addChangeHandler( new ChangeHandler() {
+      @Override
+      public void onChange(ChangeEvent event) {
+        updateAttachedActorsBox();        
       }
     });
 
