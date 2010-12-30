@@ -29,7 +29,7 @@ public class ServerStatus {
     mServerState = original;
   }
 
-  protected enum ServerState {
+  public enum ServerState {
     RUNNING,
     READY,
     STARTING,
