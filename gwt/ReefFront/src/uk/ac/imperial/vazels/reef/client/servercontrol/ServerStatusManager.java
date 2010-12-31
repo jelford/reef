@@ -10,6 +10,9 @@ import uk.ac.imperial.vazels.reef.client.managers.Manager;
 import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
 import uk.ac.imperial.vazels.reef.client.servercontrol.ServerStatus.ServerState;
 
+/**
+ * Deals with keeping an up to date status for the server.
+ */
 public class ServerStatusManager extends Manager<ServerStatus, Void>{
   /**
    * The main URI for all control-based commands
