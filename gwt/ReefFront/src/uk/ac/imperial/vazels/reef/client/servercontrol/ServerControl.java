@@ -19,7 +19,7 @@ import com.google.gwt.user.client.Window;
 public final class ServerControl {
   /**
    * It doesn't make sense to instantiate this. This makes it act like a
-   * package. 
+   * package. WHAT????? THEN USE A FUCKING PACKAGE!
    */
   private ServerControl() {}
 
