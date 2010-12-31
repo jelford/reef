@@ -1,13 +1,14 @@
 package uk.ac.imperial.vazels.reef.client.servercontrol;
 
+import java.util.Date;
+
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.user.client.Timer;
 
 import uk.ac.imperial.vazels.reef.client.MultipleRequester;
 import uk.ac.imperial.vazels.reef.client.managers.Manager;
 import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
-import uk.ac.imperial.vazels.reef.client.servercontrol.ServerControl.ServerStatusRequester;
-import uk.ac.imperial.vazels.reef.client.util.NotInitialisedException;
+import uk.ac.imperial.vazels.reef.client.servercontrol.ServerStatus.ServerState;
 
 public class ServerStatusManager extends Manager<ServerStatus, Void>{
   /**
@@ -16,31 +17,51 @@ public class ServerStatusManager extends Manager<ServerStatus, Void>{
   private static final String SERVER_CONTROL_URI="/control";
   
   /**
+   * How long to wait between periodic updates (when we've no reason to think
+   * anything has happened - JUST IN CASE checks)
+   */
+  private static final int SERVER_PERIODIC_DELAY = 8500;
+  
+  /**
+   * How long to wait between updates when we want a really up to date status.
+   */
+  private static final int SERVER_FREQUENT_DELAY = 3300;
+  
+  /**
+   * How long can the server be "starting" for before it's a problem? (Say 10
+   * seconds)
+   */
+  private static final long SERVER_TIMEOUT = 10000;
+  
+  /**
    * Singleton manager.
    */
   private static ServerStatusManager manager = null;
   
-  private Timer autoRefreshScheduler = null;
+  /**
+   * Should the manager auto-refresh?
+   */
+  private boolean autoRefresh = false;
+  
+  /**
+   * When did we enter this status?
+   */
+  private Date inCurrentStatus = null;
   
   /**
    * Cached server status.
    */
-  private ServerStatus status;
+  private ServerState status;
+  
+  /**
+   * Has the server timed out in the current status.
+   * This should be updated at every pull.
+   */
+  private boolean timedOut = false;
   
   private ServerStatusManager() {
     super();
     setPuller(new StatusUpdate());
-    
-    autoRefreshScheduler = new Timer(){    
-      @Override
-      public void run() {
-        try {
-          getServerData();
-        } catch (MissingRequesterException e) {
-          e.printStackTrace();
-        }
-      }
-    };
   }
   
   /**
@@ -56,8 +77,40 @@ public class ServerStatusManager extends Manager<ServerStatus, Void>{
   
   @Override
   protected boolean receivePullData(ServerStatus pulled) {
-    status = pulled;
+    //Changing state?
+    if(!pulled.getState().equals(status)) {
+      inCurrentStatus = new Date();
+    }
+    
+    status = pulled.getState();
+    timedOut = checkTimeout();
+    
+    // Done like this so as not to erase previously scheduled requests.
+    if(autoRefresh) {
+      if(status.equals(ServerState.STARTING)) {
+        new DelayedUpdate().update(SERVER_FREQUENT_DELAY);
+      }
+      else {
+        new DelayedUpdate().update(SERVER_PERIODIC_DELAY);
+      }
+    }
+    
     return true;
+  }
+  
+  /**
+   * Check for server timeout.
+   * @return {@code true} if and only if the server has timed out.
+   */
+  protected boolean checkTimeout() {
+    if(!ServerState.STARTING.equals(status)) {
+      return false;
+    }
+    
+    Date now = new Date();
+    long elapsed = now.getTime() - inCurrentStatus.getTime();
+    
+    return (elapsed >= SERVER_TIMEOUT);
   }
 
   @Override
@@ -69,23 +122,34 @@ public class ServerStatusManager extends Manager<ServerStatus, Void>{
    * Get the server status.
    * @return the server status.
    */
-  public ServerStatus getStatus() {
+  public ServerState getStatus() {
+    if(timedOut) {
+      return ServerState.TIMEOUT;
+    }
     return status;
   }
 
   /**
-   * Ask the manager to auto refresh the server every {@code delay} milliseconds.
-   * @param delay Milliseconds between status requests.
+   * Tell the manager whether or not to auto-refresh.
+   * @param refresh Should the manager auto-refresh?
    */
-  public void setAutoRefresh(int delay) {
-    autoRefreshScheduler.scheduleRepeating(delay);
+  public void setAutoRefresh(boolean refresh) {
+    autoRefresh = false;
+    if(autoRefresh) {
+      try {
+        getServerData();
+      } catch (MissingRequesterException e) {
+        e.printStackTrace();
+      }
+    }
   }
   
   /**
-   * Stop the manager autorefreshing.
+   * Is this manager currently set to auto-refresh?
+   * @return {@code true} if the manager is set to auto-refresh
    */
-  public void cancelAutoRefresh() {
-    autoRefreshScheduler.cancel();
+  public boolean isAutoRefreshing() {
+    return autoRefresh;
   }
   
   /**
@@ -99,6 +163,28 @@ public class ServerStatusManager extends Manager<ServerStatus, Void>{
           return new ServerStatus(original);
         }
       });
+    }
+  }
+  
+  /**
+   * Schedules manager pull requests.
+   */
+  protected class DelayedUpdate extends Timer {    
+    @Override
+    public void run() {
+      try {
+        getServerData();
+      } catch (MissingRequesterException e) {
+        e.printStackTrace();
+      }
+    }
+    
+    /**
+     * Set an update to occur in {@code delay} milliseconds.
+     * @param delay Milliseconds before manager update should occur.
+     */
+    public void update(int delay) {
+      schedule(delay);
     }
   }
 }
