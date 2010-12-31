@@ -91,7 +91,7 @@ public class ControlCentreManager extends Manager<Void, Void> {
 
   @Override
   protected boolean receivePushData(Void pushed) {
-    ServerStatusManager.getManager().serverChange();
+    ServerStatusManager.getManager().waitForChange();
     return false;
   }
 

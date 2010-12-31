@@ -4,7 +4,6 @@ import java.util.Date;
 
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 
 import uk.ac.imperial.vazels.reef.client.MultipleRequester;
 import uk.ac.imperial.vazels.reef.client.managers.Manager;
@@ -29,7 +28,7 @@ public class ServerStatusManager extends Manager<ServerStatus, Void>{
   /**
    * How long to wait between updates when we want a really up to date status.
    */
-  private static final int SERVER_FREQUENT_DELAY = 3300;
+  private static final int SERVER_FREQUENT_DELAY = 2000;
   
   /**
    * How long can the server be "starting" for before it's a problem? (Say 10
@@ -56,6 +55,11 @@ public class ServerStatusManager extends Manager<ServerStatus, Void>{
    * When did we enter this status?
    */
   private Date inCurrentStatus = null;
+  
+  /**
+   * Are we waiting for the status to change?
+   */
+  private boolean waitingForChange = false;
   
   /**
    * Cached server status.
@@ -88,10 +92,16 @@ public class ServerStatusManager extends Manager<ServerStatus, Void>{
   protected boolean receivePullData(ServerStatus pulled) {
     //Changing state?
     if(!pulled.getState().equals(status)) {
+      waitingForChange = false;
+      
+      if(pulled.getState().equals(ServerState.STARTING)) {
+        waitingForChange = true;
+      }
+      
       inCurrentStatus = new Date();
       // Updates the frequency
       if(isAutoRefreshing()) {
-        setAutoRefreshInterval(pulled.getState());
+        setAutoRefreshInterval();
       }
     }
     
@@ -138,6 +148,16 @@ public class ServerStatusManager extends Manager<ServerStatus, Void>{
   }
   
   /**
+   * Tell the manager you're waiting for a change to update more frequently.
+   */
+  public void waitForChange() {
+    waitingForChange = true;
+    if(autoRefresh) {
+      setAutoRefreshInterval();
+    }
+  }
+  
+  /**
    * Get the server status.
    * @return the server status.
    */
@@ -155,7 +175,7 @@ public class ServerStatusManager extends Manager<ServerStatus, Void>{
   public void setAutoRefresh(boolean refresh) {
     if(autoRefresh != refresh) {
       if(refresh) {
-        setAutoRefreshInterval(status);
+        setAutoRefreshInterval();
       }
       else {
         autoRefresher.cancel();
@@ -167,10 +187,9 @@ public class ServerStatusManager extends Manager<ServerStatus, Void>{
   
   /**
    * Sets up auto-refreshing with correct intervals.
-   * @param state The state to set the intervals for.
    */
-  protected void setAutoRefreshInterval(ServerState state) {
-    if(state != null && state.equals(ServerState.STARTING)) {
+  protected void setAutoRefreshInterval() {
+    if(waitingForChange) {
       autoRefresher.setFrequency(SERVER_FREQUENT_DELAY);
     }
     else {

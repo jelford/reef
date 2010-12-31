@@ -118,7 +118,6 @@ public class ServerControlWidget extends Composite {
     @Override
     public void change(IManager man) {
       ServerStatusManager statusManager = ServerStatusManager.getManager();
-      statusManager.setAutoRefresh(true);
       switch (statusManager.getStatus()) {
       case RUNNING :
         setRunningState(true);
@@ -131,7 +130,6 @@ public class ServerControlWidget extends Composite {
         ControlCentreManager.getManager().stop();
         break;
       case EXPERIMENT :
-        statusManager.setAutoRefresh(false);
         MainReefPanel.getInstance().startRunningPhase();
         break;
       case STARTING:

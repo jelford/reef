@@ -42,7 +42,6 @@ public class MainReefPanel extends Composite {
   
   public void startRunningPhase() {
     this.setContent(sStringConstants.runningPhase(), RunningPhasePanel.getInstance(this));
-    ServerStatusManager.getManager().setAutoRefresh(false);
   }
   
   /**
