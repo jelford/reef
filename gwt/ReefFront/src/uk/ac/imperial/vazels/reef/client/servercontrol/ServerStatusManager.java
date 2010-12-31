@@ -119,6 +119,20 @@ public class ServerStatusManager extends Manager<ServerStatus, Void>{
   }
   
   /**
+   * As in {@link Manager#serverChange} but starts a pull immediately if we have
+   * auto-refresh turned on.
+   */
+  @Override
+  public void serverChange() {
+    super.serverChange();
+    try {
+      getServerData();
+    } catch (MissingRequesterException e) {
+      e.printStackTrace();
+    }
+  }
+  
+  /**
    * Get the server status.
    * @return the server status.
    */
@@ -134,8 +148,9 @@ public class ServerStatusManager extends Manager<ServerStatus, Void>{
    * @param refresh Should the manager auto-refresh?
    */
   public void setAutoRefresh(boolean refresh) {
-    autoRefresh = false;
+    autoRefresh = refresh;
     if(autoRefresh) {
+      serverChange();
       try {
         getServerData();
       } catch (MissingRequesterException e) {
@@ -172,6 +187,7 @@ public class ServerStatusManager extends Manager<ServerStatus, Void>{
   protected class DelayedUpdate extends Timer {    
     @Override
     public void run() {
+      serverChange();
       try {
         getServerData();
       } catch (MissingRequesterException e) {
