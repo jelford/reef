@@ -33,6 +33,8 @@ public class ControlCentreManager extends Manager<Void, Void> {
   private String currentExt = "";
   
   private ControlCentreManager() {
+    super();
+    setPusher(new ControlCentreStartStop());
   }
   
   /**

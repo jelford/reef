@@ -47,6 +47,11 @@ public class ServerStatusManager extends Manager<ServerStatus, Void>{
   private boolean autoRefresh = false;
   
   /**
+   * Auto refreshes.
+   */
+  private DelayedUpdate autoRefresher = new DelayedUpdate();
+  
+  /**
    * When did we enter this status?
    */
   private Date inCurrentStatus = null;
@@ -83,20 +88,14 @@ public class ServerStatusManager extends Manager<ServerStatus, Void>{
     //Changing state?
     if(!pulled.getState().equals(status)) {
       inCurrentStatus = new Date();
+      // Updates the frequency
+      if(isAutoRefreshing()) {
+        setAutoRefreshInterval();
+      }
     }
     
     status = pulled.getState();
     timedOut = checkTimeout();
-    
-    // Done like this so as not to erase previously scheduled requests.
-    if(autoRefresh) {
-      if(status.equals(ServerState.STARTING)) {
-        new DelayedUpdate().update(SERVER_FREQUENT_DELAY);
-      }
-      else {
-        new DelayedUpdate().update(SERVER_PERIODIC_DELAY);
-      }
-    }
     
     return true;
   }
@@ -128,10 +127,12 @@ public class ServerStatusManager extends Manager<ServerStatus, Void>{
   @Override
   public void serverChange() {
     super.serverChange();
-    try {
-      getServerData();
-    } catch (MissingRequesterException e) {
-      e.printStackTrace();
+    if(autoRefresh) {
+      try {
+        getServerData();
+      } catch (MissingRequesterException e) {
+        e.printStackTrace();
+      }
     }
   }
   
@@ -151,14 +152,27 @@ public class ServerStatusManager extends Manager<ServerStatus, Void>{
    * @param refresh Should the manager auto-refresh?
    */
   public void setAutoRefresh(boolean refresh) {
-    autoRefresh = refresh;
-    if(autoRefresh) {
-      serverChange();
-      try {
-        getServerData();
-      } catch (MissingRequesterException e) {
-        e.printStackTrace();
+    if(autoRefresh != refresh) {
+      if(refresh) {
+        setAutoRefreshInterval();
       }
+      else {
+        autoRefresher.cancel();
+      }
+    }
+    
+    autoRefresh = refresh;
+  }
+  
+  /**
+   * Sets up autorefreshing with correct intervals.
+   */
+  protected void setAutoRefreshInterval() {
+    if(status != null && status.equals(ServerState.STARTING)) {
+      autoRefresher.setFrequency(SERVER_FREQUENT_DELAY);
+    }
+    else {
+      autoRefresher.setFrequency(SERVER_PERIODIC_DELAY);
     }
   }
   
@@ -203,7 +217,14 @@ public class ServerStatusManager extends Manager<ServerStatus, Void>{
      * @param delay Milliseconds before manager update should occur.
      */
     public void update(int delay) {
+      cancel();
       schedule(delay);
+    }
+    
+    public void setFrequency(int period) {
+      cancel();
+      run();
+      scheduleRepeating(period);
     }
   }
 }
