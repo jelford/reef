@@ -1,9 +1,9 @@
 package uk.ac.imperial.vazels.reef.client.servercontrol;
 
+import uk.ac.imperial.vazels.reef.client.managers.IManager;
+import uk.ac.imperial.vazels.reef.client.managers.ManagerChangeHandler;
 import uk.ac.imperial.vazels.reef.client.ui.MainReefPanel;
 import uk.ac.imperial.vazels.reef.client.ui.SetupPhasePanel;
-import uk.ac.imperial.vazels.reef.client.util.Message;
-import uk.ac.imperial.vazels.reef.client.util.MessageHandler;
 import uk.ac.imperial.vazels.reef.client.util.NotInitialisedException;
 
 import com.google.gwt.core.client.GWT;
@@ -38,7 +38,7 @@ public class ServerControlWidget extends Composite {
   
   private boolean mServerRunning;
   
-  private final StatusMessageHandler mStatusMessageHandler;
+  private final ManagerChangeHandler mStatusChangeHandler;
 
   public ServerControlWidget() {
     initWidget(uiBinder.createAndBindUi(this));
@@ -47,10 +47,14 @@ public class ServerControlWidget extends Composite {
     ckbDoneWithProbes.setText(sStringConstants.setupCheckBox());
     btnStartExperiment.setText(sStringConstants.startExperiment());
     
-    mStatusMessageHandler = new StatusMessageHandler();
+    mStatusChangeHandler = new StatusChangeHandler();
     
     mServerRunRequester = ServerControl.ControlCentreRequester
-      .getInstance(mStatusMessageHandler);
+          .getInstance();
+    
+    ServerStatusManager man = ServerStatusManager.getManager();
+    man.addChangeHandler(mStatusChangeHandler);
+    man.setAutoRefresh(true);
   }
 
   /*
@@ -76,7 +80,7 @@ public class ServerControlWidget extends Composite {
   @UiHandler("btnStartExperiment")
   void startExperiment(ClickEvent event) {
     ServerControl.ExperimentStartRequester
-    .getInstance(mStatusMessageHandler).runExperiment();
+    .getInstance().runExperiment();
   }
 
   @UiHandler("ckbDoneWithProbes")
@@ -116,17 +120,12 @@ public class ServerControlWidget extends Composite {
   /**
    * Handle updates to server status
    */
-  private class StatusMessageHandler extends MessageHandler<ServerStatus> {
-
+  private class StatusChangeHandler implements ManagerChangeHandler {
     @Override
-    public void handle(Message<ServerStatus> incoming) {
-      handle(incoming.getMessage());
-    }
-
-    @Override
-    public void handle(ServerStatus incoming) {
-      ServerControl.restartTimers();
-      switch (incoming.getState()) {
+    public void change(IManager man) {
+      ServerStatusManager statusManager = ServerStatusManager.getManager();
+      statusManager.setAutoRefresh(true);
+      switch (statusManager.getStatus()) {
       case RUNNING :
         setRunningState(true);
         break;
@@ -137,7 +136,7 @@ public class ServerControlWidget extends Composite {
         Window.alert(sStringConstants.controlCentreTimeout());
         break;
       case EXPERIMENT :
-        ServerControl.cancelTimers();
+        statusManager.setAutoRefresh(false);
         MainReefPanel.getInstance().startRunningPhase();
         break;
       default:
@@ -145,6 +144,5 @@ public class ServerControlWidget extends Composite {
         ServerControl.fail();
       }
     }
-    
   }
 }
