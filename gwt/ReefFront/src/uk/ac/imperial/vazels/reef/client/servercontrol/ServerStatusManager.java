@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 
 import uk.ac.imperial.vazels.reef.client.MultipleRequester;
 import uk.ac.imperial.vazels.reef.client.managers.Manager;
@@ -90,7 +91,7 @@ public class ServerStatusManager extends Manager<ServerStatus, Void>{
       inCurrentStatus = new Date();
       // Updates the frequency
       if(isAutoRefreshing()) {
-        setAutoRefreshInterval();
+        setAutoRefreshInterval(pulled.getState());
       }
     }
     
@@ -154,7 +155,7 @@ public class ServerStatusManager extends Manager<ServerStatus, Void>{
   public void setAutoRefresh(boolean refresh) {
     if(autoRefresh != refresh) {
       if(refresh) {
-        setAutoRefreshInterval();
+        setAutoRefreshInterval(status);
       }
       else {
         autoRefresher.cancel();
@@ -165,10 +166,11 @@ public class ServerStatusManager extends Manager<ServerStatus, Void>{
   }
   
   /**
-   * Sets up autorefreshing with correct intervals.
+   * Sets up auto-refreshing with correct intervals.
+   * @param state The state to set the intervals for.
    */
-  protected void setAutoRefreshInterval() {
-    if(status != null && status.equals(ServerState.STARTING)) {
+  protected void setAutoRefreshInterval(ServerState state) {
+    if(state != null && state.equals(ServerState.STARTING)) {
       autoRefresher.setFrequency(SERVER_FREQUENT_DELAY);
     }
     else {

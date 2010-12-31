@@ -128,10 +128,13 @@ public class ServerControlWidget extends Composite {
         break;
       case TIMEOUT :
         Window.alert(sStringConstants.controlCentreTimeout());
+        ControlCentreManager.getManager().stop();
         break;
       case EXPERIMENT :
         statusManager.setAutoRefresh(false);
         MainReefPanel.getInstance().startRunningPhase();
+        break;
+      case STARTING:
         break;
       default:
         Window.alert(sStringConstants.unknownServerState());
