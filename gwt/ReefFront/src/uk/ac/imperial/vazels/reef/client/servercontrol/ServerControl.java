@@ -102,49 +102,6 @@ public final class ServerControl {
     }
   }
   
-  public static class ExperimentStartRequester extends MultipleRequester<Void> {    
-    /**
-     * Start the experiment running (not to be confused with above)
-     */
-    private static final String SERVER_RUN_URI=SERVER_CONTROL_URI + "/startexperiment";
-    
-    /**
-     * A singleton class
-     */
-    private ExperimentStartRequester() {
-      super(RequestBuilder.POST, SERVER_RUN_URI, null);
-    }
-
-    /**
-     * Store the single instance of {@code ExperimentStartRequester}
-     */
-    private static ExperimentStartRequester sInstance;
-    
-    /**
-     * Gets an instance of {@code ExperimentStartRequester}
-     * @return the single instance of {@code ServerRunRequester}
-     * @throws NotInitialisedException if you fail to first initialise the
-     * {@code ServerStatusRequester}.
-     * @see #getInstance(MessageHandler)
-     */
-    public static ExperimentStartRequester getInstance() {
-      if (sInstance == null) {
-        sInstance = new ExperimentStartRequester();
-      }
-      return sInstance;
-    }
-    
-    public void runExperiment() {
-      go(null);
-    }
-    
-    @Override
-    public void received(Void reply, boolean success, String message) {
-      ServerStatusManager.getManager().serverChange();
-    }
-    
-  }
-  
   /**
    * The big red button to stop doing stuff if things go wrong.
    */

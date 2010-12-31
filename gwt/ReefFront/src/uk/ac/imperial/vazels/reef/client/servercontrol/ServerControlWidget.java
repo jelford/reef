@@ -79,8 +79,7 @@ public class ServerControlWidget extends Composite {
   
   @UiHandler("btnStartExperiment")
   void startExperiment(ClickEvent event) {
-    ServerControl.ExperimentStartRequester
-    .getInstance().runExperiment();
+    ExperimentStartManager.getManager().startExperiment();
   }
 
   @UiHandler("ckbDoneWithProbes")
