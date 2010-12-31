@@ -28,8 +28,6 @@ public class ServerControlWidget extends Composite {
 
   private static final ServerControlStrings sStringConstants = 
     (ServerControlStrings) GWT.create(ServerControlStrings.class);
-  
-  private final ServerControl.ControlCentreRequester mServerRunRequester;
 
   @UiField Button btnToggleControlCenterRunning;
   @UiField Label lblProbeInstructions;
@@ -48,9 +46,6 @@ public class ServerControlWidget extends Composite {
     btnStartExperiment.setText(sStringConstants.startExperiment());
     
     mStatusChangeHandler = new StatusChangeHandler();
-    
-    mServerRunRequester = ServerControl.ControlCentreRequester
-          .getInstance();
     
     ServerStatusManager man = ServerStatusManager.getManager();
     man.addChangeHandler(mStatusChangeHandler);
@@ -71,9 +66,9 @@ public class ServerControlWidget extends Composite {
       e.printStackTrace();
     }
     if (mServerRunning) {
-      mServerRunRequester.stop();
+      ControlCentreManager.getManager().stop();
     } else {
-      mServerRunRequester.start();
+      ControlCentreManager.getManager().start();
     }
   }
   
