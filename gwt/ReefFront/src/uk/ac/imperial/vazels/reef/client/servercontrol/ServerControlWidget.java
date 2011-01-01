@@ -136,7 +136,6 @@ public class ServerControlWidget extends Composite {
         break;
       default:
         Window.alert(sStringConstants.unknownServerState());
-        ServerControl.fail();
       }
     }
   }

@@ -1,8 +1,5 @@
 package uk.ac.imperial.vazels.reef.client.ui;
 
-import uk.ac.imperial.vazels.reef.client.servercontrol.ServerControl;
-import uk.ac.imperial.vazels.reef.client.servercontrol.ServerStatusManager;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
