@@ -1,6 +1,10 @@
 package uk.ac.imperial.vazels.reef.client.ui;
 
-import uk.ac.imperial.vazels.reef.client.util.NotInitialisedException;
+import uk.ac.imperial.vazels.reef.client.managers.IManager;
+import uk.ac.imperial.vazels.reef.client.managers.ManagerChangeHandler;
+import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
+import uk.ac.imperial.vazels.reef.client.managers.PullCallback;
+import uk.ac.imperial.vazels.reef.client.servercontrol.ServerStatusManager;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -9,7 +13,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratedTabPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class SetupPhasePanel extends Composite {
+public class SetupPhasePanel extends Composite implements ManagerChangeHandler {
   /*
    * TODO: Replace depreciated {@code TabPanel} with 
    * {@code TabPanelLayout}
@@ -23,15 +27,43 @@ public class SetupPhasePanel extends Composite {
   interface SetupPhasePanelUiBinder extends UiBinder<Widget, SetupPhasePanel> {
   }
 
+  /**
+   * Have we finished setup and are waiting to move on?
+   */
+  private boolean done;
+  
   @SuppressWarnings("deprecation")
-  private SetupPhasePanel(MainReefPanel top) {
+  public SetupPhasePanel() {
     initWidget(uiBinder.createAndBindUi(this));
+    
+    ServerStatusManager man = ServerStatusManager.getManager();
+    man.addChangeHandler(this);
+    
+    try {
+      man.withServerData(new PullCallback() {
+        @Override
+        public void got() {
+          change(null);
+        }
+      });
+    } catch (MissingRequesterException e) {
+      e.printStackTrace();
+    }
+    
+    done = false;
     tabPanel.selectTab(0);
   }
 
+  /**
+   * Enables/Disables the widget once the setup is finished and waiting to move to the next
+   * phase.
+   * 
+   * @param done Is the setup finished?
+   */
   @SuppressWarnings("deprecation")
-  public void setupDone(boolean done) {
+  protected void setupDone(boolean done) {
     int tabCount = tabPanel.getTabBar().getTabCount();
+    
     for (int i=0; i < tabCount; i++) {
       tabPanel.getTabBar().setTabEnabled(i, !done);
     }
@@ -42,19 +74,26 @@ public class SetupPhasePanel extends Composite {
     }
   }
 
-  private static SetupPhasePanel sInstance;
-
-  public static SetupPhasePanel getInstance(MainReefPanel top) {
-    if (sInstance == null) {
-      sInstance = new SetupPhasePanel(top);
+  @Override
+  public void change(IManager man) {
+    ServerStatusManager manager = ServerStatusManager.getManager();
+    
+    boolean doneNow;
+    
+    switch(manager.getStatus()) {
+    case STARTING:
+    case RUNNING:
+      doneNow = true;
+      break;
+    default:
+      doneNow = false;
+      break;
     }
-    return sInstance;
-  }
-
-  public static SetupPhasePanel getInstanceOrThrow() throws NotInitialisedException {
-    if (sInstance == null) {
-      throw new NotInitialisedException("You must properly initialise the SetupPhasePanel.");
+    
+    // If the state has changed
+    if(doneNow != done) {
+      done = doneNow;
+      setupDone(done);
     }
-    return sInstance;
   }
 }

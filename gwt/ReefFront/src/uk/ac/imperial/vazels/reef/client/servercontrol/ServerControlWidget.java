@@ -2,9 +2,6 @@ package uk.ac.imperial.vazels.reef.client.servercontrol;
 
 import uk.ac.imperial.vazels.reef.client.managers.IManager;
 import uk.ac.imperial.vazels.reef.client.managers.ManagerChangeHandler;
-import uk.ac.imperial.vazels.reef.client.ui.MainReefPanel;
-import uk.ac.imperial.vazels.reef.client.ui.SetupPhasePanel;
-import uk.ac.imperial.vazels.reef.client.util.NotInitialisedException;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -54,13 +51,6 @@ public class ServerControlWidget extends Composite {
   @UiHandler("btnToggleControlCenterRunning")
   void toggleControlCenter(ClickEvent event) {
     btnToggleControlCenterRunning.setEnabled(false);
-    try {
-      SetupPhasePanel.getInstanceOrThrow().setupDone(!mServerRunning);
-    } catch (NotInitialisedException e) {
-      // Pretty sure this won't happen
-      Window.alert("Tried to get SetupPhasePanel when it's not initialised");
-      e.printStackTrace();
-    }
     if (mServerRunning) {
       ControlCentreManager.getManager().stop();
     } else {
@@ -98,13 +88,6 @@ public class ServerControlWidget extends Composite {
     ckbDoneWithProbes.setVisible(running);
     ckbDoneWithProbes.setValue(false);
     btnStartExperiment.setVisible(running);
-    
-    try {
-      SetupPhasePanel.getInstanceOrThrow().setupDone(running);      
-    } catch (NotInitialisedException e) {
-      Window.alert("Phailed to initialise some stuff, now it's broken.");
-      e.printStackTrace();
-    }
   }
   
   /**
@@ -125,10 +108,10 @@ public class ServerControlWidget extends Composite {
         Window.alert(sStringConstants.controlCentreTimeout());
         ControlCentreManager.getManager().stop();
         break;
-      case EXPERIMENT :
-        MainReefPanel.getInstance().startRunningPhase();
-        break;
       case STARTING:
+      case EXPERIMENT:
+      case FINISHED:
+      case UNKNOWN:
         break;
       default:
         Window.alert(sStringConstants.unknownServerState());

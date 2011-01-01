@@ -1,5 +1,9 @@
 package uk.ac.imperial.vazels.reef.client.ui;
 
+import uk.ac.imperial.vazels.reef.client.managers.IManager;
+import uk.ac.imperial.vazels.reef.client.managers.ManagerChangeHandler;
+import uk.ac.imperial.vazels.reef.client.servercontrol.ServerStatusManager;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -8,9 +12,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class MainReefPanel extends Composite {
-  
-  private static MainReefPanel sInstance;
+public class MainReefPanel extends Composite implements ManagerChangeHandler {
   
   /**
    * Let's have some localised string constants!
@@ -24,33 +26,70 @@ public class MainReefPanel extends Composite {
   interface MainReefPanelUiBinder extends UiBinder<Widget, MainReefPanel> {
   }
   
+  /**
+   * Which phase is the experiment in?
+   * {@code null} means we don't know, otherwise we're in running or setup phase.
+   */
+  Boolean runningPhase = null;
+  
   @UiField Label mTitle;
   @UiField SimplePanel mPlaceholder;
 
-  private MainReefPanel() {
+  public MainReefPanel() {
     initWidget(uiBinder.createAndBindUi(this));
-    this.setContent(sStringConstants.experimentSetup(), SetupPhasePanel.getInstance(this));
+    
+    ServerStatusManager man = ServerStatusManager.getManager();
+    man.addChangeHandler(this);
+    man.setAutoRefresh(true);
+    
+    setPhase();
   }
 
   private void setContent(String titleText, Widget w) {
     mTitle.setText(titleText);
     mPlaceholder.setWidget(w);
   }
-  
-  public void startRunningPhase() {
-    this.setContent(sStringConstants.runningPhase(), RunningPhasePanel.getInstance(this));
+
+  @Override
+  public void change(IManager man) {
+    ServerStatusManager manager = ServerStatusManager.getManager();
+    
+    Boolean oldPhase = runningPhase;
+    
+    switch (manager.getStatus()) {
+    case EXPERIMENT:
+    case FINISHED:
+      runningPhase = true;
+      break;
+    case READY:
+    case STARTING:
+    case TIMEOUT:
+    case RUNNING:
+      runningPhase = false;
+      break;
+    case UNKNOWN:
+    default:
+      runningPhase = null;
+      break;
+    }
+    
+    if(oldPhase != runningPhase) {
+      setPhase();
+    }
   }
   
   /**
-   * Today, we will be accessing a class that should only exist once using the
-   * "Singleton" design pattern. There's no reason to get two 
-   * {@code MainReefPanel}s.
-   * @return The single instance of MainReefPanel.
+   * Set the current phase to the one specified by {@link MainReefPanel#runningPhase}.
    */
-  public static MainReefPanel getInstance() {
-    if (sInstance == null) {
-      sInstance = new MainReefPanel();
+  protected void setPhase() {
+    if(runningPhase == null) {
+      setContent(sStringConstants.initialisation(), null);
     }
-    return sInstance;
+    else if(runningPhase) {
+      setContent(sStringConstants.experimentSetup(), new RunningPhasePanel());
+    }
+    else {
+      setContent(sStringConstants.experimentSetup(), new SetupPhasePanel());
+    }
   }
 }

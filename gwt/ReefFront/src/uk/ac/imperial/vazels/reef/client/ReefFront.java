@@ -16,7 +16,7 @@ public class ReefFront implements EntryPoint
 	 */
   public void onModuleLoad()
 	{
-    RootPanel.get("tabPanel").add(MainReefPanel.getInstance());
+    RootPanel.get("tabPanel").add(new MainReefPanel());
     RootPanel.get("stateDisplay").add(new StateDisplay());
 	}
 }
