@@ -40,10 +40,6 @@ public class ServerControlWidget extends Composite {
 
   public ServerControlWidget() {
     initWidget(uiBinder.createAndBindUi(this));
-    btnToggleControlCenterRunning.setText(sStringConstants.startControlCentre());
-    lblProbeInstructions.setText(sStringConstants.setupInstructions());
-    ckbDoneWithProbes.setText(sStringConstants.setupCheckBox());
-    btnStartExperiment.setText(sStringConstants.startExperiment());
     
     mStatusChangeHandler = new StatusChangeHandler();
     

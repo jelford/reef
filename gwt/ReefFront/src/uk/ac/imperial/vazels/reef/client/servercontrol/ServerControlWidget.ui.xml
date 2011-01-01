@@ -1,10 +1,13 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:with field="cc" type="uk.ac.imperial.vazels.reef.client.servercontrol.ServerControlStrings" />
+	
 	<g:VerticalPanel>
-		<g:Button ui:field="btnToggleControlCenterRunning" enabled="false" />
-		<g:Label ui:field="lblProbeInstructions" visible="false" />
-		<g:CheckBox ui:field="ckbDoneWithProbes" visible="false" />
-		<g:Button ui:field="btnStartExperiment" enabled="false" visible="false" />
+		<g:Button ui:field="btnToggleControlCenterRunning" enabled="false" text="{cc.startControlCentre}" />
+		<g:Label ui:field="lblProbeInstructions" visible="false" text="{cc.setupInstructions}" />
+		<g:CheckBox ui:field="ckbDoneWithProbes" visible="false" text="{cc.setupCheckBox}" />
+		<g:Button ui:field="btnStartExperiment" enabled="false" visible="false" text="{cc.startExperiment}" />
 	</g:VerticalPanel>
 </ui:UiBinder> 
