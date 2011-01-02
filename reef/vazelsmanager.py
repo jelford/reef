@@ -1,6 +1,6 @@
 import config
 import os
-import asyncPopen as subprocess
+import asyncPopen
 from tempfile import mkstemp
 import vazelsmonitor
 from handler.groups import getGroupFromRank
@@ -39,6 +39,8 @@ config.getSettings("command_centre").setdefault("rmi_port", "1099")
 config.getSettings("command_centre").setdefault("rmi_host", "localhost")
 config.getSettings("command_centre").setdefault("rmi", "-start_rmi")
 config.getSettings("command_centre").setdefault("siena", "-start_siena")
+config.getSettings("command_centre").setdefault("command_out_file" ,"command_out")
+
 
 ''' Some constants for reflecting state info '''
 Statuses = {"STATUS_RUNNING": "running",
@@ -50,12 +52,11 @@ def setupFiles():
     global vazels_control_stdout_WRITE
     global vazels_control_stdout_READ
 
-    # Get a new secure temporary file to store the output from the control centre
-    tmpFile = mkstemp()[1]
+    outFile = getControlCentreOutPath();
 
     # Assign these global objects.
-    vazels_control_stdout_WRITE = open(tmpFile,"w")
-    vazels_control_stdout_READ = open(tmpFile,"r")
+    vazels_control_stdout_WRITE = open(outFile,"w")
+    vazels_control_stdout_READ = open(outFile,"r")
    
 def shutdownFiles():
     global vazels_control_stdout_WRITE
@@ -110,6 +111,7 @@ def vazelsRunning():
             break # We don't care about the rest here.
 
     return state
+
   
 def getVazelsPath():
     return os.path.join(
@@ -117,8 +119,10 @@ def getVazelsPath():
         config.getSettings("command_centre")["vazels_dir"],
     )
 
+
 def getCommandLineClientPath():
     return os.path.join(getVazelsPath(), 'client')
+
 
 def getExperimentPath():
     return os.path.join(
@@ -126,6 +130,13 @@ def getExperimentPath():
         config.getSettings("command_centre")["experiment_dir"]
     )
   
+
+def getControlCentreOutPath():
+    return os.path.join(
+        config.getSettings("global")["projdir"],
+        config.getSettings("command_centre")["command_out_file"]
+    )
+
   
 def runVazels():
     global vazels_control_process
@@ -155,7 +166,7 @@ def runVazels():
     args.append(config.getSettings('command_centre')['rmi'])
     args.append(config.getSettings('command_centre')['siena'])
   
-    vazels_control_process = subprocess.Popen(args, cwd=getVazelsPath(), stdout=vazels_control_stdout_WRITE)
+    vazels_control_process = asyncPopen.Popen(args, cwd=getVazelsPath(), stdout=vazels_control_stdout_WRITE)
   
     # Dispatch a thread to monitor the control centre and give it workloads/actors
     # when it's ready.
@@ -201,7 +212,7 @@ def updateStatuses():
     vazels_command_stdout_WRITE = open(tmpFile,"w")
     vazels_command_stdout_READ = open(tmpFile,"r")
   
-    vazels_command_process = subprocess.Popen(args, cwd=getCommandLineClientPath(), stdout=vazels_command_stdout_WRITE, stderr=vazels_command_stdout_WRITE)
+    vazels_command_process = asyncPopen.Popen(args, cwd=getCommandLineClientPath(), stdout=vazels_command_stdout_WRITE, stderr=vazels_command_stdout_WRITE)
   
     # Dispatch a new thread to catch the output for us. It could take a
     #   little while for stuff to come back.
@@ -284,7 +295,7 @@ def __issueControlCentreCommand(command):
     experiment_path = getExperimentPath()
     args = __getCommandLineClientArgs()
     args.append(command)
-    vazels_command_process = subprocess.Popen(args, cwd=getCommandLineClientPath())
+    vazels_command_process = asyncPopen.Popen(args, cwd=getCommandLineClientPath())
   
     return True
   
