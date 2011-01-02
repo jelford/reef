@@ -7,6 +7,7 @@ import uk.ac.imperial.vazels.reef.client.managers.PullCallback;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
@@ -71,8 +72,8 @@ public class ServerControlWidget extends Composite implements ManagerChangeHandl
   }
 
   @UiHandler("ckbDoneWithProbes")
-  void enableStartingExperiment(ClickEvent event) {
-    btnStartExperiment.setEnabled(ckbDoneWithProbes.getValue());
+  void enableStartingExperiment(ValueChangeEvent<Boolean> event) {
+    btnStartExperiment.setEnabled(event.getValue());
   }
   
   /**
@@ -81,8 +82,9 @@ public class ServerControlWidget extends Composite implements ManagerChangeHandl
    * @param running
    */
   private void setRunningState(boolean running) {
-    if (running) {
-      ckbDoneWithProbes.setValue(false);
+    if (!running) {
+      // Reset when not in this pane
+      ckbDoneWithProbes.setValue(false, true);
     }
     
     btnToggleControlCenterRunning.setEnabled(true);
