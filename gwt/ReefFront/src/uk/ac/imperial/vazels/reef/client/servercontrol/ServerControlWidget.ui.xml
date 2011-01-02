@@ -2,16 +2,28 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
+	<ui:style field="useful" src="../ui/useful.css" />
+	
 	<ui:with field="cc" type="uk.ac.imperial.vazels.reef.client.servercontrol.ServerControlStrings" />
 	
-	<g:VerticalPanel>
-		<g:ToggleButton ui:field="btnToggleControlCenterRunning" enabled="false"
-			up="{cc.startControlCentre}" down="{cc.goBackToSetup}" />
+	<g:VerticalPanel addStyleNames="{useful.hStretch}" >
+		<g:cell horizontalAlignment="CENTER" addStyleNames="{useful.spaced}">
+			<g:SimplePanel addStyleNames="{useful.spaced} {useful.notMassive}">
+				<g:ToggleButton ui:field="btnToggleControlCenterRunning" enabled="false"
+					up="{cc.startControlCentre}" down="{cc.goBackToSetup}" />
+			</g:SimplePanel>
+		</g:cell>
 		
-		<g:VerticalPanel ui:field="runningControls" visible="false">
-			<g:Label text="{cc.setupInstructions}" />
+		<g:VerticalPanel ui:field="runningControls" visible="false"
+			addStyleNames="{useful.hStretch}">
+			<g:Label text="{cc.setupInstructions}"
+				addStyleNames="{useful.spaced} {useful.notMassive}" />
 			<g:CheckBox ui:field="ckbDoneWithProbes" text="{cc.setupCheckBox}" />
-			<g:Button ui:field="btnStartExperiment" enabled="false" text="{cc.startExperiment}" />
+			<g:cell horizontalAlignment="CENTER">
+				<g:SimplePanel addStyleNames="{useful.spaced}">
+					<g:Button ui:field="btnStartExperiment" enabled="false" text="{cc.startExperiment}" />
+				</g:SimplePanel>
+			</g:cell>
 		</g:VerticalPanel>
 	</g:VerticalPanel>
 </ui:UiBinder> 
