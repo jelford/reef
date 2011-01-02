@@ -5,9 +5,13 @@
 	<ui:with field="cc" type="uk.ac.imperial.vazels.reef.client.servercontrol.ServerControlStrings" />
 	
 	<g:VerticalPanel>
-		<g:Button ui:field="btnToggleControlCenterRunning" enabled="false" text="{cc.startControlCentre}" />
-		<g:Label ui:field="lblProbeInstructions" visible="false" text="{cc.setupInstructions}" />
-		<g:CheckBox ui:field="ckbDoneWithProbes" visible="false" text="{cc.setupCheckBox}" />
-		<g:Button ui:field="btnStartExperiment" enabled="false" visible="false" text="{cc.startExperiment}" />
+		<g:ToggleButton ui:field="btnToggleControlCenterRunning" enabled="false"
+			up="{cc.startControlCentre}" down="{cc.goBackToSetup}" />
+		
+		<g:VerticalPanel ui:field="runningControls" visible="false">
+			<g:Label text="{cc.setupInstructions}" />
+			<g:CheckBox ui:field="ckbDoneWithProbes" text="{cc.setupCheckBox}" />
+			<g:Button ui:field="btnStartExperiment" enabled="false" text="{cc.startExperiment}" />
+		</g:VerticalPanel>
 	</g:VerticalPanel>
 </ui:UiBinder> 
