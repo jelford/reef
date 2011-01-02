@@ -2,8 +2,10 @@ package uk.ac.imperial.vazels.reef.client.servercontrol;
 
 import java.util.Date;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 
 import uk.ac.imperial.vazels.reef.client.MultipleRequester;
 import uk.ac.imperial.vazels.reef.client.managers.Manager;
@@ -67,6 +69,12 @@ public class ServerStatusManager extends Manager<ServerStatus, Void>{
   private ServerState status;
   
   /**
+   * Server-related strings.
+   */
+  private static final ServerControlStrings sStringConstants = 
+    (ServerControlStrings) GWT.create(ServerControlStrings.class);
+  
+  /**
    * Has the server timed out in the current status.
    * This should be updated at every pull.
    */
@@ -107,6 +115,11 @@ public class ServerStatusManager extends Manager<ServerStatus, Void>{
     
     status = pulled.getState();
     timedOut = checkTimeout();
+    
+    if(timedOut) {
+      Window.alert(sStringConstants.controlCentreTimeout());
+      ControlCentreManager.getManager().stop();
+    }
     
     return true;
   }
