@@ -146,7 +146,11 @@ public class SyncTracker {
   }
   
   protected void callChangeHandlers() {
-    for(ManagerChangeHandler handler : changeHandlers) {
+    // Create array of handlers to avoid concurrent modification
+    // This was appearing during startup
+    ManagerChangeHandler[] handlers = new ManagerChangeHandler[changeHandlers.size()];
+    handlers = changeHandlers.toArray(handlers);
+    for(ManagerChangeHandler handler : handlers) {
       handler.change(tracking);
     }
   }
