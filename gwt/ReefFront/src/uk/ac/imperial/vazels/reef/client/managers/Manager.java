@@ -177,8 +177,8 @@ public abstract class Manager<PullData, PushData> implements IManager {
   private class RepeatPullHandler extends RequestHandler<PullData>{
     @Override
     public void handle(PullData reply, boolean success, String message) {
-      pendingPull = false;
       if(success) {
+        pendingPull = false;
         if(receivePullData(reply)) {
           syncTracker.wipedLocalChanges();
         }
@@ -189,6 +189,7 @@ public abstract class Manager<PullData, PushData> implements IManager {
           @Override
           public void run() {
             try {
+              pendingPull = false;
               getServerData();
             }
             catch(MissingRequesterException e) {
