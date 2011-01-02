@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-/* A class to allow the assigning, including uploading, of workloads to groups
+/* A class to allow the assigning of workloads to groups
  * 
  */
 public class WorkloadGroupsWidget extends Composite {
@@ -34,7 +34,7 @@ public class WorkloadGroupsWidget extends Composite {
   public WorkloadGroupsWidget() {
     initPanel();
     
-    //obtain current groups to put in box
+    //obtain current groups to put in a ListBox
     try {
       GroupManager.getManager().withAllServerData(new PullCallback() {
         public void got() {
@@ -45,7 +45,7 @@ public class WorkloadGroupsWidget extends Composite {
       e.printStackTrace();
     }    
 
-    //obtain current workloads to put in box
+    //obtain current workloads to put in a ListBox
     try {
       WorkloadManager.getManager().withAllServerData(new PullCallback() {
         public void got() {
@@ -56,7 +56,7 @@ public class WorkloadGroupsWidget extends Composite {
       e.printStackTrace();
     }
     
-    //obtain current workloads assigned to selected group
+    //obtain current workloads assigned to default selected group in group ListBox
     updateAttachedWklds();    
   }
 
@@ -70,7 +70,7 @@ public class WorkloadGroupsWidget extends Composite {
     //display list of groups
     assignmentTab.add(new Label("Groups: "));
     groupsBox = new ListBox();
-
+    //on event of change to groups, update list of groups
     GroupManager.getManager().addChangeHandler(new ManagerChangeHandler() {
       @Override
       public void change(IManager man) {
@@ -78,21 +78,20 @@ public class WorkloadGroupsWidget extends Composite {
       }
     });
     
+    //selected group, which will change, in groupsBox determines attachedWklds box, which is list of workloads in that selected group
     groupsBox.addChangeHandler(new ChangeHandler() {
       @Override
       public void onChange(ChangeEvent event) {
         updateAttachedWklds();        
       }
     });
-    
+
     assignmentTab.add(groupsBox);
 
     //display list of workloads
     assignmentTab.add(new Label("Select a workload to assign:"));
-
     wkldsBox = new ListBox();
-    //handler only required if expect workloads to change after widget loads
-
+    //note: handler only required if expect workloads to change after widget loads
     WorkloadManager.getManager().addChangeHandler(new ManagerChangeHandler() {
       @Override
       public void change(IManager man) {
@@ -106,7 +105,7 @@ public class WorkloadGroupsWidget extends Composite {
     attachedWklds = new ListBox();
     assignmentTab.add(attachedWklds);
 
-    //submit button for selected workload
+    //submit button to add selected workload to selected group
     Button submitWtoG = new Button ("Submit", new ClickHandler() {
       public void onClick(ClickEvent event) {
         addWorkload();
@@ -125,8 +124,7 @@ public class WorkloadGroupsWidget extends Composite {
     }
   }
 
-  //update the list of workloads
-  //Note: this will need to become more like updateGroupsBox
+  //update the list of workloads from server
   private void updateWkldsBox() {
     final WorkloadManager man = WorkloadManager.getManager();
     wkldsBox.clear();
