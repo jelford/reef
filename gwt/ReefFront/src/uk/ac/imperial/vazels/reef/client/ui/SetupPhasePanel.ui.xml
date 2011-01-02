@@ -24,9 +24,7 @@
 		</g:Tab>
 		<g:Tab>
 			<g:TabHTML>5.Start Experiment</g:TabHTML>
-			<g:VerticalPanel>
-				<server:ServerControlWidget />
-			</g:VerticalPanel>
+			<server:ServerControlWidget />
 		</g:Tab>
 	</g:DecoratedTabPanel>
 </ui:UiBinder> 
