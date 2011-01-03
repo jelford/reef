@@ -1,6 +1,7 @@
 package uk.ac.imperial.vazels.reef.client.servercontrol;
 
 import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.user.client.Window;
 
 import uk.ac.imperial.vazels.reef.client.MultipleRequester;
 import uk.ac.imperial.vazels.reef.client.managers.Manager;
@@ -58,7 +59,7 @@ public class ExperimentStartManager extends Manager<Void, Void> {
         
         @Override
         public void failed() {
-          startExperiment();
+          Window.alert("Failed to start the experiment.");
         }
       });
     } catch (MissingRequesterException e) {
