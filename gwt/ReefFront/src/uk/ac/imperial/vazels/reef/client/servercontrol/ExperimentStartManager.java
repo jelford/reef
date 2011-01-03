@@ -1,5 +1,6 @@
 package uk.ac.imperial.vazels.reef.client.servercontrol;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.user.client.Window;
 
@@ -13,6 +14,12 @@ public class ExperimentStartManager extends Manager<Void, Void> {
    * URI to start the experiment running.
    */
   private static final String SERVER_RUN_URI="/control/startexperiment";
+  
+  /**
+   * Server-related strings.
+   */
+  private static final ServerControlStrings sStringConstants = 
+    (ServerControlStrings) GWT.create(ServerControlStrings.class);
   
   /**
    * Singleton instance of the manager.
@@ -59,7 +66,7 @@ public class ExperimentStartManager extends Manager<Void, Void> {
         
         @Override
         public void failed() {
-          Window.alert("Failed to start the experiment.");
+          Window.alert(sStringConstants.startExperimentFailed());
         }
       });
     } catch (MissingRequesterException e) {

@@ -29,6 +29,8 @@ public class ControlCentreManager extends Manager<Void, Void> {
   
   /**
    * Current extension to use with the requester.
+   * Is this a hack? Yes, yes it is.
+   * @TODO: Find a nicer way to do this while preserving DRY.
    */
   private String currentExt = "";
   
@@ -79,7 +81,7 @@ public class ControlCentreManager extends Manager<Void, Void> {
   }
   
   @Deprecated
-  @Override
+  //@Override
   public void pushLocalData(PushCallback callback) throws MissingRequesterException {
     super.pushLocalData(callback);
   }

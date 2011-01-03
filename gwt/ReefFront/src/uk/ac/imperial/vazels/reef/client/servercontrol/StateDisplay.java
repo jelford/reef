@@ -5,6 +5,7 @@ import uk.ac.imperial.vazels.reef.client.managers.ManagerChangeHandler;
 import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
 import uk.ac.imperial.vazels.reef.client.managers.PullCallback;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 
@@ -13,6 +14,12 @@ import com.google.gwt.user.client.ui.Label;
  */
 public class StateDisplay extends Composite implements ManagerChangeHandler {
   private Label text = new Label();
+  
+  /**
+   * Server-related strings.
+   */
+  private static final ServerControlStrings sStringConstants = 
+    (ServerControlStrings) GWT.create(ServerControlStrings.class);
   
   public StateDisplay() {
     initWidget(text);
@@ -37,29 +44,29 @@ public class StateDisplay extends Composite implements ManagerChangeHandler {
    */
   @Override
   public void change(IManager man) {
-    String newText = "The vazels system ";
+    String newText = sStringConstants.theVazelsSystemStatus();
     
     switch(ServerStatusManager.getManager().getStatus()) {
     case EXPERIMENT:
-      newText += "is running an experiment.";
+      newText += sStringConstants.isRunningExperiment();
       break;
     case FINISHED:
-      newText += "is finished.";
+      newText += sStringConstants.isFinished();
       break;
     case READY:
-      newText += "is ready to start.";
+      newText += sStringConstants.isReady();
       break;
     case RUNNING:
-      newText += "is running.";
+      newText += sStringConstants.isRunning();
       break;
     case STARTING:
-      newText += "is starting.";
+      newText += sStringConstants.isStarting();
       break;
     case TIMEOUT:
-      newText += "has timed out.";
+      newText += sStringConstants.hasTimedOut();
       break;
     default:
-      newText += "is in an unknown state at this time.";
+      newText += sStringConstants.hasUnknownState();
       break;
     }
     

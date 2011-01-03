@@ -16,4 +16,14 @@ public interface ServerControlStrings extends Constants {
   String setupInstructions();
   String setupCheckBox();
   String startExperiment();
+  String startExperimentFailed();
+  
+  String isRunningExperiment();
+  String isFinished();
+  String isReady();
+  String isRunning();
+  String isStarting();
+  String hasTimedOut();
+  String hasUnknownState();
+  String theVazelsSystemStatus();
 }

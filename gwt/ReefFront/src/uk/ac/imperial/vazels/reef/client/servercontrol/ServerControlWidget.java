@@ -52,7 +52,7 @@ public class ServerControlWidget extends Composite implements ManagerChangeHandl
     
   }
 
-  /*
+  /**
    * Add ClickHandlers for the buttons
    */
   @UiHandler("btnToggleControlCenterRunning")
