@@ -11,6 +11,8 @@ Any required libraries are stored with reef (in the :mod:`google` module).
 import os
 import sys
 import vOutput_pb2
+import handler.groups
+import restlite
 
 def scan_output(path_to_output):
     """
@@ -38,15 +40,10 @@ def scan_output(path_to_output):
     #else:
     #    print "Folder provided did not exist"
     #    raise restlite.Status, "404 Output Folder Not Found"
-
-    # Instead of how we did it before, let any exceptions spell failure.
+    # Instead of how we did it before, let any exceptions spell failure. NO DON'T!
     # This catches any problems with parsing too, although we should
-    # probably look for specific failures
-    try:
-        return scan_output_helper(path_to_output)
-    except:
-        return None
-
+    # probably look for specific 
+    return rename_groups(scan_output_helper(path_to_output))
 
 def scan_output_helper(path):
     """
@@ -130,3 +127,14 @@ def process_file(filepath):
         time_serie_dict[snapshot_dict['timestamp']] = snapshot_dict
 
     return time_serie_dict
+
+def rename_groups(data_dict):
+	fixed_dict = {}
+	# There isn't a nice way to get the correct group name anywhere
+	# What's happened is we have intercepted the data, and forced some
+	# neat names upon you. If this fails, it seems silly to fail entirely...
+	for groupRank in data_dict:
+		group = handler.groups.getGroupFromRank(groupRank)
+		fixed_dict[group['name']] = data_dict[groupRank]
+	return fixed_dict
+	

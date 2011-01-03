@@ -1,0 +1,50 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.important {
+			font-weight: bold;
+			padding: 0 5px 0 0;
+		}
+		
+		.header {
+			font-weight: bold;
+			font-size: 1.8em;
+			padding: 5px 0;
+		}
+	</ui:style>
+	
+	<g:VerticalPanel>
+		
+		<g:Label ui:field="group_name" addStyleNames="{style.header}" />
+		
+		<g:HorizontalPanel>
+			<g:Label addStyleNames="{style.important}">Assigned Workload:</g:Label>
+			<g:Label ui:field="workload" />
+		</g:HorizontalPanel>
+		
+		<g:HorizontalPanel>
+			<g:Label addStyleNames="{style.important}">Assigned SUE:</g:Label>
+			<g:Label ui:field="sue" />
+		</g:HorizontalPanel>
+		
+		<g:Label addStyleNames="{style.important}">Variables:</g:Label>
+	
+		<g:FlexTable ui:field="variable_names" />
+		
+		<g:HorizontalPanel>
+			<g:Label addStyleNames="{style.important}">Size: </g:Label>
+			<g:Label ui:field="size" />
+		</g:HorizontalPanel>
+		
+		<g:Label addStyleNames="{style.important}">Connected Vazels</g:Label>
+		
+		<g:FlexTable ui:field="connected_vazels" />
+		
+		<g:Label addStyleNames="{style.important}">Evolving Vazels</g:Label>
+		
+		<g:FlexTable ui:field="evolving_vazels" />
+		
+	</g:VerticalPanel>
+	
+</ui:UiBinder> 

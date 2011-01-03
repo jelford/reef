@@ -1,10 +1,8 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:output="urn:import:uk.ac.imperial.vazels.reef.client.output"
-	xmlns:srv="urn:import:uk.ac.imperial.vazels.reef.client.servercontrol">
-	<g:VerticalPanel>
-		<output:DisplayOutput />
-		<srv:StopServerButton />
+	xmlns:output="urn:import:uk.ac.imperial.vazels.reef.client.output">
+	<g:VerticalPanel width="900px">
+		<output:DisplayOutput width="100%"/>
 	</g:VerticalPanel>
 </ui:UiBinder> 

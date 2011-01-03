@@ -12,7 +12,7 @@ public class StopServerButton extends Composite {
   /**
    * 
    */
-  private Button stopBtn = new Button("STOP (I screw everything up at the moment)");
+  private Button stopBtn = new Button("Stop Experiment");
   
   public StopServerButton() {
     initWidget(stopBtn);

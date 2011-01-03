@@ -9,6 +9,7 @@ to get there.
 
 import config
 
+
 from handler.settings import SettingsEditor
 from handler.testing import TestHandler
 from handler.auth_page import AuthPageHandler
@@ -21,6 +22,8 @@ from handler.status import StatusHandler
 from handler.output_full import OutputFullHandler
 from handler.probe import ProbeHandler
 from handler.sue_handler import SUE_handler
+from handler.downloaddata import download_data_handler
+
 
 '''
 This module is responsible for routing the different possible paths to their
@@ -44,7 +47,6 @@ def getRouting():
         (r'GET /probe.tar.gz$', ProbeHandler().getHandler()),
         (r'GET,POST /actors$', 'GET,POST /actors/'),
         (r'GET,POST /actors/', ActorsHandler().getHandler()),
-        (r'POST /actorassign$', 'POST /actorassign/'),
         (r'POST /actorassign/', ActorAssignHandler().getHandler()),
         (r'GET,POST /testing/', TestHandler().getHandler()),
         (r'GET,POST /groups/?$', GroupBatchHandler().getHandler()),
@@ -58,5 +60,7 @@ def getRouting():
         (r'GET,POST /workloads/?', WorkloadHandler().getHandler()),
         (r'GET /output/$', OutputFullHandler().getHandler()),
         (r'GET,POST /sue/?$', SUE_handler),
-        (r'GET,POST /', AuthPageHandler().getHandler())
+        (r'GET /downloaddata/data.tar.gz$', download_data_handler),
+        (r'GET,POST /', AuthPageHandler().getHandler()),
+
     ]

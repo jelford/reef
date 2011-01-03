@@ -60,7 +60,7 @@ public class MultipleRequester<Type> extends EasyRequest {
    * <p>
    * This should only be called from the base class {@link EasyRequest} as the
    * callback method. It will actually deal with calling the correct handlers here
-   * so must not be overriden. This will avoid breaking the expectations of other
+   * so must not be overridden. This will avoid breaking the expectations of other
    * callbacks.
    * </p>
    */

@@ -212,9 +212,9 @@ def getGroupFromRank(rank):
 
     # Don't call this during the setup phase; it doesn't make sense!
     group_data = config.getSettings("groups",True)
-
-    for group_name in group_data:
-        if group_data[group_name]['group_number'] == rank:
-            return group_data[group_name]
-
-    raise restlite.Status, "404 Tried to find physical group number which doesn't exist"
+    try:
+        for group_name in group_data:
+	    if group_data[group_name]['group_number'] == int(rank):
+	        return group_data[group_name]
+    except:
+       raise restlite.Status, "404 Tried to find physical group number which doesn't exist"

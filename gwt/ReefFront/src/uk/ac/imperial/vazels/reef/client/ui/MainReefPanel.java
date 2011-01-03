@@ -86,7 +86,7 @@ public class MainReefPanel extends Composite implements ManagerChangeHandler {
       setContent(sStringConstants.initialisation(), null);
     }
     else if(runningPhase) {
-      setContent(sStringConstants.experimentSetup(), new RunningPhasePanel());
+      setContent(sStringConstants.runningPhase(), new RunningPhasePanel());
     }
     else {
       setContent(sStringConstants.experimentSetup(), new SetupPhasePanel());
