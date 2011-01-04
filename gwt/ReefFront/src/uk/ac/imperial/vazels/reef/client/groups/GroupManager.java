@@ -6,6 +6,7 @@ import com.google.gwt.http.client.RequestBuilder;
 
 import uk.ac.imperial.vazels.reef.client.MultipleRequester;
 import uk.ac.imperial.vazels.reef.client.managers.DeletableListedCollectionManager;
+import uk.ac.imperial.vazels.reef.client.managers.JsArrayStringSetConverter;
 
 /**
  * Should do all communication involving groups on the server.
@@ -94,13 +95,7 @@ public class GroupManager extends DeletableListedCollectionManager<String, Singl
    */
   protected class GroupSummaryRequest extends MultipleRequester<Set<String>>{
     GroupSummaryRequest() {
-      super(RequestBuilder.GET, "/groups/", 
-          new Converter<Set<String>>() {
-        @Override
-        public Set<String> convert(String original) {
-          return new GroupSummary(original).getSet();
-        }
-      });
+      super(RequestBuilder.GET, "/groups/", new JsArrayStringSetConverter());
     }
   }
 }
