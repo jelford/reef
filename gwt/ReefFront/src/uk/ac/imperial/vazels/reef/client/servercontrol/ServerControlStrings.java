@@ -10,6 +10,7 @@ import com.google.gwt.i18n.client.Constants;
 public interface ServerControlStrings extends Constants {
   String startControlCentre();
   String goBackToSetup();
+  String downloadProbe();
   String controlCentreTimeout();
   String experimentRunning();
   String unknownServerState();

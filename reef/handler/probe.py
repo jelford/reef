@@ -10,6 +10,7 @@ import config
 import os
 import tempfile
 import commandclient
+import controlcentre
 
 @restlite.resource
 def probe_handler():
@@ -17,15 +18,21 @@ def probe_handler():
     authentication.login(request)
     if commandclient.vazelsPhase() != commandclient.Statuses["STATUS_RUNNING"]:
       raise restlite.Status, "400 Can't get the Probe until the experiment is set up"
+
+    probePath = os.path.join(controlcentre.getExperimentPath(), "Probe_Folder")
     
-    tempFile = tempfile.SpooledTemporaryFile(1024)
-    probePath = os.path.join(config.getSettings("command_centre")["experiment_dir"], "Probe_Folder")
-    tar = tarfile.open(tempFile, "w:gz")
-    tar.add(name=probePath, arcname="Probe_Folder")
-    tar.close()
-    tempFile.seek(0)
-    with open(tempFile, "rb") as file:
-      return request.response(file.read(), "application/x-gzip")
+    with tempfile.SpooledTemporaryFile(1024) as temp:
+      tar = tarfile.open(fileobj=temp, mode="w:gz")
+      tar.add(name=probePath, arcname="Probe_Folder")
+      tar.close()
+
+      temp.seek(0)
+
+      # Don't have this in the return statement
+      # It will break EVERYTHING mysteriously
+      content = temp.read()
+
+      return request.response(content, "application/x-gzip")
 
     raise restlite.Status, "500 Could Not Serve Probe File"
   

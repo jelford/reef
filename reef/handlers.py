@@ -21,7 +21,7 @@ def getRouting():
         #(r'GET,POST /settings$', 'GET,POST /settings/'),
         #(r'GET,POST /settings/', settings_editor),
         (r'GET /status$', status_handler),
-        (r'GET /probe/?$', probe_handler),
+        (r'GET /probe.tar.gz$', probe_handler),
         (r'GET,POST /actors$', 'GET,POST /actors/'),
         (r'GET,POST /actors/', actors_handler),
         (r'POST /actorassign$', 'POST /actorassign/'),

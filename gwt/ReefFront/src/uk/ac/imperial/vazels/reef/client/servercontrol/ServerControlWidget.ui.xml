@@ -16,8 +16,13 @@
 		
 		<g:VerticalPanel ui:field="runningControls" visible="false"
 			addStyleNames="{useful.hStretch}">
-			<g:Label text="{cc.setupInstructions}"
-				addStyleNames="{useful.spaced} {useful.notMassive}" />
+			<g:HorizontalPanel addStyleNames="{useful.hStretch}">
+				<g:Label text="{cc.setupInstructions}"
+					addStyleNames="{useful.spaced} {useful.notMassive}" />
+				<g:cell horizontalAlignment="CENTER" verticalAlignment="MIDDLE">
+					<g:Button ui:field="btnProbe" text="{cc.downloadProbe}" />
+				</g:cell>
+			</g:HorizontalPanel>
 			<g:CheckBox ui:field="ckbDoneWithProbes" text="{cc.setupCheckBox}" />
 			<g:cell horizontalAlignment="CENTER">
 				<g:SimplePanel addStyleNames="{useful.spaced}">

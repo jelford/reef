@@ -1,5 +1,6 @@
 package uk.ac.imperial.vazels.reef.client.servercontrol;
 
+import uk.ac.imperial.vazels.reef.client.AddressResolution;
 import uk.ac.imperial.vazels.reef.client.managers.IManager;
 import uk.ac.imperial.vazels.reef.client.managers.ManagerChangeHandler;
 import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
@@ -12,6 +13,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -74,6 +76,11 @@ public class ServerControlWidget extends Composite implements ManagerChangeHandl
   @UiHandler("ckbDoneWithProbes")
   void enableStartingExperiment(ValueChangeEvent<Boolean> event) {
     btnStartExperiment.setEnabled(event.getValue());
+  }
+  
+  @UiHandler("btnProbe")
+  void probeDownload(ClickEvent event) {
+    Window.open(new AddressResolution().resolve("/probe.tar.gz"), "", "");
   }
   
   /**
