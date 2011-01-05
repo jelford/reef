@@ -69,8 +69,6 @@ public class UploadActorWidget extends Composite implements ManagerChangeHandler
     actor_type.addItem("PYTHON");
     actor_type.addItem("SUE");
     
-    //maybe create a listener that automatically puts filename as the name (actor_name)
-    
     ActorManager.getManager().addChangeHandler(this);
     
     try {
@@ -84,6 +82,12 @@ public class UploadActorWidget extends Composite implements ManagerChangeHandler
   @UiHandler("formPanel")
   public void onSubmitComplete(SubmitCompleteEvent event) {
     ActorManager.getManager().actorUploaded(event.getResults());
+    
+    try {
+      ActorManager.getManager().getAllServerData();
+    } catch (MissingRequesterException e) {
+      e.printStackTrace();
+    }
   }
   
   //button used when ready to submit all data

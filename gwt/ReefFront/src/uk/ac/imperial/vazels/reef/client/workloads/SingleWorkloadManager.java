@@ -51,7 +51,6 @@ public class SingleWorkloadManager extends Manager<Workload, Void> {
   
   @Override
   protected boolean receivePullData(Workload data) {
-    // TODO If the group returned has a different name we break things currently
     wkld = data;
     return true;
   }

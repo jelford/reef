@@ -53,7 +53,6 @@ public class SingleActorManager extends Manager<Actor, Void> {
   
   @Override
   protected boolean receivePullData(Actor data) {
-    // TODO If the group returned has a different name we break things currently
     actor = data;
     return true;
   }
