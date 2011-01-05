@@ -5,16 +5,21 @@
 	<ui:style field="useful" src="../ui/useful.css"/>
 
 	<g:FormPanel ui:field="formPanel" encoding="multipart/form-data" method="POST">
-		<g:VerticalPanel ui:field="uploadPanel">
-			<g:Label text="Actor file: " />
-			<g:FileUpload ui:field="actor_file" name="actor_file" />
-			<g:Label text="Actor name: " />
-			<g:TextBox ui:field="actor_name" name="actor_name" text="" />
-			<g:Label text="Actor type: " />
-			<g:ListBox ui:field="actorLanguage" name="actor_type" />
-			<g:Label text="Previously uploaded actors"/>
+		<g:VerticalPanel>
+			<g:FlexTable ui:field="actorTable" cellSpacing="2"
+				cellPadding="3" addStyleNames="{useful.important} {useful.majorComponentWidth}" />
+			
+			<g:HorizontalPanel visible="false">
+				<g:TextBox ui:field="actor_name" name="actor_name"
+					addStyleNames="{useful.mostlyHStretch} {useful.shortInput}" />
+				<g:FileUpload ui:field="actor_file" name="actor_file"
+					addStyleNames="{useful.mostlyHStretch} {useful.shortInput}" />
+				<g:ListBox ui:field="actor_type" name="actor_type"
+					addStyleNames="{useful.mostlyHStretch} {useful.shortInput}" />
+				<g:Button ui:field="submitBtn" text="Upload" />
+			</g:HorizontalPanel>
+			
 			<g:ListBox ui:field="actorList"/>
-			<g:Button ui:field="button" text="Submit" />
 		</g:VerticalPanel>
 	</g:FormPanel>
 </ui:UiBinder> 
