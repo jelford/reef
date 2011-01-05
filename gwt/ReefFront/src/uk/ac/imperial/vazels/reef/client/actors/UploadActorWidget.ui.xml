@@ -18,8 +18,6 @@
 					addStyleNames="{useful.mostlyHStretch} {useful.shortInput}" />
 				<g:Button ui:field="submitBtn" text="Upload" />
 			</g:HorizontalPanel>
-			
-			<g:ListBox ui:field="actorList"/>
 		</g:VerticalPanel>
 	</g:FormPanel>
 </ui:UiBinder> 

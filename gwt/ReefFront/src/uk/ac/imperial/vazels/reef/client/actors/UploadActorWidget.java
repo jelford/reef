@@ -3,6 +3,8 @@ package uk.ac.imperial.vazels.reef.client.actors;
 import java.util.Set;
 
 import uk.ac.imperial.vazels.reef.client.AddressResolution;
+import uk.ac.imperial.vazels.reef.client.managers.IManager;
+import uk.ac.imperial.vazels.reef.client.managers.ManagerChangeHandler;
 import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
 import uk.ac.imperial.vazels.reef.client.managers.PullCallback;
 
@@ -23,7 +25,7 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 
-public class UploadActorWidget extends Composite {
+public class UploadActorWidget extends Composite implements ManagerChangeHandler {
   /**
    * Generated code - gives us an interface to the XML-defined UI.
    */
@@ -41,7 +43,6 @@ public class UploadActorWidget extends Composite {
   @UiField FileUpload actor_file;
   @UiField ListBox actor_type;
   @UiField Button submitBtn;
-  @UiField ListBox actorList;
   @UiField FlexTable actorTable;
 
   public UploadActorWidget() {
@@ -70,14 +71,19 @@ public class UploadActorWidget extends Composite {
     
     //maybe create a listener that automatically puts filename as the name (actor_name)
     
-    populateActorList();
+    ActorManager.getManager().addChangeHandler(this);
+    
+    try {
+      ActorManager.getManager().getAllServerData();
+    } catch (MissingRequesterException e) {
+      e.printStackTrace();
+    }
   }
   
   //tell manager that actor has been uploaded and add new item to onscreen list of actors
   @UiHandler("formPanel")
   public void onSubmitComplete(SubmitCompleteEvent event) {
     ActorManager.getManager().actorUploaded(event.getResults());
-    populateActorList();
   }
   
   //button used when ready to submit all data
@@ -103,7 +109,7 @@ public class UploadActorWidget extends Composite {
   }
   
   //used for initial pulling of currently existing actors from the server
-  private void populateActorList() {
+  public void change(IManager m) {
     final ActorManager man = ActorManager.getManager();
     try {
       //get the list of actors from the server and add them to actorList
