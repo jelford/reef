@@ -105,6 +105,10 @@ public class UploadActorWidget extends Composite implements ManagerChangeHandler
   void onClick(ClickEvent event) {
     if(validateActorName(actor_name.getText())) {
       formPanel.submit();
+      setEnabled(false); // will be reenabled when the interface is updated.
+    }
+    else {
+      clearInterface(true);
     }
   }
 
@@ -124,6 +128,31 @@ public class UploadActorWidget extends Composite implements ManagerChangeHandler
     }
     //groups were alphanumeric, is this something enforced for actors?
     return true;
+  }
+  
+  /**
+   * Enable or disable the widget controls.
+   * @param enabled Whether or not to enable.
+   */
+  protected void setEnabled(boolean enabled) {
+    actor_name.setEnabled(enabled);
+    actor_file.setEnabled(enabled);
+    actor_type.setEnabled(enabled);
+    submitBtn.setEnabled(enabled);
+  }
+  
+  /**
+   * Clear all input fields.
+   * @param highlight Should we just highlight the name instead?
+   */
+  protected void clearInterface(boolean highlight) {
+    if(highlight) {
+      actor_name.selectAll();
+    }
+    else {
+      actor_name.setText("");
+    }
+    // Cannot reset a file widget :(
   }
   
   /**
@@ -159,6 +188,9 @@ public class UploadActorWidget extends Composite implements ManagerChangeHandler
       SingleActorManager aMan = man.getActorManager(actor);
       addActorToTable(aMan.getName(), aMan.getDownloadURL(), aMan.getType());
     }
+    
+    setEnabled(true);
+    clearInterface(false);
   }
   
   /**
