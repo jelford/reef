@@ -10,6 +10,7 @@ import com.google.gwt.core.client.JsArrayString;
  */
 public class Group {
   private Set<String> workloads;
+  private Set<String> sue_components;
   private final String name;
   private int size;
   
@@ -23,6 +24,7 @@ public class Group {
     this.name = name;
     this.size = size;
     this.workloads = new HashSet<String>();
+    this.sue_components = new HashSet<String>();
   }
   
   /**
@@ -38,6 +40,12 @@ public class Group {
     this.workloads = new HashSet<String>();
     for(int i=0; i<nWorkloads.length(); i++) {
       this.workloads.add(nWorkloads.get(i));
+    }
+    
+    JsArrayString nSueComponents = overlay.getSueComponents();
+    this.sue_components = new HashSet<String>();
+    for (int i=0; i<nSueComponents.length(); i++) {
+      this.sue_components.add(nSueComponents.get(i));
     }
   }
   
@@ -72,11 +80,39 @@ public class Group {
    * Get an array of all workloads.
    * This array does not hold any references to the data in the array.
    * Hence it can be edited.
-   * @return An array of workloads.
+   * @return An array of workload names.
    */
   public String[] getWorkloads() {
     String[] workloadArray = new String[workloads.size()];
     return workloads.toArray(workloadArray);
+  }
+  
+  /**
+   * Add a SUE component to the group.
+   * @param sc The name of the SueComponent to add
+   * @return {@code true} iff the SueComponent is newly added.
+   */
+  public boolean addSueComponent(String sc) {
+    return sue_components.add(sc);
+  }
+  
+  /**
+   * Remove a SUE component from the group
+   * @param sc The name of the SueComponent to remove
+   * @return {@code true} iff the component used to be attached to this group.
+   */
+  public boolean remSueComponent(String sc) {
+    return sue_components.remove(sc);
+  }
+  
+  /**
+   * Get an array of all the SueComponents.
+   * This array does not hold any references to the data in the array.
+   * @return An array of SueComponent names.
+   */
+  public String[] getSueComponents() {
+    String [] sueComponentArray = new String[sue_components.size()];
+    return sue_components.toArray(sueComponentArray);
   }
   
   /**

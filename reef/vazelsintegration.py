@@ -43,14 +43,17 @@ def _applyWorkloadsAndActors():
     # Scan through each group and apply its workloads/actors in turn
     for group in groups:
         grp_num = groups[group]["group_number"]
+        
         actors = set()
         for wkld in groups[group]["workloads"]:
-            if wkld != "SUE":
-                _applyWorkload(workloads[wkld]["file"], grp_num)
+            _applyWorkload(workloads[wkld]["file"], grp_num)
             actors.update(workloads[wkld]["actors"])
-
         _extractActors(grp_num, actors)
 
+        sue_components = set()
+        for sueComp in groups[group]["sue_components"]:
+            sue_components.update(sueComp)
+        _extractSueComponents(grp_num, sue_components)
   
 def _applyWorkload(workload, group_number):
     """
@@ -95,9 +98,31 @@ def _extractActors(group_number, actors):
         )
 
         actorTGZ = tarfile.open(actor['file'],'r:gz')
-        if type is "SUE":
-            extractpath = os.path.join(extractpath, "SUE")
-        else:
-            extractpath = os.path.join(extractpath, "Vazels", type+"_launcher")
+        extractpath = os.path.join(extractpath, "Vazels", type+"_launcher")
 
         actorTGZ.extractall(path=extractpath)
+
+def _extractSueComponents(group_number, sueComps):
+    """
+    Extract SUE components into the appropriate directories.
+    
+    :param group_number: The number of the group to extract into.
+    :type group_number: ``int``
+    :param sueComps: The set of names of Sue Componenets to extract.
+    :type sueComps: ``set(str)``
+    
+    """
+    
+    experiment_dir = config.getSettings('command_centre')['experiment_dir']
+    
+    for sueComp_name in sueComps:
+        sueCompFile = config.getSettings('SUE')['defs'][sueComp_name]['file']
+    
+        extractpath = os.path.join(
+            controlcentre.getExperimentPath(),
+            "Group_"+str(group_number),
+            "SUE"
+        )
+        
+        sueCompTGZ = tarfile.open(sueCompFile,'r:gz')
+        sueCompTGZ.extractall(path=extractpath)

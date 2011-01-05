@@ -88,6 +88,34 @@ public class SingleGroupManager extends SingleTypeManager<Group> implements Dele
     return group.getWorkloads();
   }
   
+  /**
+   * Add SueComponent to the group.
+   * @param sc The name of the workload to add
+   * @return {@code true} iff the SueComponent is newly added
+   */
+  public boolean addSueComponent(String sc) {
+    change();
+    return group.addSueComponent(sc);
+  }
+  
+  /**
+   * Remove SueComponent from the group
+   * @param sc The name of the SueComponent to remove
+   * @return {@code true} iff the SueComponent used to be attached to this group.
+   */
+  public boolean remSueComponent(String sc) {
+    change();
+    return group.remSueComponent(sc);
+  }
+  
+  /**
+   * Get a list SueComponents attached to this group.
+   * @return A list of the names of the SueComponents attached to the group.
+   */
+  public String[] getSueComponents() {
+    return group.getSueComponents();
+  }
+  
   // Data processing
   
   @Override
@@ -122,11 +150,23 @@ public class SingleGroupManager extends SingleTypeManager<Group> implements Dele
 
     @Override
     protected QueryArg[] getArgs() {
-      QueryArg[] args = new QueryArg[1+getWorkloads().length];
+      final String [] workloads = getWorkloads();
+      final String [] sueComponents = getSueComponents();
+      QueryArg[] args = new QueryArg[1+workloads.length+sueComponents.length];
+      
+      /*
+       *  Wow, we're really going to hand-build an array by keeping an index
+       *  count?
+       *  @TODO: Refactor this into a List implementation.
+       */
       args[0] = new QueryArg("size", Integer.toString(getSize()));
       int index = 1;
-      for(String wkld : getWorkloads()) {
+      for(String wkld : workloads) {
         args[index] = new QueryArg("workloads", wkld);
+        index++;
+      }
+      for (String sueComp : sueComponents) {
+        args[index] = new QueryArg("sue_components", sueComp);
         index++;
       }
       return args;
