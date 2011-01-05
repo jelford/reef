@@ -10,28 +10,44 @@ import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
 import uk.ac.imperial.vazels.reef.client.managers.PullCallback;
 import uk.ac.imperial.vazels.reef.client.managers.PushCallback;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /* A class to allow the assigning of workloads to groups
  * 
  */
 public class WorkloadGroupsWidget extends Composite {
-
+  /**
+   * Generated code - gives us an interface to the XML-defined UI.
+   */
+  private static WorkloadGroupsWidgetUiBinder uiBinder = GWT
+    .create(WorkloadGroupsWidgetUiBinder.class);
+  
+  /**
+   * Generated code. 
+   */
+  interface WorkloadGroupsWidgetUiBinder extends UiBinder<Widget, WorkloadGroupsWidget> {
+  }
+  
   //wkldsBox is list of workloads
   //groupsBox is list of groups
   //attachedWklds is list of workloads attached to currently shown group
-  ListBox wkldsBox, groupsBox, attachedWklds;
+  @UiField ListBox wkldsBox;
+  @UiField ListBox groupsBox;
+  @UiField ListBox attachedWklds;
 
   public WorkloadGroupsWidget() {
+    initWidget(uiBinder.createAndBindUi(this));
+    
     initPanel();
     
     //obtain current groups to put in a ListBox
@@ -64,12 +80,6 @@ public class WorkloadGroupsWidget extends Composite {
    * Initialises widget, initialises the 3 ListBox objects and submit button.
    */
   void initPanel() {
-    VerticalPanel assignmentTab = new VerticalPanel();
-    initWidget(assignmentTab);
-
-    //display list of groups
-    assignmentTab.add(new Label("Groups: "));
-    groupsBox = new ListBox();
     //on event of change to groups, update list of groups
     GroupManager.getManager().addChangeHandler(new ManagerChangeHandler() {
       @Override
@@ -86,11 +96,7 @@ public class WorkloadGroupsWidget extends Composite {
       }
     });
 
-    assignmentTab.add(groupsBox);
-
     //display list of workloads
-    assignmentTab.add(new Label("Select a workload to assign:"));
-    wkldsBox = new ListBox();
     //note: handler only required if expect workloads to change after widget loads
     WorkloadManager.getManager().addChangeHandler(new ManagerChangeHandler() {
       @Override
@@ -98,20 +104,11 @@ public class WorkloadGroupsWidget extends Composite {
         updateWkldsBox();
       }
     });
-    assignmentTab.add(wkldsBox);
-
-    //display list of currently attached workloads
-    assignmentTab.add(new Label("Workloads currently attached to selected group:"));
-    attachedWklds = new ListBox();
-    assignmentTab.add(attachedWklds);
-
-    //submit button to add selected workload to selected group
-    Button submitWtoG = new Button ("Submit", new ClickHandler() {
-      public void onClick(ClickEvent event) {
-        addWorkload();
-      }
-    });
-    assignmentTab.add(submitWtoG);
+  }
+  
+  @UiHandler("submitWtoG")
+  void onClick(ClickEvent event) {
+    addWorkload();
   }
 
   //update the groups box using list of groups from server, possibly only needed once each time widget runs

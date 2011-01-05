@@ -1,0 +1,16 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:style field="useful" src="../ui/useful.css"/>
+
+	<g:VerticalPanel>
+		<g:Label text="Groups: " />
+		<g:ListBox ui:field="groupsBox" />
+		<g:Label text="Select a workload to assign:" />
+		<g:ListBox ui:field="wkldsBox" />
+		<g:Label text="Workloads currently attached to selected group:"/>
+		<g:ListBox ui:field="attachedWklds" />
+		<g:Button ui:field="submitWtoG" />
+	</g:VerticalPanel>
+</ui:UiBinder> 
