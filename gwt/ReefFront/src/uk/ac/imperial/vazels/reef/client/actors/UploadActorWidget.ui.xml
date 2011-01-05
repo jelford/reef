@@ -11,8 +11,7 @@
 			<g:Label text="Actor name: " />
 			<g:TextBox ui:field="actor_name" name="actor_name" text="" />
 			<g:Label text="Actor type: " />
-			<g:ListBox ui:field="actorLanguage" />
-			<g:TextBox ui:field="actorLang" name="actor_type" visible="false" />
+			<g:ListBox ui:field="actorLanguage" name="actor_type" />
 			<g:Label text="Previously uploaded actors"/>
 			<g:ListBox ui:field="actorList"/>
 			<g:Button ui:field="button" text="Submit" />

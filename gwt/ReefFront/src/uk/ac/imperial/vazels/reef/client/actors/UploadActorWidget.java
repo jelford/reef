@@ -16,7 +16,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
-import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -35,7 +34,6 @@ public class UploadActorWidget extends Composite {
   
   @UiField FormPanel formPanel;
   @UiField ListBox actorLanguage;
-  @UiField TextBox actorLang;
   @UiField TextBox actor_name;
   @UiField ListBox actorList;
 
@@ -53,13 +51,6 @@ public class UploadActorWidget extends Composite {
     //maybe create a listener that automatically puts filename as the name (actor_name)
     
     populateActorList();
-  }
-
-  //for server, create TextBox for data from ListBox
-  //set this TextBox to have ListBox data onSubmit
-  @UiHandler("formPanel")
-  public void onSubmit(SubmitEvent event) {
-    actorLang.setText(actorLanguage.getValue(actorLanguage.getSelectedIndex()));
   }
   
   //tell manager that actor has been uploaded and add new item to onscreen list of actors
