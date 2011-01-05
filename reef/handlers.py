@@ -19,7 +19,7 @@ from handler.control_handler import ControlHandler, StartHandler, StopHandler, G
 from handler.groups import GroupHandler, GroupBatchHandler
 from handler.status import StatusHandler
 from handler.output_full import OutputFullHandler
-from handler.probe import probe_handler
+from handler.probe import ProbeHandler
 
 '''
 This module is responsible for routing the different possible paths to their
@@ -40,7 +40,7 @@ def getRouting():
         #(r'GET,POST /settings$', 'GET,POST /settings/'),
         #(r'GET,POST /settings/', SettingsEditor().getHandler()),
         (r'GET /status$', StatusHandler().getHandler()),
-        (r'GET /probe.tar.gz$', probe_handler),
+        (r'GET /probe.tar.gz$', ProbeHandler().getHandler()),
         (r'GET,POST /actors$', 'GET,POST /actors/'),
         (r'GET,POST /actors/', ActorsHandler().getHandler()),
         (r'POST /actorassign$', 'POST /actorassign/'),
