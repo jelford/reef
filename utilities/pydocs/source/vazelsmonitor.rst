@@ -1,4 +1,0 @@
-``vazelsmonitor`` Module
-========================
-
-.. automodule:: vazelsmonitor

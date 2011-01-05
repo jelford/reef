@@ -10,9 +10,9 @@ You are in the section dealing with the other systems.
 .. toctree::
    :maxdepth: 1
    
-   asyncPopen.rst
    pbparser.rst
+   controlcentre.rst
+   commandclient.rst
+   vazelsintegration.rst
    softwaregrabber.rst
-   vazelsmanager.rst
-   vazelsmonitor.rst
    vOutput_pb2.rst

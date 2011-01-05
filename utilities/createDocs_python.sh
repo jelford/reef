@@ -22,6 +22,7 @@ echo "Clearing the sphinx build directory..."
 cd pydocs
 make clean &> /dev/null
 echo "and filling it with the new docs..."
+mkdir source/_static &> /dev/null # To avoid error
 make html 2> ../pydocs.out
 echo "Now checking for documentation coverage."
 make coverage &> /dev/null

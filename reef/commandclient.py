@@ -18,7 +18,7 @@ experiment_running_state = None
 """
 Experiment state - to remember whether the experiment has started.
 
-Valid values: ``None``, ``Statuses["STATUS_EXPERIMENT_STARTED"]
+Valid values: ``None``, ``Statuses["STATUS_EXPERIMENT_STARTED"]``
 """
 
 
@@ -227,9 +227,9 @@ def issueControlCentreCommand(command, args=[], extraargs=[], afterwards=None):
 
     :param command: The command to run.
     :type command: ``str``
-    :param args: List of arguments to the command.
+    :param args: List of arguments to the command. (optional)
     :type args: ``list(str)``
-    :param extraargs: Arguments to the script, i.e. those beginning with "--".
+    :param extraargs: Arguments to the script, i.e. those beginning with "--". (optional)
     :type extraargs: ``dict``
     :param afterwards: The function to run afterwards (optional).
     :type afterwards: ``func``, takes the output file as a parameter. 
