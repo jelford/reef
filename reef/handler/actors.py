@@ -84,6 +84,7 @@ class ActorsHandler(DocHandler):
         :param actor_type: The type of the actor. This should be one of the
                            values in :data:`ALLOWED_TYPES`.
         :type actor_type: ``str``
+        :returns: The name of the modified actor.
         :raises: :exc:`restlite.Status` 400 if the data cannot be parsed.
 
                  :exc:`restlite.Status` 400 if any of the parameters are
@@ -132,7 +133,7 @@ class ActorsHandler(DocHandler):
             raise restlite.Status, "400 No Actor Supplied"
 
         self.saveActor(actorname, actortype, actor)
-        return request.response("", "text/plain")
+        return request.response(actorname, "text/plain")
 
 
     def showActorFile(self, request, actorname):
