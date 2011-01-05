@@ -103,7 +103,7 @@ public class UploadActorWidget extends Composite implements ManagerChangeHandler
    */
   @UiHandler("submitBtn")
   void onClick(ClickEvent event) {
-    if(validateActorName(actor_name.getText())) {
+    if(validateActorName(actor_name.getText()) && validateActorFile(actor_file.getFilename())) {
       formPanel.submit();
       setEnabled(false); // will be reenabled when the interface is updated.
     }
@@ -121,15 +121,30 @@ public class UploadActorWidget extends Composite implements ManagerChangeHandler
     String name = actorName.trim();
     
     if(ActorManager.getManager().getNames().contains(name)) {
-      Window.alert("You already have a group named '"+actorName+"'.");
+      Window.alert("You already have a group named '"+name+"'.");
       return false;
     }
-    else if(name.matches("^[0-9A-Za-z]{1,}$")) {
+    else if(!name.matches("^[0-9A-Za-z]{1,}$")) {
       Window.alert("Actor names must be alphanumeric.");
       return false;
     }
     
     return true;
+  }
+  
+  /**
+   * Validate the filename of an actor file.
+   * @param file The file name.
+   * @return Whether the filename is valid.
+   */
+  private boolean validateActorFile(String file) {
+    if(file.endsWith(".tar.gz")) {
+      return true;
+    }
+    else {
+      Window.alert("Actor files must be .tar.gz files.");
+      return false;
+    }
   }
   
   /**
@@ -204,7 +219,7 @@ public class UploadActorWidget extends Composite implements ManagerChangeHandler
   private void addActorToTable(final String name, final String url, final String type) {
     int row = actorTable.getRowCount()-1;
     actorTable.insertRow(row);
-    // Add the group to the table.
+    // Add the actor to the table.
     actorTable.setText(row, 0, name);
     
     Button download = new Button("Download");
