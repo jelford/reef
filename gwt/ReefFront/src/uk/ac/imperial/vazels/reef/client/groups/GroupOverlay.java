@@ -32,4 +32,8 @@ public class GroupOverlay extends JavaScriptObject{
   public native final JsArrayString getWorkloads() /*-{
     return this.workloads;
   }-*/;
+  
+  public native final JsArrayString getSueComponents() /*-{
+    return this.sue_components;
+  }-*/;
 }
