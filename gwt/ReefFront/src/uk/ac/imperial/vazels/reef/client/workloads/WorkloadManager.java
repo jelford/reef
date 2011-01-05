@@ -8,6 +8,9 @@ import uk.ac.imperial.vazels.reef.client.MultipleRequester;
 import uk.ac.imperial.vazels.reef.client.managers.JsArrayStringSetConverter;
 import uk.ac.imperial.vazels.reef.client.managers.ListedCollectionManager;
 
+/**
+ * Manages the set of all the workloads on the server.
+ */
 public class WorkloadManager extends ListedCollectionManager<String, SingleWorkloadManager> {
   private static WorkloadManager manager = null;
   
@@ -56,6 +59,9 @@ public class WorkloadManager extends ListedCollectionManager<String, SingleWorkl
     return new SingleWorkloadManager(id);
   }
   
+  /**
+   * Request builder to fetch data about all the available workloads.
+   */
   private class WorkloadPuller extends MultipleRequester<Set<String>> {
     public WorkloadPuller() {
       super(RequestBuilder.GET, "/workloads/", new JsArrayStringSetConverter());
