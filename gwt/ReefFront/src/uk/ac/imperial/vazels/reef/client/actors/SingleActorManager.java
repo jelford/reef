@@ -46,7 +46,7 @@ public class SingleActorManager extends Manager<Actor, Void> {
    * @return A URL pointing to the file to download.
    */
   public String getDownloadURL() {
-    return new AddressResolution().resolve("/actors/"+ actor.getName() + ".tgz");
+    return new AddressResolution().resolve("/actors/"+ actor.getName() + ".tar.gz");
   }
   
   // Data processing
