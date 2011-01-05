@@ -1,0 +1,217 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>controlcentre Module &mdash; Reef Backend v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Reef Backend v0.1 documentation" href="index.html" />
+    <link rel="up" title="Other Modules" href="other.html" />
+    <link rel="next" title="commandclient Module" href="commandclient.html" />
+    <link rel="prev" title="pbparser Module" href="pbparser.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="commandclient.html" title="commandclient Module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pbparser.html" title="pbparser Module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
+          <li><a href="other.html" accesskey="U">Other Modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-controlcentre">
+<span id="controlcentre-module"></span><h1><a class="reference internal" href="#module-controlcentre" title="controlcentre"><tt class="xref py py-mod docutils literal"><span class="pre">controlcentre</span></tt></a> Module<a class="headerlink" href="#module-controlcentre" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">synopsis:</th><td class="field-body">Interfaces with the vazels control centre.</td>
+</tr>
+</tbody>
+</table>
+<p>Not much in here. Most of the dealing (including stopping the control centre)
+is done by the command client in <a class="reference internal" href="commandclient.html#module-commandclient" title="commandclient"><tt class="xref py py-mod docutils literal"><span class="pre">commandclient</span></tt></a>.</p>
+<dl class="function">
+<dt id="controlcentre.startVazels">
+<tt class="descclassname">controlcentre.</tt><tt class="descname">startVazels</tt><big>(</big><big>)</big><a class="headerlink" href="#controlcentre.startVazels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the vazels control centre.</p>
+<p>This should also set up the tear down when the control centre closes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><tt class="xref docutils literal"><span class="pre">True</span></tt> if the control centre is still running when we exit the function.
+(i.e. nothing has gone wrong yet.)</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">bool</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controlcentre.runningState">
+<tt class="descclassname">controlcentre.</tt><tt class="descname">runningState</tt><big>(</big><big>)</big><a class="headerlink" href="#controlcentre.runningState" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check what state the vazels process is in.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><tt class="xref docutils literal"><span class="pre">True</span></tt> if the control centre is running.</li>
+<li><tt class="xref docutils literal"><span class="pre">False</span></tt> if the control centre is not running (or we don&#8217;t know its running...).</li>
+<li><tt class="xref docutils literal"><span class="pre">None</span></tt> if we are in an intermediate state.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">bool</span></tt></td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> if the vazels output could not be read.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controlcentre.getVazelsPath">
+<tt class="descclassname">controlcentre.</tt><tt class="descname">getVazelsPath</tt><big>(</big><big>)</big><a class="headerlink" href="#controlcentre.getVazelsPath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Grab the path to the vazels installation directory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">Absolute path to the vazels install directory.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">str</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controlcentre.getExperimentPath">
+<tt class="descclassname">controlcentre.</tt><tt class="descname">getExperimentPath</tt><big>(</big><big>)</big><a class="headerlink" href="#controlcentre.getExperimentPath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Grab the experiment path.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">Absolute path to the vazels experiment for this project.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">str</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controlcentre.getControlCentreOutPath">
+<tt class="descclassname">controlcentre.</tt><tt class="descname">getControlCentreOutPath</tt><big>(</big><big>)</big><a class="headerlink" href="#controlcentre.getControlCentreOutPath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Grab the control centre output file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">Absolute path to the ouput file.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">str</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pbparser.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">pbparser</span></tt> Module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="commandclient.html"
+                        title="next chapter"><tt class="docutils literal docutils literal"><span class="pre">commandclient</span></tt> Module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/controlcentre.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="commandclient.html" title="commandclient Module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pbparser.html" title="pbparser Module"
+             >previous</a> |</li>
+        <li><a href="index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
+          <li><a href="other.html" >Other Modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, James Elford, Andy Gurden, Simon Evans, Chris Dillon, Andreea Babiuc.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

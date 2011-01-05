@@ -161,7 +161,8 @@ available. The return value is a tuple containing type and value.</p>
 <dl class="class">
 <dt id="restlite.Request">
 <em class="property">class </em><tt class="descclassname">restlite.</tt><tt class="descname">Request</tt><big>(</big><em>env</em>, <em>start_response</em><big>)</big><a class="headerlink" href="#restlite.Request" title="Permalink to this definition">¶</a></dt>
-<dd><p>A request object is supplied to the resource definition in various methods: GET, PUT, POST, DELETE.
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">dict</span></tt></a></p>
+<p>A request object is supplied to the resource definition in various methods: GET, PUT, POST, DELETE.
 It is a dictionary containing env information. Additionally, all the matching attributes from the router are
 stored as properties of this object, extracted from env[&#8216;wsgiorg.routing_args&#8217;].</p>
 <dl class="method">
@@ -174,7 +175,8 @@ stored as properties of this object, extracted from env[&#8216;wsgiorg.routing_a
 <dl class="exception">
 <dt id="restlite.Status">
 <em class="property">exception </em><tt class="descclassname">restlite.</tt><tt class="descname">Status</tt><a class="headerlink" href="#restlite.Status" title="Permalink to this definition">¶</a></dt>
-<dd><p>The exception object that is used to throw HTTP response exception, e.g., raise Status, &#8216;404 Not Found&#8217;. 
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>The exception object that is used to throw HTTP response exception, e.g., raise Status, &#8216;404 Not Found&#8217;. 
 The resource definition can throw this exception.</p>
 </dd></dl>
 
@@ -217,7 +219,8 @@ then GET, PUT, POST and DELETE are implemented on that obj as
 <dl class="class">
 <dt id="restlite.Model">
 <em class="property">class </em><tt class="descclassname">restlite.</tt><tt class="descname">Model</tt><big>(</big><em>conn=None</em><big>)</big><a class="headerlink" href="#restlite.Model" title="Permalink to this definition">¶</a></dt>
-<dd><p>A data model that abstracts the SQL table creation and uses sqlite3. Instead of defining a ORM (object-relation
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">dict</span></tt></a></p>
+<p>A data model that abstracts the SQL table creation and uses sqlite3. Instead of defining a ORM (object-relation
 mapping), this just lets the application handle the SQL commands. The only convenience of this class is to allow
 creating the SQL tables using text description of the data model, define python class for each table that can
 constructed using all the values of a row of that table, and define sql and sql1 convenience methods.</p>
@@ -280,7 +283,8 @@ defines two tables, user and files. Note that the primary key of id must be defi
 <dl class="class">
 <dt id="restlite.AuthModel">
 <em class="property">class </em><tt class="descclassname">restlite.</tt><tt class="descname">AuthModel</tt><big>(</big><em>conn=None</em><big>)</big><a class="headerlink" href="#restlite.AuthModel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Authenticated Model class, which creates a database table of type user_login and uses that to provide various
+<dd><p>Bases: <a class="reference internal" href="#restlite.Model" title="restlite.Model"><tt class="xref py py-class docutils literal"><span class="pre">restlite.Model</span></tt></a></p>
+<p>Authenticated Model class, which creates a database table of type user_login and uses that to provide various
 authentication methods.</p>
 <dl class="method">
 <dt id="restlite.AuthModel.hash">

@@ -55,35 +55,124 @@
             
   <div class="section" id="module-config">
 <span id="config-module"></span><h1><tt class="docutils literal"><span class="pre">config</span></tt> Module<a class="headerlink" href="#module-config" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">synopsis:</th><td class="field-body">Simple persistent storage for the reef backend.</td>
+</tr>
+</tbody>
+</table>
+<p>This is (possibly) maldesigned as it can only be used once in any application.</p>
 <dl class="function">
 <dt id="config.getSettings">
 <tt class="descclassname">config.</tt><tt class="descname">getSettings</tt><big>(</big><em>type</em>, <em>create=True</em><big>)</big><a class="headerlink" href="#config.getSettings" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Grab the settings <tt class="docutils literal"><span class="pre">dict</span></tt> for the given type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>type</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The section (or type) of settings to grab.</li>
+<li><strong>create</strong> (<tt class="docutils literal"><span class="pre">bool</span></tt>) &#8211; If <tt class="docutils literal"><span class="pre">type</span></tt> does not exist do we create it or explode?</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A dictionary containing the settings for the given section.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><tt class="docutils literal"><span class="pre">dict</span></tt></p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">KeyError</span></tt> If the type does not exist and is not set to be created.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="config.hasSettings">
 <tt class="descclassname">config.</tt><tt class="descname">hasSettings</tt><big>(</big><em>type</em><big>)</big><a class="headerlink" href="#config.hasSettings" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Check if the given section exists in the settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>type</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The settings section.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><tt class="xref docutils literal"><span class="pre">True</span></tt> if and only if the section already exists.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">bool</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="config.getSections">
 <tt class="descclassname">config.</tt><tt class="descname">getSections</tt><big>(</big><big>)</big><a class="headerlink" href="#config.getSections" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Grab a list of currently available settings sections.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A list of settings sections.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">list</span></tt> of <tt class="docutils literal"><span class="pre">str</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="config.setConfig">
 <tt class="descclassname">config.</tt><tt class="descname">setConfig</tt><big>(</big><em>cfgpath</em><big>)</big><a class="headerlink" href="#config.setConfig" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Either load a config from the given path or create a new one there.</p>
+<p>After running this method the path will be saved for other functions
+like <a class="reference internal" href="#config.saveConfig" title="config.saveConfig"><tt class="xref py py-func docutils literal"><span class="pre">saveConfig()</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>cfgpath</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The path to the config file.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="config.saveConfig">
 <tt class="descclassname">config.</tt><tt class="descname">saveConfig</tt><big>(</big><big>)</big><a class="headerlink" href="#config.saveConfig" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Save the config file if a location has been set with <a class="reference internal" href="#config.setConfig" title="config.setConfig"><tt class="xref py py-func docutils literal"><span class="pre">setConfig()</span></tt></a>.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="config.onDisk">
 <tt class="descclassname">config.</tt><tt class="descname">onDisk</tt><big>(</big><big>)</big><a class="headerlink" href="#config.onDisk" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Check if the config is currently on the disk.</p>
+<p>This is for example if we have used <a class="reference internal" href="#config.setConfig" title="config.setConfig"><tt class="xref py py-func docutils literal"><span class="pre">setConfig()</span></tt></a> to set a file
+but do not know whether it was there before or not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><tt class="xref docutils literal"><span class="pre">True</span></tt> if and only if a location has been set and a file 
+exists there.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">bool</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 

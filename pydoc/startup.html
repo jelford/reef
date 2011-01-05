@@ -1,0 +1,260 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>startup Module &mdash; Reef Backend v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Reef Backend v0.1 documentation" href="index.html" />
+    <link rel="next" title="Server Related Modules" href="srv.html" />
+    <link rel="prev" title="Welcome to Reef Backend’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="srv.html" title="Server Related Modules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Reef Backend’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Reef Backend v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-startup">
+<span id="startup-module"></span><h1><tt class="docutils literal"><span class="pre">startup</span></tt> Module<a class="headerlink" href="#module-startup" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">synopsis:</th><td class="field-body">Entry point for the Reef server.</td>
+</tr>
+</tbody>
+</table>
+<p>To run the server execute this script. It can also be safely imported into
+other modules however there&#8217;s not much use for that other than to document the
+module.</p>
+<dl class="function">
+<dt id="startup.show_break">
+<tt class="descclassname">startup.</tt><tt class="descname">show_break</tt><big>(</big><big>)</big><a class="headerlink" href="#startup.show_break" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display a break in the text output.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="startup.windowsWarning">
+<tt class="descclassname">startup.</tt><tt class="descname">windowsWarning</tt><big>(</big><big>)</big><a class="headerlink" href="#startup.windowsWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Warn if the user is running windows and quit.</p>
+<p>Don&#8217;t even bother loading on Windows - there&#8217;s no point.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="startup.showWelcome">
+<tt class="descclassname">startup.</tt><tt class="descname">showWelcome</tt><big>(</big><big>)</big><a class="headerlink" href="#startup.showWelcome" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show a welcome message for the reef server.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="startup.getBaseDir">
+<tt class="descclassname">startup.</tt><tt class="descname">getBaseDir</tt><big>(</big><big>)</big><a class="headerlink" href="#startup.getBaseDir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the base directory (the server installation directory).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">The base directory.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">str</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="startup.getProjDir">
+<tt class="descclassname">startup.</tt><tt class="descname">getProjDir</tt><big>(</big><big>)</big><a class="headerlink" href="#startup.getProjDir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the project directory (the directory we run from).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">The project directory.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">str</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="startup.offerDirOrQuit">
+<tt class="descclassname">startup.</tt><tt class="descname">offerDirOrQuit</tt><big>(</big><em>dir</em><big>)</big><a class="headerlink" href="#startup.offerDirOrQuit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Offer a particular directory as the project directory.</p>
+<p>If the user wishes to decline they can type CTRL+C to quit the application
+cleanly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dir</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The directory to offer.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="startup.setupConfig">
+<tt class="descclassname">startup.</tt><tt class="descname">setupConfig</tt><big>(</big><em>proj_dir</em>, <em>base_dir</em><big>)</big><a class="headerlink" href="#startup.setupConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup the <a class="reference internal" href="config.html#module-config" title="config"><tt class="xref py py-mod docutils literal"><span class="pre">config</span></tt></a> module using the config file that will be or is in
+the project directory.</p>
+<p>The project and base directories will only be stored if the config is new.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>proj_dir</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The absolute path to the project directory.</li>
+<li><strong>base_dir</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The absolute path to the base (server installation) 
+directory.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><tt class="xref docutils literal"><span class="pre">True</span></tt> if there was not an existing config file. (i.e. this was
+a new configuration.)</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">bool</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="startup.setupSecurity">
+<tt class="descclassname">startup.</tt><tt class="descname">setupSecurity</tt><big>(</big><big>)</big><a class="headerlink" href="#startup.setupSecurity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up SSH security ready for Vazels to play with.</p>
+<p>This should be run after any config setup as a module it imports defines a
+number of <a class="reference internal" href="config.html#module-config" title="config"><tt class="xref py py-mod docutils literal"><span class="pre">config</span></tt></a> defaults and it plays with the configuration itself.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="startup.setupAuthentication">
+<tt class="descclassname">startup.</tt><tt class="descname">setupAuthentication</tt><big>(</big><big>)</big><a class="headerlink" href="#startup.setupAuthentication" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up <a class="reference internal" href="authentication.html#module-authentication" title="authentication"><tt class="xref py py-mod docutils literal"><span class="pre">authentication</span></tt></a> ready for the server.</p>
+<p>This should only be run after config setup is complete as one of the
+imported modules provides config defaults.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="startup.setupServer">
+<tt class="descclassname">startup.</tt><tt class="descname">setupServer</tt><big>(</big><big>)</big><a class="headerlink" href="#startup.setupServer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up the server and print relevant information.</p>
+<p>This should be called after the config is set up. It gets and sets config
+values.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="startup.finaliseConfig">
+<tt class="descclassname">startup.</tt><tt class="descname">finaliseConfig</tt><big>(</big><big>)</big><a class="headerlink" href="#startup.finaliseConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save config and ask it to save on any normal exit.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="startup.startServer">
+<tt class="descclassname">startup.</tt><tt class="descname">startServer</tt><big>(</big><big>)</big><a class="headerlink" href="#startup.startServer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the server running and allow it to close normally (with no exception).</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to Reef Backend&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="srv.html"
+                        title="next chapter">Server Related Modules</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/startup.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="srv.html" title="Server Related Modules"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Reef Backend’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">Reef Backend v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, James Elford, Andy Gurden, Simon Evans, Chris Dillon, Andreea Babiuc.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

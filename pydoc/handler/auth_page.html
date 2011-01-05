@@ -56,15 +56,105 @@
             
   <div class="section" id="module-handler.auth_page">
 <span id="handler-auth-page-module"></span><h1><tt class="docutils literal"><span class="pre">handler.auth_page</span></tt> Module<a class="headerlink" href="#module-handler.auth_page" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="handler.auth_page.getPage">
-<tt class="descclassname">handler.auth_page.</tt><tt class="descname">getPage</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#handler.auth_page.getPage" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">synopsis:</th><td class="field-body">Handles basic authenticated pages requests.</td>
+</tr>
+</tbody>
+</table>
+<dl class="data">
+<dt id="handler.auth_page.MIMETYPES">
+<tt class="descclassname">handler.auth_page.</tt><tt class="descname">MIMETYPES</tt><a class="headerlink" href="#handler.auth_page.MIMETYPES" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dictionary matching file extensions to mimetypes.</p>
+</dd></dl>
 
-<dl class="function">
-<dt id="handler.auth_page.getType">
-<tt class="descclassname">handler.auth_page.</tt><tt class="descname">getType</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#handler.auth_page.getType" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dl class="class">
+<dt id="handler.auth_page.AuthPageHandler">
+<em class="property">class </em><tt class="descclassname">handler.auth_page.</tt><tt class="descname">AuthPageHandler</tt><a class="headerlink" href="#handler.auth_page.AuthPageHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dochandler.html#handler.dochandler.DocHandler" title="handler.dochandler.DocHandler"><tt class="xref py py-class docutils literal"><span class="pre">handler.dochandler.DocHandler</span></tt></a></p>
+<p>Handles normal page requests and requires authentication from the
+requester.</p>
+<p>Authentication is dealt with by the <a class="reference internal" href="../authentication.html#module-authentication" title="authentication"><tt class="xref py py-mod docutils literal"><span class="pre">authentication</span></tt></a> module.</p>
+<dl class="method">
+<dt id="handler.auth_page.AuthPageHandler.GET">
+<tt class="descname">GET</tt><big>(</big><em>request</em><big>)</big><a class="headerlink" href="#handler.auth_page.AuthPageHandler.GET" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a particular page.</p>
+<p>The handler will take anything after the base address and look for it
+in the pages folder. This folder is stored in the <a class="reference internal" href="../config.html#module-config" title="config"><tt class="xref py py-mod docutils literal"><span class="pre">config</span></tt></a> module
+at:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">config</span><span class="o">.</span><span class="n">getSettings</span><span class="p">(</span><span class="s">&quot;server&quot;</span><span class="p">)[</span><span class="s">&quot;pagedir&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>If a file is not found the handler will assume the address is a
+directory and try to serve the file index.html from it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The requested file.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 400 if the path contains &#8221;..&#8221;</p>
+<p class="last"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 404 if the file is not found.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="handler.auth_page.AuthPageHandler.getPage">
+<tt class="descname">getPage</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#handler.auth_page.AuthPageHandler.getPage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Try to get the contents of a text file at <tt class="docutils literal"><span class="pre">path</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The absolute path of the file to read.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The contents of the file.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><tt class="docutils literal"><span class="pre">str</span></tt></p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 404 if the file is not found.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="handler.auth_page.AuthPageHandler.getType">
+<tt class="descname">getType</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#handler.auth_page.AuthPageHandler.getType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Work out the mimetype of the file given.</p>
+<p>This is looked up in <a class="reference internal" href="#handler.auth_page.MIMETYPES" title="handler.auth_page.MIMETYPES"><tt class="xref py py-data docutils literal"><span class="pre">MIMETYPES</span></tt></a> but defaults to <tt class="docutils literal"><span class="pre">&quot;text/plain&quot;</span></tt></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The path of the file. (We really only need the filename)</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The mimetype of the file.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">str</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
 
 </div>
 

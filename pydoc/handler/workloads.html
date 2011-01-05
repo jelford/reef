@@ -45,7 +45,7 @@
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
           <li><a href="../srv.html" >Server Related Modules</a> &raquo;</li>
-          <li><a href="../handler.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">handler</span></tt> Module</a> &raquo;</li> 
+          <li><a href="../handler.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">handler</span></tt> Module</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -56,20 +56,175 @@
             
   <div class="section" id="module-handler.workloads">
 <span id="handler-workloads-module"></span><h1><tt class="docutils literal"><span class="pre">handler.workloads</span></tt> Module<a class="headerlink" href="#module-handler.workloads" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">synopsis:</th><td class="field-body">Deals with most workload-related requests.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="handler.workloads.WorkloadHandler">
+<em class="property">class </em><tt class="descclassname">handler.workloads.</tt><tt class="descname">WorkloadHandler</tt><a class="headerlink" href="#handler.workloads.WorkloadHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dochandler.html#handler.dochandler.DocHandler" title="handler.dochandler.DocHandler"><tt class="xref py py-class docutils literal"><span class="pre">handler.dochandler.DocHandler</span></tt></a></p>
+<p>Handles workload related requests.</p>
+<dl class="method">
+<dt id="handler.workloads.WorkloadHandler.GET">
+<tt class="descname">GET</tt><big>(</big><em>request</em><big>)</big><a class="headerlink" href="#handler.workloads.WorkloadHandler.GET" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get either a list of workloads or details of a specific workload.</p>
+<p>If the base address of this handlers is called:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A list of workloads currently uploaded to the server.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">list(str)</span></tt></td>
+</tr>
+</tbody>
+</table>
+<p>If more than the base is called, the extra chunk of the address
+is assumed to be the name of the workload you are requesting and:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">The JSON representation of the current data for the
+requested workload.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">json</span></tt></td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 404 if the requested workload does not
+exist.</td>
+</tr>
+</tbody>
+</table>
+<p>Actually if there is more requested than the base address <strong>and</strong> the
+requested address ends in &#8216;.wkld&#8217; then we are requesting the file for
+the workload specified before the suffix. In this case:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The workload file for the requested workload.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><tt class="docutils literal"><span class="pre">text/plain</span></tt></p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 404 if the workload is not found.</p>
+<p><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 410 if the recorded file is missing
+from its expected location.</p>
+<p class="last"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 500 if the file is in the location
+expected but cannot be read.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="handler.workloads.WorkloadHandler.POST">
+<tt class="descname">POST</tt><big>(</big><em>request</em>, <em>entity</em><big>)</big><a class="headerlink" href="#handler.workloads.WorkloadHandler.POST" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new or update an existing workload.</p>
+<p>Anything requested after the base address of this handler is assumed to
+be the workload name. This is expected to be called at the base address
+of this handler with multipart form data encoding.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>wkld_name</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The name of the workload being modified.</li>
+<li><strong>wkld_file</strong> (<em>As POSTed from a HTML file upload form.</em>) &#8211; The workload file being uploaded.</li>
+<li><strong>wkld_text</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; Actual text for the workload being uploaded.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Only one of <tt class="docutils literal"><span class="pre">wkld_file</span></tt> or <tt class="docutils literal"><span class="pre">wkld_text</span></tt> have to be given. If both are
+received then the text will take priority.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The name of the modifed workload.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 400 if the entity could not be parsed.</p>
+<p><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 403 if editing of workload is not
+permitted and you have tried to reuse a name.</p>
+<p class="last"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 400 if valid workload content could
+not be found.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="function">
 <dt id="handler.workloads.parseMultipart">
 <tt class="descclassname">handler.workloads.</tt><tt class="descname">parseMultipart</tt><big>(</big><em>request</em>, <em>entity</em><big>)</big><a class="headerlink" href="#handler.workloads.parseMultipart" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Try to parse a POST entity encoded as multipart form data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>request</strong> (<a class="reference internal" href="../restlite.html#restlite.Request" title="restlite.Request"><tt class="xref py py-class docutils literal"><span class="pre">restlite.Request</span></tt></a>) &#8211; The request data that the entity arrived with.</li>
+<li><strong>entity</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The POST entity to parse.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The parsed version of the entity, or <tt class="xref docutils literal"><span class="pre">None</span></tt> if it cannot be
+parsed.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/cgi.html#module-cgi" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">cgi</span></tt></a> <tt class="docutils literal"><span class="pre">.FieldStorage</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="handler.workloads.saveWorkload">
 <tt class="descclassname">handler.workloads.</tt><tt class="descname">saveWorkload</tt><big>(</big><em>name</em>, <em>content</em><big>)</big><a class="headerlink" href="#handler.workloads.saveWorkload" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Save a workload to a new file and add it to the naming list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The name of the workload to save.</li>
+<li><strong>content</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The content to place in the workload file.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="handler.workloads.ensureDir">
 <tt class="descclassname">handler.workloads.</tt><tt class="descname">ensureDir</tt><big>(</big><em>dir</em><big>)</big><a class="headerlink" href="#handler.workloads.ensureDir" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Make sure a directory exists.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dir</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The path to the directory we are ensuring exists.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 
@@ -124,7 +279,7 @@
              >previous</a> |</li>
         <li><a href="../index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
           <li><a href="../srv.html" >Server Related Modules</a> &raquo;</li>
-          <li><a href="../handler.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">handler</span></tt> Module</a> &raquo;</li> 
+          <li><a href="../handler.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">handler</span></tt> Module</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

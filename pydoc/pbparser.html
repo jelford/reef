@@ -1,0 +1,214 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pbparser Module &mdash; Reef Backend v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Reef Backend v0.1 documentation" href="index.html" />
+    <link rel="up" title="Other Modules" href="other.html" />
+    <link rel="next" title="controlcentre Module" href="controlcentre.html" />
+    <link rel="prev" title="Other Modules" href="other.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="controlcentre.html" title="controlcentre Module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="other.html" title="Other Modules"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
+          <li><a href="other.html" accesskey="U">Other Modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pbparser">
+<span id="pbparser-module"></span><h1><tt class="docutils literal"><span class="pre">pbparser</span></tt> Module<a class="headerlink" href="#module-pbparser" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">synopsis:</th><td class="field-body">Parsing functions for protocol buffers.</td>
+</tr>
+</tbody>
+</table>
+<p>This is created to be our interface to the google-generated parser scripts in
+<a class="reference internal" href="vOutput_pb2.html#module-vOutput_pb2" title="vOutput_pb2"><tt class="xref py py-mod docutils literal"><span class="pre">vOutput_pb2</span></tt></a>.</p>
+<p>Any required libraries are stored with reef (in the <tt class="xref py py-mod docutils literal"><span class="pre">google</span></tt> module).</p>
+<dl class="function">
+<dt id="pbparser.scan_output">
+<tt class="descclassname">pbparser.</tt><tt class="descname">scan_output</tt><big>(</big><em>path_to_output</em><big>)</big><a class="headerlink" href="#pbparser.scan_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse output from a vazels experiment.</p>
+<p>This is the main entry point to the scanner.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path_to_output</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The path to an <strong>existing</strong> Output_Folder inside a
+vazels experiment directory.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A dictionary with the same hierarchy structure as Vazels
+outputs into the Output_Folder or <tt class="xref docutils literal"><span class="pre">None</span></tt> if there was an error.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">dict</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>If you do not provide the path to an Output_Folder, bad things might
+happen.</p>
+<div class="admonition-todo admonition " id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Check for specific types of failures.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="pbparser.scan_output_helper">
+<tt class="descclassname">pbparser.</tt><tt class="descname">scan_output_helper</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#pbparser.scan_output_helper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the Output_Folder from a Vazels experiment.</p>
+<p>This will recursively scan down through the directories looking for the
+files at the bottom, continually building dictionaries as it goes
+to store each layer in. Uses the current folder&#8217;s name as the key for
+the dictionary. This ensures keys will not clash.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; Path to the Output_Folder from a Vazels experiment.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A nested dictionary containing the experiment data.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><tt class="docutils literal"><span class="pre">dict</span></tt></p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last">Absolutely anything - all exceptions are left to propagate.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pbparser.process_file">
+<tt class="descclassname">pbparser.</tt><tt class="descname">process_file</tt><big>(</big><em>filepath</em><big>)</big><a class="headerlink" href="#pbparser.process_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a dictionary containing useable data from a buffered protocol file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filepath</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; Path to the protobuf file.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A dictionary containing the data represented by the protobuf file.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">dict</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="other.html"
+                        title="previous chapter">Other Modules</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="controlcentre.html"
+                        title="next chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">controlcentre</span></tt> Module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/pbparser.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="controlcentre.html" title="controlcentre Module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="other.html" title="Other Modules"
+             >previous</a> |</li>
+        <li><a href="index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
+          <li><a href="other.html" >Other Modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, James Elford, Andy Gurden, Simon Evans, Chris Dillon, Andreea Babiuc.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

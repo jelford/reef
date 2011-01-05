@@ -25,7 +25,7 @@
     <link rel="top" title="Reef Backend v0.1 documentation" href="../index.html" />
     <link rel="up" title="handler Module" href="../handler.html" />
     <link rel="next" title="handler.status Module" href="status.html" />
-    <link rel="prev" title="handler.output_full Module" href="output_full.html" /> 
+    <link rel="prev" title="handler.probe Module" href="probe.html" /> 
   </head>
   <body>
     <div class="related">
@@ -41,11 +41,11 @@
           <a href="status.html" title="handler.status Module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="output_full.html" title="handler.output_full Module"
+          <a href="probe.html" title="handler.probe Module"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
           <li><a href="../srv.html" >Server Related Modules</a> &raquo;</li>
-          <li><a href="../handler.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">handler</span></tt> Module</a> &raquo;</li> 
+          <li><a href="../handler.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">handler</span></tt> Module</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -56,20 +56,190 @@
             
   <div class="section" id="module-handler.settings">
 <span id="handler-settings-module"></span><h1><tt class="docutils literal"><span class="pre">handler.settings</span></tt> Module<a class="headerlink" href="#module-handler.settings" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">synopsis:</th><td class="field-body">Quick and easy way to manage simple settings.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="handler.settings.SettingsEditor">
+<em class="property">class </em><tt class="descclassname">handler.settings.</tt><tt class="descname">SettingsEditor</tt><a class="headerlink" href="#handler.settings.SettingsEditor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dochandler.html#handler.dochandler.DocHandler" title="handler.dochandler.DocHandler"><tt class="xref py py-class docutils literal"><span class="pre">handler.dochandler.DocHandler</span></tt></a></p>
+<p>Deals with any getting and setting of config files.</p>
+<p>Unfortunately this does not deal with validation or anything other than
+<tt class="docutils literal"><span class="pre">str</span></tt>, <tt class="docutils literal"><span class="pre">int</span></tt> or <tt class="docutils literal"><span class="pre">float</span></tt> variables. This is why it&#8217;s not really
+used anywhere in the application.</p>
+<dl class="method">
+<dt id="handler.settings.SettingsEditor.GET">
+<tt class="descname">GET</tt><big>(</big><em>request</em><big>)</big><a class="headerlink" href="#handler.settings.SettingsEditor.GET" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get setting data from the <a class="reference internal" href="../config.html#module-config" title="config"><tt class="xref py py-mod docutils literal"><span class="pre">config</span></tt></a>.</p>
+<p>Parameters are expected to be part of the query string.</p>
+<p>If the base of this address handler is called:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A list of sections in the <a class="reference internal" href="../config.html#module-config" title="config"><tt class="xref py py-mod docutils literal"><span class="pre">config</span></tt></a></td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">list</span></tt></td>
+</tr>
+</tbody>
+</table>
+<p>If anything more than the base of this handler is called then the
+excess is assumed to be a section name and:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A JSON representation of that particular section of the 
+<a class="reference internal" href="../config.html#module-config" title="config"><tt class="xref py py-mod docutils literal"><span class="pre">config</span></tt></a>.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">json</span></tt></td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 404 if the section does not exist.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="handler.settings.SettingsEditor.POST">
+<tt class="descname">POST</tt><big>(</big><em>request</em>, <em>entity</em><big>)</big><a class="headerlink" href="#handler.settings.SettingsEditor.POST" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update a section of the settings.</p>
+<p>Any part of the requested address after the handler&#8217;s base address will
+be taken as a section name inside the settings. Any parameters are
+assumed to be in the POST entity and url encoded.</p>
+<p>A request can take any number of the following parameters:</p>
+<p>To set a setting:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>&lt;setname&gt;_&lt;type&gt;</strong> &#8211; The value to set this setting to.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>where <tt class="docutils literal"><span class="pre">&lt;type&gt;</span></tt> is one of:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">&quot;s&quot;</span></tt> for string</li>
+<li><tt class="docutils literal"><span class="pre">&quot;i&quot;</span></tt> for integer</li>
+<li><tt class="docutils literal"><span class="pre">&quot;d&quot;</span></tt> for double</li>
+</ul>
+<p>and <tt class="docutils literal"><span class="pre">&lt;setname&gt;</span></tt> is the name of the setting to set.</p>
+<p>To remove a setting:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>&lt;setname&gt;_r</strong> &#8211; No value</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Only the first occurence of each <tt class="docutils literal"><span class="pre">&lt;setname&gt;</span></tt> is observed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">JSON representation of the settings section.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><tt class="docutils literal"><span class="pre">json</span></tt></p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 400 if there is a parameter with an
+invalid action in the name (the bit after the <tt class="docutils literal"><span class="pre">&quot;_&quot;</span></tt>).</p>
+<p class="last"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 400 if the value of a parameter cannot
+be parsed with the type given.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="function">
 <dt id="handler.settings.splitName">
 <tt class="descclassname">handler.settings.</tt><tt class="descname">splitName</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#handler.settings.splitName" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get a parameter name and a letter indicating an action.</p>
+<ul class="simple">
+<li>If name ends in _. where . is any character, return <tt class="docutils literal"><span class="pre">(name,</span> <span class="pre">func)</span></tt></li>
+<li>If there is no _ give full name as <tt class="docutils literal"><span class="pre">name</span></tt> and <tt class="xref docutils literal"><span class="pre">None</span></tt> type.</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The name of a parameter in the request.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A tuple consisting of the parameter name and action character.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">(str,</span> <span class="pre">str)</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="handler.settings.funcFor">
 <tt class="descclassname">handler.settings.</tt><tt class="descname">funcFor</tt><big>(</big><em>ext</em><big>)</big><a class="headerlink" href="#handler.settings.funcFor" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get a parse function corresponding to an action character.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ext</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The action character.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A parser function or <tt class="xref docutils literal"><span class="pre">None</span></tt> if there is not one matching.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">func</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="handler.settings.getSection">
 <tt class="descclassname">handler.settings.</tt><tt class="descname">getSection</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#handler.settings.getSection" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Pull out the section name from the path.</p>
+<p>This means anything after the first &#8220;/&#8221;.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The requested path.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A section name (possibly non-existent in the settings).</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">str</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 
@@ -80,8 +250,8 @@
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="output_full.html"
-                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">handler.output_full</span></tt> Module</a></p>
+  <p class="topless"><a href="probe.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">handler.probe</span></tt> Module</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="status.html"
                         title="next chapter"><tt class="docutils literal"><span class="pre">handler.status</span></tt> Module</a></p>
@@ -120,11 +290,11 @@
           <a href="status.html" title="handler.status Module"
              >next</a> |</li>
         <li class="right" >
-          <a href="output_full.html" title="handler.output_full Module"
+          <a href="probe.html" title="handler.probe Module"
              >previous</a> |</li>
         <li><a href="../index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
           <li><a href="../srv.html" >Server Related Modules</a> &raquo;</li>
-          <li><a href="../handler.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">handler</span></tt> Module</a> &raquo;</li> 
+          <li><a href="../handler.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">handler</span></tt> Module</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

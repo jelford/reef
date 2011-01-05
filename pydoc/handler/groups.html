@@ -45,7 +45,7 @@
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
           <li><a href="../srv.html" >Server Related Modules</a> &raquo;</li>
-          <li><a href="../handler.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">handler</span></tt> Module</a> &raquo;</li> 
+          <li><a href="../handler.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">handler</span></tt> Module</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -56,15 +56,143 @@
             
   <div class="section" id="module-handler.groups">
 <span id="handler-groups-module"></span><h1><tt class="docutils literal"><span class="pre">handler.groups</span></tt> Module<a class="headerlink" href="#module-handler.groups" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">synopsis:</th><td class="field-body">Deals with any group related requests.</td>
+</tr>
+</tbody>
+</table>
 <dl class="class">
 <dt id="handler.groups.Group">
 <em class="property">class </em><tt class="descclassname">handler.groups.</tt><tt class="descname">Group</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#handler.groups.Group" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">dict</span></tt></a></p>
+<p>A class version of the old <tt class="docutils literal"><span class="pre">dict</span></tt> representation of a group.</p>
+<p>This way Python won&#8217;t cry when we try to serialise it as JSON.</p>
+<p>We expect this class to contain the following <tt class="docutils literal"><span class="pre">dict</span></tt> attributes:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">name</span></tt> : The name of the group.</li>
+<li><tt class="docutils literal"><span class="pre">size</span></tt> : The size of the group.</li>
+<li><tt class="docutils literal"><span class="pre">workloads</span></tt> : A list of attached workloads.</li>
+<li><tt class="docutils literal"><span class="pre">filters</span></tt> : A list of relevant(?) mapping restrictions.</li>
+<li><tt class="docutils literal"><span class="pre">online_hosts</span></tt> : List of hostnames for connected hosts.</li>
+<li><tt class="docutils literal"><span class="pre">evolving_hosts</span></tt> : List of hostnames for evolving hosts.</li>
+</ul>
+</dd></dl>
+
+<dl class="class">
+<dt id="handler.groups.GroupBatchHandler">
+<em class="property">class </em><tt class="descclassname">handler.groups.</tt><tt class="descname">GroupBatchHandler</tt><a class="headerlink" href="#handler.groups.GroupBatchHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dochandler.html#handler.dochandler.DocHandler" title="handler.dochandler.DocHandler"><tt class="xref py py-class docutils literal"><span class="pre">handler.dochandler.DocHandler</span></tt></a></p>
+<p>Handles requests for general group information.</p>
+<dl class="method">
+<dt id="handler.groups.GroupBatchHandler.GET">
+<tt class="descname">GET</tt><big>(</big><em>request</em><big>)</big><a class="headerlink" href="#handler.groups.GroupBatchHandler.GET" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the list of groups on the server.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A list of groups.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">list</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="handler.groups.GroupHandler">
+<em class="property">class </em><tt class="descclassname">handler.groups.</tt><tt class="descname">GroupHandler</tt><a class="headerlink" href="#handler.groups.GroupHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dochandler.html#handler.dochandler.DocHandler" title="handler.dochandler.DocHandler"><tt class="xref py py-class docutils literal"><span class="pre">handler.dochandler.DocHandler</span></tt></a></p>
+<p>Handles requests for individual groups.</p>
+<dl class="method">
+<dt id="handler.groups.GroupHandler.GET">
+<tt class="descname">GET</tt><big>(</big><em>request</em><big>)</big><a class="headerlink" href="#handler.groups.GroupHandler.GET" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the JSON representation of a specific group.</p>
+<p>The group name is taken to be anything in the requested path after
+the base address of the handler.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">JSON representation of the requested group.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#handler.groups.Group" title="handler.groups.Group"><tt class="xref py py-class docutils literal"><span class="pre">Group</span></tt></a></td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 404 if the group requested was not
+found.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="handler.groups.GroupHandler.POST">
+<tt class="descname">POST</tt><big>(</big><em>request</em>, <em>entity</em><big>)</big><a class="headerlink" href="#handler.groups.GroupHandler.POST" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new or edit an existing group.</p>
+<p>The group name is taken to be anything in the requested path after
+the base address of the handler.</p>
+<p>Parameters are expected to be part of the POST entity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>size</strong> (<tt class="docutils literal"><span class="pre">int</span></tt>) &#8211; Group size.</li>
+<li><strong>workloads</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; Can be included any number of times, each should be
+the name of an attached workload.</li>
+<li><strong>filters</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; Can be included any number of times, each should be a
+mapping restriction.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">JSON representation of the new state of the group.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><tt class="docutils literal"><span class="pre">dict</span></tt></p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 400 if the size is invalid.</p>
+<p class="last"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 400 unrecognised parameters are
+included.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
 
 <dl class="function">
 <dt id="handler.groups.getGroupFromRank">
 <tt class="descclassname">handler.groups.</tt><tt class="descname">getGroupFromRank</tt><big>(</big><em>rank</em><big>)</big><a class="headerlink" href="#handler.groups.getGroupFromRank" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Find a group from it&#8217;s rank (given by vazels).</p>
+<p>Don&#8217;t call this during the setup phase; it doesn&#8217;t make sense!</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>rank</strong> (<tt class="docutils literal"><span class="pre">int</span></tt>) &#8211; The rank to find the group for.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The group with the given rank.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="#handler.groups.Group" title="handler.groups.Group"><tt class="xref py py-class docutils literal"><span class="pre">Group</span></tt></a></p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 404 if the group rank doesn&#8217;t exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 
@@ -119,7 +247,7 @@
              >previous</a> |</li>
         <li><a href="../index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
           <li><a href="../srv.html" >Server Related Modules</a> &raquo;</li>
-          <li><a href="../handler.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">handler</span></tt> Module</a> &raquo;</li> 
+          <li><a href="../handler.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">handler</span></tt> Module</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

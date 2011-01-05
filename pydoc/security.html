@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="Reef Backend v0.1 documentation" href="index.html" />
     <link rel="up" title="Server Related Modules" href="srv.html" />
-    <link rel="next" title="Vazels Related Modules" href="other.html" />
+    <link rel="next" title="Other Modules" href="other.html" />
     <link rel="prev" title="permanent_bits Module" href="permanent_bits.html" /> 
   </head>
   <body>
@@ -38,7 +38,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="other.html" title="Vazels Related Modules"
+          <a href="other.html" title="Other Modules"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="permanent_bits.html" title="permanent_bits Module"
@@ -55,50 +55,128 @@
             
   <div class="section" id="module-security">
 <span id="security-module"></span><h1><tt class="docutils literal"><span class="pre">security</span></tt> Module<a class="headerlink" href="#module-security" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">synopsis:</th><td class="field-body">Deals with security for the server.</td>
+</tr>
+</tbody>
+</table>
+<p>This mainly involves setting up and tearing down <strong class="program">ssh</strong> authentication used by vazels.</p>
 <dl class="function">
 <dt id="security.makeKey">
 <tt class="descclassname">security.</tt><tt class="descname">makeKey</tt><big>(</big><big>)</big><a class="headerlink" href="#security.makeKey" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Generate a new <strong class="program">ssh</strong> key to be used by vazels.</p>
+<p>This will be very insecure as Vazels requires a passwordless key.
+If you wish to inspect the generated product, it will be saved to
+the path returned by <a class="reference internal" href="#security.keyPath" title="security.keyPath"><tt class="xref py py-func docutils literal"><span class="pre">keyPath()</span></tt></a>.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="security.authoriseKey">
 <tt class="descclassname">security.</tt><tt class="descname">authoriseKey</tt><big>(</big><big>)</big><a class="headerlink" href="#security.authoriseKey" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Add our key to the <strong class="program">ssh</strong> authorized_hosts file.</p>
+<p>This will first back up the current file so we can&#8217;t damage anything too
+badly.
+This means we should be safe if we forgot to create the key as we&#8217;ll just
+receive an error message and the backup will be restored.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="security.backup">
 <tt class="descclassname">security.</tt><tt class="descname">backup</tt><big>(</big><big>)</big><a class="headerlink" href="#security.backup" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Back up the <strong class="program">ssh</strong> authorized_keys file if it is not already
+backed up.</p>
+<p>You can then fiddle about with it and restore the backup when
+you&#8217;re done using <a class="reference internal" href="#security.restore" title="security.restore"><tt class="xref py py-func docutils literal"><span class="pre">restore()</span></tt></a>.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="security.restore">
 <tt class="descclassname">security.</tt><tt class="descname">restore</tt><big>(</big><big>)</big><a class="headerlink" href="#security.restore" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Restore the backed up version of the <strong class="program">ssh</strong> authorized_hosts file if
+a backup has been created by <a class="reference internal" href="#security.backup" title="security.backup"><tt class="xref py py-func docutils literal"><span class="pre">backup()</span></tt></a>.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="security.authKeysFile">
 <tt class="descclassname">security.</tt><tt class="descname">authKeysFile</tt><big>(</big><big>)</big><a class="headerlink" href="#security.authKeysFile" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get the location of <strong class="program">ssh</strong>&#8216;s authorized_keys file.</p>
+<div class="admonition-todo admonition " id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">This is currently very naive and searches only in the
+default location. Maybe we should make this a little
+more intelligent.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">Absolute path to the <strong class="program">ssh</strong> authorized_keys file.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">str</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="security.backupFile">
 <tt class="descclassname">security.</tt><tt class="descname">backupFile</tt><big>(</big><big>)</big><a class="headerlink" href="#security.backupFile" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get the location to store or retrieve our backup file.</p>
+<p>This is used by <a class="reference internal" href="#security.backup" title="security.backup"><tt class="xref py py-func docutils literal"><span class="pre">backup()</span></tt></a> and <a class="reference internal" href="#security.restore" title="security.restore"><tt class="xref py py-func docutils literal"><span class="pre">restore()</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">Absolute path to our authorized_hosts backup file.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">str</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="security.keyPath">
 <tt class="descclassname">security.</tt><tt class="descname">keyPath</tt><big>(</big><big>)</big><a class="headerlink" href="#security.keyPath" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get the location of our generated key file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">Absolute path to our generated key file.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">str</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="security.securityDir">
 <tt class="descclassname">security.</tt><tt class="descname">securityDir</tt><big>(</big><big>)</big><a class="headerlink" href="#security.securityDir" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get the location of our security directory.</p>
+<p>This should be somewhere inside our project directory as described
+<a class="reference external" href="https://github.com/jelford/reef/wiki/Directory-Structure">here</a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">Absolute path to the security directory.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">str</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="security.ensureSecurityDir">
 <tt class="descclassname">security.</tt><tt class="descname">ensureSecurityDir</tt><big>(</big><big>)</big><a class="headerlink" href="#security.ensureSecurityDir" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Make sure the security directory exists.</p>
+</dd></dl>
 
 </div>
 
@@ -113,7 +191,7 @@
                         title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">permanent_bits</span></tt> Module</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="other.html"
-                        title="next chapter">Vazels Related Modules</a></p>
+                        title="next chapter">Other Modules</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/security.txt"
@@ -146,7 +224,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="other.html" title="Vazels Related Modules"
+          <a href="other.html" title="Other Modules"
              >next</a> |</li>
         <li class="right" >
           <a href="permanent_bits.html" title="permanent_bits Module"

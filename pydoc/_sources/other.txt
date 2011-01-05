@@ -1,5 +1,5 @@
-Vazels Related Modules
-======================
+Other Modules
+=============
 
 The python source at the base level of the server is split into two halves.
 These are the half dealing more directly with setting up the server and 
@@ -10,9 +10,9 @@ You are in the section dealing with the other systems.
 .. toctree::
    :maxdepth: 1
    
-   asyncPopen.rst
-   parser.rst
+   pbparser.rst
+   controlcentre.rst
+   commandclient.rst
+   vazelsintegration.rst
    softwaregrabber.rst
-   vazelsmanager.rst
-   vazelsmonitor.rst
    vOutput_pb2.rst

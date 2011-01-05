@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>parser Module &mdash; Reef Backend v0.1 documentation</title>
+    <title>vazelsintegration Module &mdash; Reef Backend v0.1 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -23,9 +23,9 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="Reef Backend v0.1 documentation" href="index.html" />
-    <link rel="up" title="Vazels Related Modules" href="other.html" />
+    <link rel="up" title="Other Modules" href="other.html" />
     <link rel="next" title="softwaregrabber Module" href="softwaregrabber.html" />
-    <link rel="prev" title="asyncPopen Module" href="asyncPopen.html" /> 
+    <link rel="prev" title="commandclient Module" href="commandclient.html" /> 
   </head>
   <body>
     <div class="related">
@@ -41,10 +41,10 @@
           <a href="softwaregrabber.html" title="softwaregrabber Module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="asyncPopen.html" title="asyncPopen Module"
+          <a href="commandclient.html" title="commandclient Module"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
-          <li><a href="other.html" accesskey="U">Vazels Related Modules</a> &raquo;</li> 
+          <li><a href="other.html" accesskey="U">Other Modules</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -53,22 +53,32 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-parser">
-<span id="parser-module"></span><h1><tt class="docutils literal"><span class="pre">parser</span></tt> Module<a class="headerlink" href="#module-parser" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-vazelsintegration">
+<span id="vazelsintegration-module"></span><h1><a class="reference internal" href="#module-vazelsintegration" title="vazelsintegration"><tt class="xref py py-mod docutils literal"><span class="pre">vazelsintegration</span></tt></a> Module<a class="headerlink" href="#module-vazelsintegration" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">synopsis:</th><td class="field-body">Interface between our setup and vazels.</td>
+</tr>
+</tbody>
+</table>
 <dl class="function">
-<dt id="parser.scan_output">
-<tt class="descclassname">parser.</tt><tt class="descname">scan_output</tt><big>(</big><em>path_to_output</em><big>)</big><a class="headerlink" href="#parser.scan_output" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="parser.scan_output_helper">
-<tt class="descclassname">parser.</tt><tt class="descname">scan_output_helper</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#parser.scan_output_helper" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="parser.process_file">
-<tt class="descclassname">parser.</tt><tt class="descname">process_file</tt><big>(</big><em>filepath</em><big>)</big><a class="headerlink" href="#parser.process_file" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="vazelsintegration.setupWhenReady">
+<tt class="descclassname">vazelsintegration.</tt><tt class="descname">setupWhenReady</tt><big>(</big><em>delay=3</em><big>)</big><a class="headerlink" href="#vazelsintegration.setupWhenReady" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until the control centre is running and set up all the stored configuration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>delay</strong> (<tt class="docutils literal"><span class="pre">int</span></tt>) &#8211; Seconds to wait between checking the control centre. (Optional).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 
@@ -79,14 +89,14 @@
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="asyncPopen.html"
-                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">asyncPopen</span></tt> Module</a></p>
+  <p class="topless"><a href="commandclient.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">commandclient</span></tt> Module</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="softwaregrabber.html"
-                        title="next chapter"><tt class="docutils literal"><span class="pre">softwaregrabber</span></tt> Module</a></p>
+                        title="next chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">softwaregrabber</span></tt> Module</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="_sources/parser.txt"
+    <li><a href="_sources/vazelsintegration.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" style="display: none">
@@ -119,10 +129,10 @@
           <a href="softwaregrabber.html" title="softwaregrabber Module"
              >next</a> |</li>
         <li class="right" >
-          <a href="asyncPopen.html" title="asyncPopen Module"
+          <a href="commandclient.html" title="commandclient Module"
              >previous</a> |</li>
         <li><a href="index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
-          <li><a href="other.html" >Vazels Related Modules</a> &raquo;</li> 
+          <li><a href="other.html" >Other Modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

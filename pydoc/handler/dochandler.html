@@ -1,0 +1,205 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>handler.dochandler Module &mdash; Reef Backend v0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Reef Backend v0.1 documentation" href="../index.html" />
+    <link rel="up" title="handler Module" href="../handler.html" />
+    <link rel="next" title="handler.generic Module" href="generic.html" />
+    <link rel="prev" title="handler.control_handler Module" href="control_handler.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="generic.html" title="handler.generic Module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="control_handler.html" title="handler.control_handler Module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
+          <li><a href="../srv.html" >Server Related Modules</a> &raquo;</li>
+          <li><a href="../handler.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">handler</span></tt> Module</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-handler.dochandler">
+<span id="handler-dochandler-module"></span><h1><tt class="docutils literal"><span class="pre">handler.dochandler</span></tt> Module<a class="headerlink" href="#module-handler.dochandler" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">synopsis:</th><td class="field-body">Use <a class="reference internal" href="../restlite.html#module-restlite" title="restlite"><tt class="xref py py-mod docutils literal"><span class="pre">restlite</span></tt></a> server handlers but preserve documentation.</td>
+</tr>
+</tbody>
+</table>
+<p>When the <a class="reference internal" href="../restlite.html#restlite.resource" title="restlite.resource"><tt class="xref py py-func docutils literal"><span class="pre">restlite.resource()</span></tt></a> decorator is used to create handlers,
+it changes the module the handler is in, and as a result the handler is
+not documented. This should help keep any docstrings intact and in module.</p>
+<dl class="class">
+<dt id="handler.dochandler.DocHandler">
+<em class="property">class </em><tt class="descclassname">handler.dochandler.</tt><tt class="descname">DocHandler</tt><a class="headerlink" href="#handler.dochandler.DocHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Any handlers that want to preserve their documentation should
+extend this class. They can overwrite the GET and POST methods
+to provide functionality.</p>
+<dl class="method">
+<dt id="handler.dochandler.DocHandler.GET">
+<tt class="descname">GET</tt><big>(</big><em>request</em><big>)</big><a class="headerlink" href="#handler.dochandler.DocHandler.GET" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle a GET request.</p>
+<p>This is a dummy. Override it to actually handle GET requests.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>request</strong> (<a class="reference internal" href="../restlite.html#restlite.Request" title="restlite.Request"><tt class="xref py py-class docutils literal"><span class="pre">restlite.Request</span></tt></a>) &#8211; The request data</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A response from <a class="reference internal" href="../restlite.html#restlite.Request.response" title="restlite.Request.response"><tt class="xref py py-func docutils literal"><span class="pre">restlite.Request.response()</span></tt></a>.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">str</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="handler.dochandler.DocHandler.POST">
+<tt class="descname">POST</tt><big>(</big><em>request</em>, <em>entity</em><big>)</big><a class="headerlink" href="#handler.dochandler.DocHandler.POST" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle a POST request.</p>
+<p>This is a dummy. Override it to actually handle POST requests.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>request</strong> (<a class="reference internal" href="../restlite.html#restlite.Request" title="restlite.Request"><tt class="xref py py-class docutils literal"><span class="pre">restlite.Request</span></tt></a>) &#8211; The request data</li>
+<li><strong>entity</strong> (<tt class="docutils literal"><span class="pre">str</span></tt> or an object...) &#8211; The POST entity.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A response from <a class="reference internal" href="../restlite.html#restlite.Request.response" title="restlite.Request.response"><tt class="xref py py-func docutils literal"><span class="pre">restlite.Request.response()</span></tt></a>.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">str</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="handler.dochandler.DocHandler.getHandler">
+<tt class="descname">getHandler</tt><big>(</big><big>)</big><a class="headerlink" href="#handler.dochandler.DocHandler.getHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and return the <a class="reference external" href="http://docs.python.org/library/wsgiref.html#module-wsgiref" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">wsgiref</span></tt></a> compatible handler that this
+handler represents. This will use <a class="reference internal" href="../restlite.html#restlite.resource" title="restlite.resource"><tt class="xref py py-func docutils literal"><span class="pre">restlite.resource()</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference external" href="http://docs.python.org/library/wsgiref.html#module-wsgiref" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">wsgiref</span></tt></a> compliant handler.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">function</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="control_handler.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">handler.control_handler</span></tt> Module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="generic.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">handler.generic</span></tt> Module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/handler/dochandler.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="generic.html" title="handler.generic Module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="control_handler.html" title="handler.control_handler Module"
+             >previous</a> |</li>
+        <li><a href="../index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
+          <li><a href="../srv.html" >Server Related Modules</a> &raquo;</li>
+          <li><a href="../handler.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">handler</span></tt> Module</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, James Elford, Andy Gurden, Simon Evans, Chris Dillon, Andreea Babiuc.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

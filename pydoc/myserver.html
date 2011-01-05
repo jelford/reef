@@ -55,25 +55,55 @@
             
   <div class="section" id="module-myserver">
 <span id="myserver-module"></span><h1><tt class="docutils literal"><span class="pre">myserver</span></tt> Module<a class="headerlink" href="#module-myserver" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">synopsis:</th><td class="field-body">Quick and easy implementation of a <a class="reference internal" href="restlite.html#module-restlite" title="restlite"><tt class="xref py py-mod docutils literal"><span class="pre">restlite</span></tt></a>-based server.</td>
+</tr>
+</tbody>
+</table>
+<p>This was implemented so that the server acts as a class but should only be
+created with <a class="reference internal" href="#myserver.getServer" title="myserver.getServer"><tt class="xref py py-func docutils literal"><span class="pre">getServer()</span></tt></a> so remains singleton.</p>
 <dl class="class">
 <dt id="myserver.ReefServer">
 <em class="property">class </em><tt class="descclassname">myserver.</tt><tt class="descname">ReefServer</tt><a class="headerlink" href="#myserver.ReefServer" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<dd><p>Represents the server.</p>
+<p>This should perform setup and running operations with minimal input from
+elsewhere.</p>
+<dl class="method">
 <dt id="myserver.ReefServer.setup">
 <tt class="descname">setup</tt><big>(</big><big>)</big><a class="headerlink" href="#myserver.ReefServer.setup" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Perform any setup needed to bend the server to our whims.</p>
+<p>This really only grabs the routing table from the <a class="reference internal" href="handlers.html#module-handlers" title="handlers"><tt class="xref py py-mod docutils literal"><span class="pre">handlers</span></tt></a>
+module.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="myserver.ReefServer.start">
 <tt class="descname">start</tt><big>(</big><big>)</big><a class="headerlink" href="#myserver.ReefServer.start" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Build the actual server and set it running.</p>
+<p>This will use the setup performed by any of the other class methods,
+it also takes into account any <a class="reference internal" href="config.html#module-config" title="config"><tt class="xref py py-mod docutils literal"><span class="pre">config</span></tt></a> values set.</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="function">
 <dt id="myserver.getServer">
 <tt class="descclassname">myserver.</tt><tt class="descname">getServer</tt><big>(</big><big>)</big><a class="headerlink" href="#myserver.getServer" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Grab the singleton server instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A server instance</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#myserver.ReefServer" title="myserver.ReefServer"><tt class="xref py py-class docutils literal"><span class="pre">ReefServer</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 

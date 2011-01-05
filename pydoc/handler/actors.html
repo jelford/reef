@@ -56,25 +56,191 @@
             
   <div class="section" id="module-handler.actors">
 <span id="handler-actors-module"></span><h1><tt class="docutils literal"><span class="pre">handler.actors</span></tt> Module<a class="headerlink" href="#module-handler.actors" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="handler.actors.showActorFile">
-<tt class="descclassname">handler.actors.</tt><tt class="descname">showActorFile</tt><big>(</big><em>request</em>, <em>actorname</em><big>)</big><a class="headerlink" href="#handler.actors.showActorFile" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">synopsis:</th><td class="field-body">Handles most actor related requests.</td>
+</tr>
+</tbody>
+</table>
+<dl class="data">
+<dt id="handler.actors.ALLOWED_TYPES">
+<tt class="descclassname">handler.actors.</tt><tt class="descname">ALLOWED_TYPES</tt><a class="headerlink" href="#handler.actors.ALLOWED_TYPES" title="Permalink to this definition">¶</a></dt>
+<dd><p>The list of allowed types for uploading.</p>
+</dd></dl>
 
-<dl class="function">
-<dt id="handler.actors.parseMultipart">
-<tt class="descclassname">handler.actors.</tt><tt class="descname">parseMultipart</tt><big>(</big><em>request</em>, <em>entity</em><big>)</big><a class="headerlink" href="#handler.actors.parseMultipart" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dl class="class">
+<dt id="handler.actors.ActorsHandler">
+<em class="property">class </em><tt class="descclassname">handler.actors.</tt><tt class="descname">ActorsHandler</tt><a class="headerlink" href="#handler.actors.ActorsHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dochandler.html#handler.dochandler.DocHandler" title="handler.dochandler.DocHandler"><tt class="xref py py-class docutils literal"><span class="pre">handler.dochandler.DocHandler</span></tt></a></p>
+<p>Documented handler for dealing with actors.</p>
+<dl class="method">
+<dt id="handler.actors.ActorsHandler.GET">
+<tt class="descname">GET</tt><big>(</big><em>request</em><big>)</big><a class="headerlink" href="#handler.actors.ActorsHandler.GET" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get either the list of actors or actor details.</p>
+<p>If the base address of the handler is requested:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">List of actors on the server.</td>
+</tr>
+</tbody>
+</table>
+<p>If the base / actorname is requested:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">JSON representation of the actor called actorname</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 404 if the actor does not exist.</td>
+</tr>
+</tbody>
+</table>
+<p>If the base / actorname.tar.gz is requested:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The contents of the actor file.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 404 if the actor does not exist.</p>
+<p><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 410 if the actor exists but the
+file is missing.</p>
+<p class="last"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 500 if the actor file could not
+be read.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
-<dl class="function">
-<dt id="handler.actors.saveActor">
-<tt class="descclassname">handler.actors.</tt><tt class="descname">saveActor</tt><big>(</big><em>name</em>, <em>type</em>, <em>content</em><big>)</big><a class="headerlink" href="#handler.actors.saveActor" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dl class="method">
+<dt id="handler.actors.ActorsHandler.POST">
+<tt class="descname">POST</tt><big>(</big><em>request</em>, <em>entity</em><big>)</big><a class="headerlink" href="#handler.actors.ActorsHandler.POST" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new actor.</p>
+<p>You should POST to the base address of the handler although this may
+not be checked. Also the POST should be encoded as mutlipart form
+data.</p>
+<p>The parameters here should be in the POST entity:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>actor_name</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The name of the actor to add.</li>
+<li><strong>actor_file</strong> (<tt class="docutils literal"><span class="pre">file</span></tt> - .tar.gz) &#8211; The actor&#8217;s actual file.</li>
+<li><strong>actor_type</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The type of the actor. This should be one of the
+values in <a class="reference internal" href="#handler.actors.ALLOWED_TYPES" title="handler.actors.ALLOWED_TYPES"><tt class="xref py py-data docutils literal"><span class="pre">ALLOWED_TYPES</span></tt></a>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 400 if the data cannot be parsed.</p>
+<p><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 400 if any of the parameters are
+missing.</p>
+<p><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 400 if the actor type is invalid.</p>
+<p class="last"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 403 if overwriting actors is disabled
+and you try to use an existing actor name.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
-<dl class="function">
-<dt id="handler.actors.ensureDir">
-<tt class="descclassname">handler.actors.</tt><tt class="descname">ensureDir</tt><big>(</big><em>dir</em><big>)</big><a class="headerlink" href="#handler.actors.ensureDir" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dl class="method">
+<dt id="handler.actors.ActorsHandler.showActorFile">
+<tt class="descname">showActorFile</tt><big>(</big><em>request</em>, <em>actorname</em><big>)</big><a class="headerlink" href="#handler.actors.ActorsHandler.showActorFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Try to send a response with the actor file of the given name.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>request</strong> (<a class="reference internal" href="../restlite.html#restlite.Request" title="restlite.Request"><tt class="xref py py-class docutils literal"><span class="pre">restlite.Request</span></tt></a>) &#8211; The request to create a response from.</li>
+<li><strong>actorname</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The name of the actor from which we take the file.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Response with the contents of the actor file.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 404 if the actor does not exist.</p>
+<p><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 410 if the actor exists but the
+file is missing.</p>
+<p class="last"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 500 if the actor file could not
+be read.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="handler.actors.ActorsHandler.parseMultipart">
+<tt class="descname">parseMultipart</tt><big>(</big><em>request</em>, <em>entity</em><big>)</big><a class="headerlink" href="#handler.actors.ActorsHandler.parseMultipart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the entity.</p>
+<p>This should be easy as python gives us the <a class="reference external" href="http://docs.python.org/library/cgi.html#module-cgi" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">cgi</span></tt></a> module to do it,
+but there&#8217;s a little fiddling to do.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>request</strong> (<a class="reference internal" href="../restlite.html#restlite.Request" title="restlite.Request"><tt class="xref py py-class docutils literal"><span class="pre">restlite.Request</span></tt></a>) &#8211; The request that the entity came with.</li>
+<li><strong>entity</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The entity to parse.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The parsed entity.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/cgi.html#module-cgi" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">cgi</span></tt></a>. <tt class="docutils literal"><span class="pre">FieldStorage</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="handler.actors.ActorsHandler.saveActor">
+<tt class="descname">saveActor</tt><big>(</big><em>name</em>, <em>type</em>, <em>content</em><big>)</big><a class="headerlink" href="#handler.actors.ActorsHandler.saveActor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save an actor to a new file and add to defs in the <a class="reference internal" href="../config.html#module-config" title="config"><tt class="xref py py-mod docutils literal"><span class="pre">config</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; Name of the actor to add.</li>
+<li><strong>type</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; Type of the actor to add. This is expected to be in
+<a class="reference internal" href="#handler.actors.ALLOWED_TYPES" title="handler.actors.ALLOWED_TYPES"><tt class="xref py py-data docutils literal"><span class="pre">ALLOWED_TYPES</span></tt></a>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="handler.actors.ActorsHandler.ensureDir">
+<tt class="descname">ensureDir</tt><big>(</big><em>dir</em><big>)</big><a class="headerlink" href="#handler.actors.ActorsHandler.ensureDir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure the given directory exists (create it if not).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dir</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The absolute path of the directory to check.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
 
 </div>
 

@@ -1,0 +1,261 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>commandclient Module &mdash; Reef Backend v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Reef Backend v0.1 documentation" href="index.html" />
+    <link rel="up" title="Other Modules" href="other.html" />
+    <link rel="next" title="vazelsintegration Module" href="vazelsintegration.html" />
+    <link rel="prev" title="controlcentre Module" href="controlcentre.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vazelsintegration.html" title="vazelsintegration Module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="controlcentre.html" title="controlcentre Module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
+          <li><a href="other.html" accesskey="U">Other Modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-commandclient">
+<span id="commandclient-module"></span><h1><a class="reference internal" href="#module-commandclient" title="commandclient"><tt class="xref py py-mod docutils literal"><span class="pre">commandclient</span></tt></a> Module<a class="headerlink" href="#module-commandclient" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">syopsis:</th><td class="field-body">Does any talking with the command client.</td>
+</tr>
+</tbody>
+</table>
+<dl class="data">
+<dt id="commandclient.experiment_running_state">
+<tt class="descclassname">commandclient.</tt><tt class="descname">experiment_running_state</tt><a class="headerlink" href="#commandclient.experiment_running_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Experiment state - to remember whether the experiment has started.</p>
+<p>Valid values: <tt class="xref docutils literal"><span class="pre">None</span></tt>, <tt class="docutils literal"><span class="pre">Statuses[&quot;STATUS_EXPERIMENT_STARTED&quot;]</span></tt></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="commandclient.Statuses">
+<tt class="descclassname">commandclient.</tt><tt class="descname">Statuses</tt><a class="headerlink" href="#commandclient.Statuses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Some constants for reflecting state info.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="commandclient.vazelsPhase">
+<tt class="descclassname">commandclient.</tt><tt class="descname">vazelsPhase</tt><big>(</big><big>)</big><a class="headerlink" href="#commandclient.vazelsPhase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the running status of vazels.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">The status. One of the values in <a class="reference internal" href="#commandclient.Statuses" title="commandclient.Statuses"><tt class="xref py py-data docutils literal"><span class="pre">Statuses</span></tt></a>.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">str</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="commandclient.getCommandLineClientPath">
+<tt class="descclassname">commandclient.</tt><tt class="descname">getCommandLineClientPath</tt><big>(</big><big>)</big><a class="headerlink" href="#commandclient.getCommandLineClientPath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Grab the path to the command client installation directory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">The absolute path to the directory.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">str</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="commandclient.stopVazels">
+<tt class="descclassname">commandclient.</tt><tt class="descname">stopVazels</tt><big>(</big><big>)</big><a class="headerlink" href="#commandclient.stopVazels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tell Vazels to go ahead and die.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">Whether the control centre was running.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">bool</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="commandclient.startexperiment">
+<tt class="descclassname">commandclient.</tt><tt class="descname">startexperiment</tt><big>(</big><big>)</big><a class="headerlink" href="#commandclient.startexperiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Try to start the experiment</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">Whether the control centre was running.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">bool</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="commandclient.getalloutput">
+<tt class="descclassname">commandclient.</tt><tt class="descname">getalloutput</tt><big>(</big><big>)</big><a class="headerlink" href="#commandclient.getalloutput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start pulling output from the vazels.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">Whether the control centre was running.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">bool</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="commandclient.updateStatuses">
+<tt class="descclassname">commandclient.</tt><tt class="descname">updateStatuses</tt><big>(</big><big>)</big><a class="headerlink" href="#commandclient.updateStatuses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the host statuses.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">Whether the control centre was running.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">bool</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="commandclient.issueControlCentreCommand">
+<tt class="descclassname">commandclient.</tt><tt class="descname">issueControlCentreCommand</tt><big>(</big><em>command</em>, <em>args=</em><span class="optional">[</span><span class="optional">]</span>, <em>extraargs=</em><span class="optional">[</span><span class="optional">]</span>, <em>afterwards=None</em><big>)</big><a class="headerlink" href="#commandclient.issueControlCentreCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a command to the command client and optionally run a function on finish.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>command</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The command to run.</li>
+<li><strong>args</strong> (<tt class="docutils literal"><span class="pre">list(str)</span></tt>) &#8211; List of arguments to the command. (optional)</li>
+<li><strong>extraargs</strong> (<tt class="docutils literal"><span class="pre">dict</span></tt>) &#8211; Arguments to the script, i.e. those beginning with &#8220;&#8211;&#8221;. (optional)</li>
+<li><strong>afterwards</strong> (<tt class="docutils literal"><span class="pre">func</span></tt>, takes the output file as a parameter.) &#8211; The function to run afterwards (optional).</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><tt class="xref docutils literal"><span class="pre">True</span></tt> if the control centre is running, <tt class="xref docutils literal"><span class="pre">False</span></tt> otherwise.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">bool</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="controlcentre.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">controlcentre</span></tt> Module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="vazelsintegration.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">vazelsintegration</span></tt> Module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/commandclient.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vazelsintegration.html" title="vazelsintegration Module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="controlcentre.html" title="controlcentre Module"
+             >previous</a> |</li>
+        <li><a href="index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
+          <li><a href="other.html" >Other Modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, James Elford, Andy Gurden, Simon Evans, Chris Dillon, Andreea Babiuc.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

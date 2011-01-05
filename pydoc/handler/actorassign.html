@@ -56,15 +56,97 @@
             
   <div class="section" id="module-handler.actorassign">
 <span id="handler-actorassign-module"></span><h1><tt class="docutils literal"><span class="pre">handler.actorassign</span></tt> Module<a class="headerlink" href="#module-handler.actorassign" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="handler.actorassign.addActor">
-<tt class="descclassname">handler.actorassign.</tt><tt class="descname">addActor</tt><big>(</big><em>workload</em>, <em>actor</em><big>)</big><a class="headerlink" href="#handler.actorassign.addActor" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">synopsis:</th><td class="field-body">Handler to allow assignment of actors to workloads.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="handler.actorassign.ActorAssignHandler">
+<em class="property">class </em><tt class="descclassname">handler.actorassign.</tt><tt class="descname">ActorAssignHandler</tt><a class="headerlink" href="#handler.actorassign.ActorAssignHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dochandler.html#handler.dochandler.DocHandler" title="handler.dochandler.DocHandler"><tt class="xref py py-class docutils literal"><span class="pre">handler.dochandler.DocHandler</span></tt></a></p>
+<p>Documented handler for assignment of actors to workloads.</p>
+<dl class="method">
+<dt id="handler.actorassign.ActorAssignHandler.POST">
+<tt class="descname">POST</tt><big>(</big><em>request</em>, <em>entity</em><big>)</big><a class="headerlink" href="#handler.actorassign.ActorAssignHandler.POST" title="Permalink to this definition">¶</a></dt>
+<dd><p>(Un)assign actors (from/)to workloads.</p>
+<p>The parameters listed are part of the url encoded <tt class="docutils literal"><span class="pre">entity</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>do</strong> &#8211; What to do, either <tt class="docutils literal"><span class="pre">&quot;add&quot;</span></tt> or <tt class="docutils literal"><span class="pre">&quot;rem&quot;</span></tt> to add or remove
+respectively</li>
+<li><strong>workload</strong> &#8211; The name of the workload to affect.</li>
+<li><strong>actor</strong> &#8211; The name of the actor to add or remove.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 400 if a parameter is given multiple
+times.</p>
+<p><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 400 if a parameter is missing.</p>
+<p><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 404 if the actor or workload does
+not exist.</p>
+<p><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 400 if the action (<tt class="docutils literal"><span class="pre">do</span></tt>) is invalid.</p>
+<p><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 409 if the action cannot be completed
+do to the state of currently attached workloads.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The JSON representation of the workload.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
-<dl class="function">
-<dt id="handler.actorassign.remActor">
-<tt class="descclassname">handler.actorassign.</tt><tt class="descname">remActor</tt><big>(</big><em>workload</em>, <em>actor</em><big>)</big><a class="headerlink" href="#handler.actorassign.remActor" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dl class="method">
+<dt id="handler.actorassign.ActorAssignHandler.addActor">
+<tt class="descname">addActor</tt><big>(</big><em>workload</em>, <em>actor</em><big>)</big><a class="headerlink" href="#handler.actorassign.ActorAssignHandler.addActor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an actor to the given workload.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workload</strong> (<tt class="docutils literal"><span class="pre">dict</span></tt>) &#8211; The workload (from <a class="reference internal" href="../config.html#module-config" title="config"><tt class="xref py py-mod docutils literal"><span class="pre">config</span></tt></a>) to add to.</li>
+<li><strong>actor</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The name of the actor to add.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 409 if the actor is already attached.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="handler.actorassign.ActorAssignHandler.remActor">
+<tt class="descname">remActor</tt><big>(</big><em>workload</em>, <em>actor</em><big>)</big><a class="headerlink" href="#handler.actorassign.ActorAssignHandler.remActor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove an actor from the given workload.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workload</strong> (<tt class="docutils literal"><span class="pre">dict</span></tt>) &#8211; The workload (from <a class="reference internal" href="../config.html#module-config" title="config"><tt class="xref py py-mod docutils literal"><span class="pre">config</span></tt></a>) to remove from.</li>
+<li><strong>actor</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The name of the actor to remove.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 409 if the actor to remove is
+not attached.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
 
 </div>
 

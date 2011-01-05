@@ -55,35 +55,107 @@
             
   <div class="section" id="module-authentication">
 <span id="authentication-module"></span><h1><tt class="docutils literal"><span class="pre">authentication</span></tt> Module<a class="headerlink" href="#module-authentication" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">synopsis:</th><td class="field-body">Simple authentication management.</td>
+</tr>
+</tbody>
+</table>
+<p>This allows any part of the server to add users or authenticate against
+them without even thinking about it.</p>
+<dl class="data">
+<dt id="authentication.authModel">
+<tt class="descclassname">authentication.</tt><tt class="descname">authModel</tt><a class="headerlink" href="#authentication.authModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the authentication model used by the server.</p>
+<p>We cannot store it with <a class="reference internal" href="config.html#module-config" title="config"><tt class="xref py py-mod docutils literal"><span class="pre">config</span></tt></a>.
+Instead we store the information used to create it and cache
+the finished thing here.</p>
+</dd></dl>
+
 <dl class="function">
 <dt id="authentication.addUser">
 <tt class="descclassname">authentication.</tt><tt class="descname">addUser</tt><big>(</big><em>name</em>, <em>password</em><big>)</big><a class="headerlink" href="#authentication.addUser" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Add a user to the current authentication model.</p>
+<p>This will also get update the configuration with the information
+needed to recreate itself.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The name of the user to add.</li>
+<li><strong>password</strong> (<tt class="docutils literal"><span class="pre">str</span></tt>) &#8211; The password to use for this user.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">KeyError</span></tt> if the name exists</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="authentication.refresh">
 <tt class="descclassname">authentication.</tt><tt class="descname">refresh</tt><big>(</big><big>)</big><a class="headerlink" href="#authentication.refresh" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Refresh the cached authentication model with the information stored
+in <a class="reference internal" href="config.html#module-config" title="config"><tt class="xref py py-mod docutils literal"><span class="pre">config</span></tt></a>.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="authentication.addUserToModel">
 <tt class="descclassname">authentication.</tt><tt class="descname">addUserToModel</tt><big>(</big><em>user</em>, <em>password</em><big>)</big><a class="headerlink" href="#authentication.addUserToModel" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Add a user to the cached authentication model.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This function expects the authentication model to exist.
+i.e. it should not be <tt class="xref docutils literal"><span class="pre">None</span></tt>!</p>
+</div>
+</dd></dl>
 
 <dl class="function">
 <dt id="authentication.login">
 <tt class="descclassname">authentication.</tt><tt class="descname">login</tt><big>(</big><em>request</em><big>)</big><a class="headerlink" href="#authentication.login" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Try to authenticate against the current model.</p>
+<p>This is usually called from a restlite handler.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>request</strong> (<a class="reference internal" href="restlite.html#restlite.Request" title="restlite.Request"><tt class="xref py py-class docutils literal"><span class="pre">restlite.Request</span></tt></a>) &#8211; The request we are authenticating against.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="authentication.clear">
 <tt class="descclassname">authentication.</tt><tt class="descname">clear</tt><big>(</big><big>)</big><a class="headerlink" href="#authentication.clear" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Clear all authentication data.</p>
+<p>This removes all saved users and turn authentication off so that
+<a class="reference internal" href="#authentication.login" title="authentication.login"><tt class="xref py py-func docutils literal"><span class="pre">login()</span></tt></a> will do nothing.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="authentication.active">
 <tt class="descclassname">authentication.</tt><tt class="descname">active</tt><big>(</big><big>)</big><a class="headerlink" href="#authentication.active" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Check if authentication is currently active.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><tt class="xref docutils literal"><span class="pre">True</span></tt> only if authentication is currently active.</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">bool</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 

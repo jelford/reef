@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="Reef Backend v0.1 documentation" href="../index.html" />
     <link rel="up" title="handler Module" href="../handler.html" />
-    <link rel="next" title="handler.generic Module" href="generic.html" />
+    <link rel="next" title="handler.dochandler Module" href="dochandler.html" />
     <link rel="prev" title="handler.auth_page Module" href="auth_page.html" /> 
   </head>
   <body>
@@ -38,7 +38,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="generic.html" title="handler.generic Module"
+          <a href="dochandler.html" title="handler.dochandler Module"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="auth_page.html" title="handler.auth_page Module"
@@ -56,6 +56,186 @@
             
   <div class="section" id="module-handler.control_handler">
 <span id="handler-control-handler-module"></span><h1><tt class="docutils literal"><span class="pre">handler.control_handler</span></tt> Module<a class="headerlink" href="#module-handler.control_handler" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">synopsis:</th><td class="field-body">Creates an interface to the vazels system.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="handler.control_handler.ControlHandler">
+<em class="property">class </em><tt class="descclassname">handler.control_handler.</tt><tt class="descname">ControlHandler</tt><a class="headerlink" href="#handler.control_handler.ControlHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dochandler.html#handler.dochandler.DocHandler" title="handler.dochandler.DocHandler"><tt class="xref py py-class docutils literal"><span class="pre">handler.dochandler.DocHandler</span></tt></a></p>
+<p>Handles status requests for the vazels control centre.</p>
+<dl class="method">
+<dt id="handler.control_handler.ControlHandler.GET">
+<tt class="descname">GET</tt><big>(</big><em>request</em><big>)</big><a class="headerlink" href="#handler.control_handler.ControlHandler.GET" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the status of the vazels control centre.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">The current control centre status, either<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">&quot;{'control_centre_status':</span> <span class="pre">'running'}&quot;</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">&quot;{'control_centre_status':</span> <span class="pre">'ready'}&quot;</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">&quot;{'control_centre_status':</span> <span class="pre">&lt;somethingelse&gt;}&quot;</span></tt></li>
+</ul>
+<p>where <tt class="docutils literal"><span class="pre">&lt;somethingelse&gt;</span></tt> is a return value of
+<tt class="xref py py-func docutils literal"><span class="pre">vazelsmanager.vazelsRunning()</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="handler.control_handler.StartHandler">
+<em class="property">class </em><tt class="descclassname">handler.control_handler.</tt><tt class="descname">StartHandler</tt><a class="headerlink" href="#handler.control_handler.StartHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dochandler.html#handler.dochandler.DocHandler" title="handler.dochandler.DocHandler"><tt class="xref py py-class docutils literal"><span class="pre">handler.dochandler.DocHandler</span></tt></a></p>
+<p>Handles requests to start the vazels control centre.</p>
+<dl class="method">
+<dt id="handler.control_handler.StartHandler.POST">
+<tt class="descname">POST</tt><big>(</big><em>request</em>, <em>entity</em><big>)</big><a class="headerlink" href="#handler.control_handler.StartHandler.POST" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the control centre.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 500 if something went immediately
+wrong while starting the control centre.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-todo admonition " id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Update client to handle 204 as a successful response.
+Then we dont have to send 200 with a blank response.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="handler.control_handler.StopHandler">
+<em class="property">class </em><tt class="descclassname">handler.control_handler.</tt><tt class="descname">StopHandler</tt><a class="headerlink" href="#handler.control_handler.StopHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dochandler.html#handler.dochandler.DocHandler" title="handler.dochandler.DocHandler"><tt class="xref py py-class docutils literal"><span class="pre">handler.dochandler.DocHandler</span></tt></a></p>
+<p>Handles requests to stop the vazels control centre.</p>
+<dl class="method">
+<dt id="handler.control_handler.StopHandler.POST">
+<tt class="descname">POST</tt><big>(</big><em>request</em>, <em>entity</em><big>)</big><a class="headerlink" href="#handler.control_handler.StopHandler.POST" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop the control centre.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 500 if something went immediately
+wrong while stopping the control centre.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-todo admonition " id="index-1">
+<p class="first admonition-title">Todo</p>
+<p class="last">Update client to handle 204 as a successful response.
+Then we dont have to send 200 with a blank response.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="handler.control_handler.GetAllStatusHandler">
+<em class="property">class </em><tt class="descclassname">handler.control_handler.</tt><tt class="descname">GetAllStatusHandler</tt><a class="headerlink" href="#handler.control_handler.GetAllStatusHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dochandler.html#handler.dochandler.DocHandler" title="handler.dochandler.DocHandler"><tt class="xref py py-class docutils literal"><span class="pre">handler.dochandler.DocHandler</span></tt></a></p>
+<p>Handles status requests for hosts.</p>
+<dl class="method">
+<dt id="handler.control_handler.GetAllStatusHandler.GET">
+<tt class="descname">GET</tt><big>(</big><em>request</em><big>)</big><a class="headerlink" href="#handler.control_handler.GetAllStatusHandler.GET" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the groups with host statuses.</p>
+<div class="admonition-todo admonition " id="index-2">
+<p class="first admonition-title">Todo</p>
+<p class="last">Make this POST!</p>
+</div>
+<div class="admonition-todo admonition " id="index-3">
+<p class="first admonition-title">Todo</p>
+<p class="last">Allow 204 as success in the client.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 400 if we cannot initiate an attempt
+to update.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="handler.control_handler.GetAllOutputHandler">
+<em class="property">class </em><tt class="descclassname">handler.control_handler.</tt><tt class="descname">GetAllOutputHandler</tt><a class="headerlink" href="#handler.control_handler.GetAllOutputHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dochandler.html#handler.dochandler.DocHandler" title="handler.dochandler.DocHandler"><tt class="xref py py-class docutils literal"><span class="pre">handler.dochandler.DocHandler</span></tt></a></p>
+<p>Handles requests for vazels output.</p>
+<dl class="method">
+<dt id="handler.control_handler.GetAllOutputHandler.GET">
+<tt class="descname">GET</tt><big>(</big><em>request</em><big>)</big><a class="headerlink" href="#handler.control_handler.GetAllOutputHandler.GET" title="Permalink to this definition">¶</a></dt>
+<dd><p>Grab the latest output from the vazels experiment.</p>
+<div class="admonition-todo admonition " id="index-4">
+<p class="first admonition-title">Todo</p>
+<p class="last">Make this POST!</p>
+</div>
+<div class="admonition-todo admonition " id="index-5">
+<p class="first admonition-title">Todo</p>
+<p class="last">Allow 204 as success in the client.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 400 if we could not start to
+retrieve data.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="handler.control_handler.StartExperimentHandler">
+<em class="property">class </em><tt class="descclassname">handler.control_handler.</tt><tt class="descname">StartExperimentHandler</tt><a class="headerlink" href="#handler.control_handler.StartExperimentHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dochandler.html#handler.dochandler.DocHandler" title="handler.dochandler.DocHandler"><tt class="xref py py-class docutils literal"><span class="pre">handler.dochandler.DocHandler</span></tt></a></p>
+<p>Handles requests to start a vazels experiment.</p>
+<dl class="method">
+<dt id="handler.control_handler.StartExperimentHandler.POST">
+<tt class="descname">POST</tt><big>(</big><em>request</em>, <em>entity</em><big>)</big><a class="headerlink" href="#handler.control_handler.StartExperimentHandler.POST" title="Permalink to this definition">¶</a></dt>
+<dd><p>Try to start a vazels experiment.</p>
+<div class="admonition-todo admonition " id="index-6">
+<p class="first admonition-title">Todo</p>
+<p class="last">Make this POST!</p>
+</div>
+<div class="admonition-todo admonition " id="index-7">
+<p class="first admonition-title">Todo</p>
+<p class="last">Allow 204 as success in the client.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 400 if the attempt to start an
+experiment failed immediately.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -68,8 +248,8 @@
   <p class="topless"><a href="auth_page.html"
                         title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">handler.auth_page</span></tt> Module</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="generic.html"
-                        title="next chapter"><tt class="docutils literal"><span class="pre">handler.generic</span></tt> Module</a></p>
+  <p class="topless"><a href="dochandler.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">handler.dochandler</span></tt> Module</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/handler/control_handler.txt"
@@ -102,7 +282,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="generic.html" title="handler.generic Module"
+          <a href="dochandler.html" title="handler.dochandler Module"
              >next</a> |</li>
         <li class="right" >
           <a href="auth_page.html" title="handler.auth_page Module"

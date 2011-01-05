@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>handler.status Module &mdash; Reef Backend v0.1 documentation</title>
+    <title>handler.probe Module &mdash; Reef Backend v0.1 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -24,8 +24,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="Reef Backend v0.1 documentation" href="../index.html" />
     <link rel="up" title="handler Module" href="../handler.html" />
-    <link rel="next" title="handler.testing Module" href="testing.html" />
-    <link rel="prev" title="handler.settings Module" href="settings.html" /> 
+    <link rel="next" title="handler.settings Module" href="settings.html" />
+    <link rel="prev" title="handler.output_full Module" href="output_full.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,14 +38,14 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="testing.html" title="handler.testing Module"
+          <a href="settings.html" title="handler.settings Module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="settings.html" title="handler.settings Module"
+          <a href="output_full.html" title="handler.output_full Module"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
           <li><a href="../srv.html" >Server Related Modules</a> &raquo;</li>
-          <li><a href="../handler.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">handler</span></tt> Module</a> &raquo;</li> 
+          <li><a href="../handler.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">handler</span></tt> Module</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -54,34 +54,46 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-handler.status">
-<span id="handler-status-module"></span><h1><tt class="docutils literal"><span class="pre">handler.status</span></tt> Module<a class="headerlink" href="#module-handler.status" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-handler.probe">
+<span id="handler-probe-module"></span><h1><a class="reference internal" href="#module-handler.probe" title="handler.probe"><tt class="xref py py-mod docutils literal"><span class="pre">handler.probe</span></tt></a> Module<a class="headerlink" href="#module-handler.probe" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">synopsis:</th><td class="field-body">Allows the client to assess whether or not the server is alive.</td>
+<tr class="field"><th class="field-name">synopsis:</th><td class="field-body">Serves probe files.</td>
 </tr>
 </tbody>
 </table>
 <dl class="class">
-<dt id="handler.status.StatusHandler">
-<em class="property">class </em><tt class="descclassname">handler.status.</tt><tt class="descname">StatusHandler</tt><a class="headerlink" href="#handler.status.StatusHandler" title="Permalink to this definition">¶</a></dt>
+<dt id="handler.probe.ProbeHandler">
+<em class="property">class </em><tt class="descclassname">handler.probe.</tt><tt class="descname">ProbeHandler</tt><a class="headerlink" href="#handler.probe.ProbeHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="dochandler.html#handler.dochandler.DocHandler" title="handler.dochandler.DocHandler"><tt class="xref py py-class docutils literal"><span class="pre">handler.dochandler.DocHandler</span></tt></a></p>
-<p>Deals with server status requests.</p>
+<p>Handles creation and serving of the probe archive.</p>
 <dl class="method">
-<dt id="handler.status.StatusHandler.GET">
-<tt class="descname">GET</tt><big>(</big><em>request</em><big>)</big><a class="headerlink" href="#handler.status.StatusHandler.GET" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the server is alive.</p>
+<dt id="handler.probe.ProbeHandler.GET">
+<tt class="descname">GET</tt><big>(</big><em>request</em><big>)</big><a class="headerlink" href="#handler.probe.ProbeHandler.GET" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the tgz archive of the probe folder.</p>
+<p>The filename of the resulting file will be taken by the browser
+from the location this handler was attached to.</p>
+<div class="admonition-todo admonition " id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Work out why FF cannot open this fil directly (without
+saving it first)</p>
+</div>
+<div class="admonition-todo admonition " id="index-1">
+<p class="first admonition-title">Todo</p>
+<p class="last">Allow this file through the testing proxy.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">Code &#8220;200 OK&#8221; if alive.</td>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 400 if the experiment is not set up.</p>
+<p class="last"><a class="reference internal" href="../restlite.html#restlite.Status" title="restlite.Status"><tt class="xref py py-exc docutils literal"><span class="pre">restlite.Status</span></tt></a> 500 if the folder could not be served.</p>
+</td>
 </tr>
 </tbody>
 </table>
-<p>Obviously if the server is down it will not respond.</p>
 </dd></dl>
 
 </dd></dl>
@@ -95,14 +107,14 @@
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="settings.html"
-                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">handler.settings</span></tt> Module</a></p>
+  <p class="topless"><a href="output_full.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">handler.output_full</span></tt> Module</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="testing.html"
-                        title="next chapter"><tt class="docutils literal"><span class="pre">handler.testing</span></tt> Module</a></p>
+  <p class="topless"><a href="settings.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">handler.settings</span></tt> Module</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="../_sources/handler/status.txt"
+    <li><a href="../_sources/handler/probe.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" style="display: none">
@@ -132,14 +144,14 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="testing.html" title="handler.testing Module"
+          <a href="settings.html" title="handler.settings Module"
              >next</a> |</li>
         <li class="right" >
-          <a href="settings.html" title="handler.settings Module"
+          <a href="output_full.html" title="handler.output_full Module"
              >previous</a> |</li>
         <li><a href="../index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
           <li><a href="../srv.html" >Server Related Modules</a> &raquo;</li>
-          <li><a href="../handler.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">handler</span></tt> Module</a> &raquo;</li> 
+          <li><a href="../handler.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">handler</span></tt> Module</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

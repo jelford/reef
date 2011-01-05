@@ -45,7 +45,7 @@
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
           <li><a href="../srv.html" >Server Related Modules</a> &raquo;</li>
-          <li><a href="../handler.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">handler</span></tt> Module</a> &raquo;</li> 
+          <li><a href="../handler.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">handler</span></tt> Module</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -56,10 +56,45 @@
             
   <div class="section" id="module-handler.testing">
 <span id="handler-testing-module"></span><h1><tt class="docutils literal"><span class="pre">handler.testing</span></tt> Module<a class="headerlink" href="#module-handler.testing" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="handler.testing.openConsole">
-<tt class="descclassname">handler.testing.</tt><tt class="descname">openConsole</tt><big>(</big><em>request</em><big>)</big><a class="headerlink" href="#handler.testing.openConsole" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">synopsis:</th><td class="field-body">Request handlers for testing the system.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="handler.testing.TestHandler">
+<em class="property">class </em><tt class="descclassname">handler.testing.</tt><tt class="descname">TestHandler</tt><a class="headerlink" href="#handler.testing.TestHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="dochandler.html#handler.dochandler.DocHandler" title="handler.dochandler.DocHandler"><tt class="xref py py-class docutils literal"><span class="pre">handler.dochandler.DocHandler</span></tt></a></p>
+<p>Catches requests and allows us to dissect them easily.</p>
+<dl class="method">
+<dt id="handler.testing.TestHandler.GET">
+<tt class="descname">GET</tt><big>(</big><em>request</em><big>)</big><a class="headerlink" href="#handler.testing.TestHandler.GET" title="Permalink to this definition">¶</a></dt>
+<dd><p>See <a class="reference internal" href="#handler.testing.TestHandler.openConsole" title="handler.testing.TestHandler.openConsole"><tt class="xref py py-func docutils literal"><span class="pre">openConsole()</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="handler.testing.TestHandler.POST">
+<tt class="descname">POST</tt><big>(</big><em>request</em>, <em>entity</em><big>)</big><a class="headerlink" href="#handler.testing.TestHandler.POST" title="Permalink to this definition">¶</a></dt>
+<dd><p>See <a class="reference internal" href="#handler.testing.TestHandler.openConsole" title="handler.testing.TestHandler.openConsole"><tt class="xref py py-func docutils literal"><span class="pre">openConsole()</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="handler.testing.TestHandler.openConsole">
+<tt class="descname">openConsole</tt><big>(</big><em>request</em>, <em>entity=None</em><big>)</big><a class="headerlink" href="#handler.testing.TestHandler.openConsole" title="Permalink to this definition">¶</a></dt>
+<dd><p>Catches a request and opens up a console on the server to inspect it.</p>
+<p>Once the console is open, the request data (including the query string)
+will be stored in the variable <tt class="docutils literal"><span class="pre">request</span></tt>. If this was a POST request
+then the entity will be stored in a variable called <tt class="docutils literal"><span class="pre">entity</span></tt>.</p>
+<p>Beware, a response will not be sent until the console is closed (use
+CTRL+D). More worryingly, the server cannot process any other request
+until this happens. This would make for an awfully simple DoS attack so
+<strong>don&#8217;t</strong> leave this available when deploying.</p>
+</dd></dl>
+
+</dd></dl>
 
 </div>
 
@@ -114,7 +149,7 @@
              >previous</a> |</li>
         <li><a href="../index.html">Reef Backend v0.1 documentation</a> &raquo;</li>
           <li><a href="../srv.html" >Server Related Modules</a> &raquo;</li>
-          <li><a href="../handler.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">handler</span></tt> Module</a> &raquo;</li> 
+          <li><a href="../handler.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">handler</span></tt> Module</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
