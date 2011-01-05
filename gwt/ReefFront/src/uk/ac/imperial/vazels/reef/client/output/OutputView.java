@@ -126,7 +126,6 @@ public class OutputView extends Composite {
   
   /**
    * Build a scatter chart representing the supplied group and variable.
-   * @param data The object with all our data.
    * @param group Group to represent.
    * @param variable Variable name to represent.
    * @return A scatter graph.
