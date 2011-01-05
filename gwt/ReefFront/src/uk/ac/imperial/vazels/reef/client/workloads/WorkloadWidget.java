@@ -3,130 +3,234 @@ package uk.ac.imperial.vazels.reef.client.workloads;
 import java.util.Set;
 
 import uk.ac.imperial.vazels.reef.client.AddressResolution;
+import uk.ac.imperial.vazels.reef.client.managers.IManager;
+import uk.ac.imperial.vazels.reef.client.managers.ManagerChangeHandler;
 import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
 import uk.ac.imperial.vazels.reef.client.managers.PullCallback;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 
 //TODO: error of not reaching server must be displayed
 
-public class WorkloadWidget extends Composite {
+/**
+ * Widget to display information about current workloads on the server, as
+ * well to upload new workloads.
+ */
+public class WorkloadWidget extends Composite implements ManagerChangeHandler {
+  
+  /**
+   * Generated code - gives us an interface to the XML-defined UI.
+   */
+  private static WorkloadWidgetUiBinder uiBinder = GWT
+    .create(WorkloadWidgetUiBinder.class);
+  
+  /**
+   * Generated code. 
+   */
+  interface WorkloadWidgetUiBinder extends UiBinder<Widget, WorkloadWidget> {
+  }
+  
+  @UiField FlexTable workloadTable;
+  @UiField FormPanel formPanel;
+  @UiField TextBox wkld_name;
+  @UiField FileUpload wkld_file;
+  @UiField Button submitBtn;
+  
   ListBox listWklds;
 
   public WorkloadWidget() {
-    initPanel();
-  }
-
-  void initPanel() {
-    //create FormPanel to send to server
-    final FormPanel formPanel = new FormPanel();    
-    initWidget(formPanel);
+    initWidget(uiBinder.createAndBindUi(this));
+    
     formPanel.setAction(new AddressResolution().resolve("/workloads"));
     
-    //on submission to server, inform manager that workload was uploaded
-    formPanel.addSubmitCompleteHandler(new SubmitCompleteHandler() {
-      public void onSubmitComplete(SubmitCompleteEvent event) {
-        WorkloadManager.getManager().workloadUploaded(event.getResults().trim());
-        try {
-          WorkloadManager.getManager().getServerData();
-        } catch (MissingRequesterException e) {
-          e.printStackTrace();
-        }
-      }
-    });
-
-    //principal display panel for widget
-    VerticalPanel uploadPanel = new VerticalPanel();
-    formPanel.setWidget(uploadPanel); 
-
-    //necessary for fileUpload
-    formPanel.setEncoding(FormPanel.ENCODING_MULTIPART);
-    formPanel.setMethod(FormPanel.METHOD_POST);
-
-    //to select file to upload
-    final FileUpload wkld_file = new FileUpload();
-    wkld_file.setName("wkld_file");
-    uploadPanel.add(new Label("Workload file: "));
-    uploadPanel.add(wkld_file);
+    workloadTable.setText(0, 0, "Name");
+    workloadTable.setText(0, 1, "File");
     
-    //to name file to be uploaded
-    uploadPanel.add(new Label("Workload name: "));
-    final TextBox wkld_name = new TextBox();
-    wkld_name.setName("wkld_name");
-    wkld_name.setText("");
-    //maybe create a listener that automatically puts filename -.wkld as the name
-    uploadPanel.add(wkld_name);
-
-    //eventually a textbox for workload writing here
-
-    //ListBox to display list of workloads    
-    listWklds = new ListBox();
-    uploadPanel.add(new Label("Previously uploaded workloads: "));
-    uploadPanel.add(listWklds);
-    populateListWklds();
-
-    //button to submit all the above when ready
-    //validation occurs when pressed prior to form submission
-    Button button = new Button ("Submit", new ClickHandler() {
-      public void onClick(ClickEvent event) {
-        if(validateWorkloadName(wkld_name.getText())) {
-          if(wkld_file.getFilename().endsWith(".wkld")) {
-            formPanel.submit();
-          }
-          else {
-            Window.alert("Workloads must be of type: .wkld");
-          }
-          //assuming success, give new workload to workloads class
-          listWklds.addItem(wkld_name.getText());
-          wkld_name.setText("");
-        }
-      }
-
-    });
-    uploadPanel.add(button);  
+    wkld_name.removeFromParent();
+    workloadTable.setWidget(1, 0, wkld_name);
+    wkld_file.removeFromParent();
+    workloadTable.setWidget(1, 1, wkld_file);
+    submitBtn.removeFromParent();
+    workloadTable.setWidget(1, 2, submitBtn);
+    
+    WorkloadManager.getManager().addChangeHandler(this);
+    
+    try {
+      WorkloadManager.getManager().getAllServerData();
+    } catch (MissingRequesterException e) {
+      e.printStackTrace();
+    }
   }
 
-  //validate name of workload, checking non-empty and unique
+  /**
+   * Grab new data and update display.
+   * @param event Form submit event.
+   */
+  @UiHandler("formPanel")
+  void onSubmitComplete(SubmitCompleteEvent event) {
+    WorkloadManager.getManager().workloadUploaded(event.getResults().trim());
+    
+    try {
+      WorkloadManager.getManager().getServerData();
+    } catch (MissingRequesterException e) {
+      e.printStackTrace();
+    }
+  }
+  
+  /**
+   * Uploads an workload is the validation is correct.
+   * @param event Button click event.
+   */
+  @UiHandler("submitBtn")
+  void onClick(ClickEvent event) {
+    if(validateWorkloadName(wkld_name.getText()) && validateWorkloadFile(wkld_file.getFilename())) {
+      formPanel.submit();
+      setEnabled(false);
+    }
+    else {
+      clearInterface(true);
+    }
+  }
+  
+  /**
+   * Validate the workload name, checking it's non-empty, alphanumeric and unique.
+   * @param wkldName Name to check.
+   * @return Whether the name is valid.
+   */
   private boolean validateWorkloadName(String wkldName) {
-    if(WorkloadManager.getManager().getNames().contains(wkldName)) {
-      Window.alert("You already have a group named '"+wkldName+"'.");
+    String name = wkldName.trim();
+    
+    if(WorkloadManager.getManager().getNames().contains(name)) {
+      Window.alert("You already have a group named '"+name+"'.");
       return false;
     }
-    if(wkldName.equals("")) {
-      Window.alert("Must have non-empty workload name");
+    else if(!name.matches("^[0-9A-Za-z]{1,}$")) {
+      Window.alert("Workload names must be alphanumeric.");
       return false;
     }
-    //groups were alphanumeric, is this something enforced for workloads?
+    
     return true;
   }
   
-  //initial pulling of list of workloads from server, to populate listWklds
-  private void populateListWklds() {
-    final WorkloadManager man = WorkloadManager.getManager();
+  /**
+   * Validate the filename of an workload file.
+   * @param file The file name.
+   * @return Whether the filename is valid.
+   */
+  private boolean validateWorkloadFile(String file) {
+    if(file.endsWith(".wkld")) {
+      return true;
+    }
+    else {
+      Window.alert("Workload files must have the '.wkld' extension.");
+      return false;
+    }
+  }
+  
+  /**
+   * Enable or disable the widget controls.
+   * @param enabled Whether or not to enable.
+   */
+  protected void setEnabled(boolean enabled) {
+    wkld_name.setEnabled(enabled);
+    wkld_file.setEnabled(enabled);
+    submitBtn.setEnabled(enabled);
+  }
+  
+  /**
+   * Clear all input fields.
+   * @param highlight Should we just highlight the name instead?
+   */
+  protected void clearInterface(boolean highlight) {
+    if(highlight) {
+      wkld_name.selectAll();
+    }
+    else {
+      wkld_name.setText("");
+    }
+    // Cannot reset a file widget :(
+  }
+  
+  /**
+   * Updates the interface whenever local workload data changes.
+   * <p>
+   * If we allow editing of workloads we must make sure this handler is added to
+   * all workloads rather than just the list.
+   * <p>
+   * i.e. Use {@link WorkloadManager#addChangeHandler(ManagerChangeHandler, boolean)}
+   * with the second argument {@code true}
+   */
+  public void change(IManager m) {
     try {
-      //get the list of workloads from the server and add them to wkldsBox
-      man.withServerData(new PullCallback() {
+      WorkloadManager.getManager().withAllServerData(new PullCallback() {
+        @Override
         public void got() {
-          Set<String> workloads = man.getNames();
-          for(String wkld : workloads) {
-            listWklds.addItem(wkld);
-          }
+          updateInterface();
         }
       });
     } catch (MissingRequesterException e) {
       e.printStackTrace();
+    }
+  }
+  
+  /**
+   * Updates the interface with the newest data.
+   */
+  protected void updateInterface() {
+    final WorkloadManager man = WorkloadManager.getManager();
+    clearTable();
+    Set<String> wklds = man.getNames();
+    for(String wkld : wklds) {
+      SingleWorkloadManager wMan = man.getWorkloadManager(wkld);
+      addWorkloadToTable(wMan.getName(), wMan.getDownloadURL());
+    }
+    
+    setEnabled(true);
+    clearInterface(false);
+  }
+  
+  /**
+   * Add a single workload to the table.
+   * @param name Name of the workload.
+   * @param url URL to download the workload.
+   */
+  private void addWorkloadToTable(final String name, final String url) {
+    int row = workloadTable.getRowCount()-1;
+    workloadTable.insertRow(row);
+    // Add the workload to the table.
+    workloadTable.setText(row, 0, name);
+    
+    Button download = new Button("Download");
+    download.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        Window.open(url, "", "");
+      }
+    });
+    workloadTable.setWidget(row, 1, download);
+  }
+  
+  /**
+   * Wipe the table.
+   */
+  private void clearTable() {
+    while(workloadTable.getRowCount() > 2) {
+      workloadTable.removeRow(1);
     }
   }
 }
