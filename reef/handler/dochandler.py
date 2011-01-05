@@ -18,32 +18,32 @@ class DocHandler:
     """
 
     def GET(self, request):
-      """
-      Handle a GET request.
+        """
+        Handle a GET request.
 
-      This is a dummy. Override it to actually handle GET requests.
+        This is a dummy. Override it to actually handle GET requests.
 
-      :param request: The request data
-      :type request: :class:`restlite.Request`
-      :returns: A response from :func:`restlite.Request.response`.
-      :rtype: ``str``
+        :param request: The request data
+        :type request: :class:`restlite.Request`
+        :returns: A response from :func:`restlite.Request.response`.
+        :rtype: ``str``
 
-      """
+        """
 
     def POST(self, request, entity):
-      """
-      Handle a POST request.
+        """
+        Handle a POST request.
 
-      This is a dummy. Override it to actually handle POST requests.
+        This is a dummy. Override it to actually handle POST requests.
 
-      :param request: The request data
-      :type request: :class:`restlite.Request`
-      :param entity: The POST entity.
-      :type entity: ``str`` or an object...
-      :returns: A response from :func:`restlite.Request.response`.
-      :rtype: ``str``
+        :param request: The request data
+        :type request: :class:`restlite.Request`
+        :param entity: The POST entity.
+        :type entity: ``str`` or an object...
+        :returns: A response from :func:`restlite.Request.response`.
+        :rtype: ``str``
 
-      """
+        """
 
     def _getOverriddenFuncs(self):
         """
@@ -77,5 +77,4 @@ class DocHandler:
 
         """
 
-        import restlite
         return restlite.resource(self._getOverriddenFuncs)

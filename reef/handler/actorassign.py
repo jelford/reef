@@ -108,7 +108,7 @@ class ActorAssignHandler(DocHandler):
             raise restlite.Status, "409 Actor Already Attached"
         workload["actors"].append(actor)
 
-    def remActor(workload, actor):
+    def remActor(self, workload, actor):
         """
         Remove an actor from the given workload.
 

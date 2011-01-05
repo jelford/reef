@@ -207,7 +207,6 @@ class ActorsHandler(DocHandler):
         )
 
 
-    # Save an actor to a new file and add to defs
     def saveActor(self, name, type, content):
         """
         Save an actor to a new file and add to defs in the :mod:`config`.

@@ -66,7 +66,6 @@ class GroupBatchHandler(DocHandler):
 class GroupHandler(DocHandler):
     """Handles requests for individual groups."""
 
-    ## GET requests are for grabbing current info on a group
     def GET(self, request):
         """
         Get the JSON representation of a specific group.
@@ -91,7 +90,6 @@ class GroupHandler(DocHandler):
         except KeyError:
             raise restlite.Status, "404 Group Not Found"
 
-    # POST requests will set up a group
     def POST(self, request, entity):
         """
         Create a new or edit an existing group.
@@ -146,8 +144,6 @@ class GroupHandler(DocHandler):
 
 
 
-# Returns a dict of new data gotten from the given args
-# Raises a status exception if args are incorrect
 def _getGroupDataFromArgs(args):
     """
     Parse and validate arguments to create a group dictionary.

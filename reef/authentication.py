@@ -65,7 +65,6 @@ def refresh():
             addUserToModel(user, users[user])
 
 
-# Add user to the current model (assuming it exists)
 def addUserToModel(user, password):
     """
     Add a user to the cached authentication model.
