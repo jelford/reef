@@ -73,7 +73,7 @@ echo
 
 # Perform the documentation grabbing
 for type in "$@"; do
-  ../getDocs_$type.sh
+  ../getDocs_$type.sh "$branchname" "$commitsha"
 done
 
 echo

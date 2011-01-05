@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # This will be run inside the git repo and given the vars
-# - branchname
-# - commit
+# - $1 = branchname
+# - $2 = commit sha
 
 # Get rid of the current javadoc dir and replace the contents
 echo -n "Clearing the javadoc directory..."
@@ -15,4 +15,4 @@ echo "Done."
 # Commit changes
 echo "Committing new pages..."
 git add javadoc &> /dev/null
-git commit -m "Added JavaDocs for the branch \"$branchname\" at commit: $commitsha" &> /dev/null
+git commit -m "Added JavaDocs for the branch \"$1\" at commit: $2" &> /dev/null
