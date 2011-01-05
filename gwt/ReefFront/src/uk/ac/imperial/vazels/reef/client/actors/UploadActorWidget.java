@@ -6,6 +6,7 @@ import uk.ac.imperial.vazels.reef.client.AddressResolution;
 import uk.ac.imperial.vazels.reef.client.managers.IManager;
 import uk.ac.imperial.vazels.reef.client.managers.ManagerChangeHandler;
 import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
+import uk.ac.imperial.vazels.reef.client.managers.PullCallback;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -90,7 +91,7 @@ public class UploadActorWidget extends Composite implements ManagerChangeHandler
     ActorManager.getManager().actorUploaded(event.getResults().trim());
     
     try {
-      ActorManager.getManager().getAllServerData();
+      ActorManager.getManager().getServerData();
     } catch (MissingRequesterException e) {
       e.printStackTrace();
     }
@@ -127,9 +128,31 @@ public class UploadActorWidget extends Composite implements ManagerChangeHandler
   
   /**
    * Updates the interface whenever local actor data changes.
+   * <p>
+   * If we allow editing of actors we must make sure this handler is added to
+   * all actors rather than just the list.
+   * <p>
+   * i.e. Use {@link ActorManager#addChangeHandler(ManagerChangeHandler, boolean)}
+   * with the second argument {@code true}
    */
   public void change(IManager m) {
-    ActorManager man = ActorManager.getManager();
+    try {
+      ActorManager.getManager().withAllServerData(new PullCallback() {
+        @Override
+        public void got() {
+          updateInterface();
+        }
+      });
+    } catch (MissingRequesterException e) {
+      e.printStackTrace();
+    }
+  }
+  
+  /**
+   * Updates the interface with the newest data.
+   */
+  protected void updateInterface() {
+    final ActorManager man = ActorManager.getManager();
     clearTable();
     Set<String> actors = man.getNames();
     for(String actor : actors) {

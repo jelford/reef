@@ -203,14 +203,42 @@ public abstract class ListedCollectionManager<Id, Man extends IManager> implemen
     });
   }
   
+  /**
+   * Add a change handler to the item list. Optionally can add the handler
+   * to all items too.
+   * @param handler The actual change handler.
+   * @param all Whether to add to all the items as well as the list.
+   */
+  public void addChangeHandler(ManagerChangeHandler handler, boolean all) {
+    listManager.addChangeHandler(handler);
+    
+    if(all) {
+      collectionManager.addChangeHandlerToAll(handler);
+    }
+  }
+  
   @Override
   public void addChangeHandler(ManagerChangeHandler handler) {
-    listManager.addChangeHandler(handler);
+    addChangeHandler(handler, false);
   }
 
+  /**
+   * Remove a change handler from the item list. Optionally can remove the handler
+   * from all items too.
+   * @param handler The actual change handler.
+   * @param all Whether to remove from all the items as well as the list.
+   */
+  public void removeChangeHandler(ManagerChangeHandler handler, boolean all) {
+    listManager.removeChangeHandler(handler);
+    
+    if(all) {
+      collectionManager.removeChangeHandlerFromAll(handler);
+    }
+  }
+  
   @Override
   public void removeChangeHandler(ManagerChangeHandler handler) {
-    listManager.removeChangeHandler(handler);
+    removeChangeHandler(handler, false);
   }
 
   /**
