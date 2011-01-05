@@ -1,0 +1,21 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:style field="useful" src="../ui/useful.css"/>
+
+	<g:FormPanel ui:field="formPanel" encoding="multipart/form-data" method="POST">
+		<g:VerticalPanel ui:field="uploadPanel">
+			<g:Label text="Actor file: " />
+			<g:FileUpload ui:field="actor_file" name="actor_file" />
+			<g:Label text="Actor name: " />
+			<g:TextBox ui:field="actor_name" name="actor_name" text="" />
+			<g:Label text="Actor type: " />
+			<g:ListBox ui:field="actorLanguage" />
+			<g:TextBox ui:field="actorLang" name="actor_type" visible="false" />
+			<g:Label text="Previously uploaded actors"/>
+			<g:ListBox ui:field="actorList"/>
+			<g:Button ui:field="button" text="Submit" />
+		</g:VerticalPanel>
+	</g:FormPanel>
+</ui:UiBinder> 
