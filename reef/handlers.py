@@ -20,7 +20,7 @@ from handler.groups import GroupHandler, GroupBatchHandler
 from handler.status import StatusHandler
 from handler.output_full import OutputFullHandler
 from handler.probe import ProbeHandler
-from handler.groups import SUE_handler
+from handler.sue_handler import SUE_handler
 
 '''
 This module is responsible for routing the different possible paths to their
