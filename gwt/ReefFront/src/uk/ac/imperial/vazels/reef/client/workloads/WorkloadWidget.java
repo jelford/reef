@@ -38,7 +38,7 @@ public class WorkloadWidget extends Composite {
     //on submission to server, inform manager that workload was uploaded
     formPanel.addSubmitCompleteHandler(new SubmitCompleteHandler() {
       public void onSubmitComplete(SubmitCompleteEvent event) {
-        WorkloadManager.getManager().workloadUploaded(event.getResults());
+        WorkloadManager.getManager().workloadUploaded(event.getResults().trim());
         try {
           WorkloadManager.getManager().getServerData();
         } catch (MissingRequesterException e) {

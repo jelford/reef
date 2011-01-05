@@ -147,7 +147,7 @@ class WorkloadHandler(DocHandler):
             raise restlite.Status, "400 No Workload Supplied"
 
         saveWorkload(wkldname, wkld)
-        return request.response(wkldname, "text/plain")
+        return request.response(wkldname, "text/html")
 
 
 def parseMultipart(request, entity):

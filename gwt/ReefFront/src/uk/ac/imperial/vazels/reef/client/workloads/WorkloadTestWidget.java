@@ -63,7 +63,7 @@ public class WorkloadTestWidget extends Composite {
 
   @UiHandler("form")
   void onSubmitComplete(SubmitCompleteEvent event) {
-    WorkloadManager.getManager().workloadUploaded(event.getResults());
+    WorkloadManager.getManager().workloadUploaded(event.getResults().trim());
 
     try {
       WorkloadManager.getManager().getServerData();

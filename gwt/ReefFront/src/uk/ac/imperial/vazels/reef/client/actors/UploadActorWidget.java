@@ -87,8 +87,7 @@ public class UploadActorWidget extends Composite implements ManagerChangeHandler
    */
   @UiHandler("formPanel")
   void onSubmitComplete(SubmitCompleteEvent event) {
-    Window.alert(event.getResults());
-    ActorManager.getManager().actorUploaded(event.getResults());
+    ActorManager.getManager().actorUploaded(event.getResults().trim());
     
     try {
       ActorManager.getManager().getAllServerData();

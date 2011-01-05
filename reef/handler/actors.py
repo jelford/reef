@@ -133,7 +133,7 @@ class ActorsHandler(DocHandler):
             raise restlite.Status, "400 No Actor Supplied"
 
         self.saveActor(actorname, actortype, actor)
-        return request.response(actorname, "text/plain")
+        return request.response(actorname, "text/html")
 
 
     def showActorFile(self, request, actorname):
