@@ -20,7 +20,10 @@
 		</g:Tab>
 		<g:Tab>
 			<g:TabHTML>4.Assign Workloads &amp; Actors</g:TabHTML>
-			<g:Label>I am waiting for chris. chriiiiiiiiis!</g:Label>
+			<g:StackPanel>
+				<workload:ActorWorkloadWidget g:StackPanel-text="Assign Actors to Workloads" />
+				<workload:WorkloadGroupsWidget g:StackPanel-text="Assign Workloads to Groups" />
+			</g:StackPanel>
 		</g:Tab>
 		<g:Tab>
 			<g:TabHTML>5.Start Experiment</g:TabHTML>
