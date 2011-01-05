@@ -6,7 +6,6 @@ import uk.ac.imperial.vazels.reef.client.AddressResolution;
 import uk.ac.imperial.vazels.reef.client.managers.IManager;
 import uk.ac.imperial.vazels.reef.client.managers.ManagerChangeHandler;
 import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
-import uk.ac.imperial.vazels.reef.client.managers.PullCallback;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -25,6 +24,10 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 
+/**
+ * Widget to display information about current actors on the server, as
+ * well to upload new actors.
+ */
 public class UploadActorWidget extends Composite implements ManagerChangeHandler {
   /**
    * Generated code - gives us an interface to the XML-defined UI.
@@ -78,9 +81,13 @@ public class UploadActorWidget extends Composite implements ManagerChangeHandler
     }
   }
   
-  //tell manager that actor has been uploaded and add new item to onscreen list of actors
+  /**
+   * Grab new data and update display.
+   * @param event Form submit event.
+   */
   @UiHandler("formPanel")
-  public void onSubmitComplete(SubmitCompleteEvent event) {
+  void onSubmitComplete(SubmitCompleteEvent event) {
+    Window.alert(event.getResults());
     ActorManager.getManager().actorUploaded(event.getResults());
     
     try {
@@ -90,15 +97,22 @@ public class UploadActorWidget extends Composite implements ManagerChangeHandler
     }
   }
   
-  //button used when ready to submit all data
+  /**
+   * Uploads an actor is the validation is correct.
+   * @param event Button click event.
+   */
   @UiHandler("submitBtn")
-  public void onClick(ClickEvent event) {
+  void onClick(ClickEvent event) {
     if(validateActorName(actor_name.getText())) {
       formPanel.submit();
     }
   }
 
-  //validate name of actor, checking non-empty and unique
+  /**
+   * Validate the actor name, checking it's non-empty and unique.
+   * @param actorName Name to check.
+   * @return Whether the name is valid.
+   */
   private boolean validateActorName(String actorName) {
     if(ActorManager.getManager().getNames().contains(actorName)) {
       Window.alert("You already have a group named '"+actorName+"'.");
@@ -112,26 +126,25 @@ public class UploadActorWidget extends Composite implements ManagerChangeHandler
     return true;
   }
   
-  //used for initial pulling of currently existing actors from the server
+  /**
+   * Updates the interface whenever local actor data changes.
+   */
   public void change(IManager m) {
-    final ActorManager man = ActorManager.getManager();
-    try {
-      //get the list of actors from the server and add them to actorList
-      man.withAllServerData(new PullCallback() {
-        public void got() {
-          clearTable();
-          Set<String> actors = man.getNames();
-          for(String actor : actors) {
-            SingleActorManager aMan = man.getActorManager(actor);
-            addActorToTable(aMan.getName(), aMan.getDownloadURL(), aMan.getType());
-          }
-        }
-      });
-    } catch (MissingRequesterException e) {
-      e.printStackTrace();
+    ActorManager man = ActorManager.getManager();
+    clearTable();
+    Set<String> actors = man.getNames();
+    for(String actor : actors) {
+      SingleActorManager aMan = man.getActorManager(actor);
+      addActorToTable(aMan.getName(), aMan.getDownloadURL(), aMan.getType());
     }
   }
   
+  /**
+   * Add a single actor to the table.
+   * @param name Name of the actor.
+   * @param url URL to download the actor.
+   * @param type The type of actor. e.g. "PYTHON"
+   */
   private void addActorToTable(final String name, final String url, final String type) {
     int row = actorTable.getRowCount()-1;
     actorTable.insertRow(row);
