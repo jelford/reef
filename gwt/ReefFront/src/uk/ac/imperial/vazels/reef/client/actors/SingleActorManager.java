@@ -65,6 +65,9 @@ public class SingleActorManager extends Manager<Actor, Void> {
   
   // Requests
   
+  /**
+   * Request builder for getting specific actor data.
+   */
   protected class ActorRequest extends MultipleRequester<Actor> {
     public ActorRequest(String ext) {
       super(RequestBuilder.GET, "/actors/"+ext, new Converter<Actor>() {

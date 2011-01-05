@@ -8,6 +8,9 @@ import uk.ac.imperial.vazels.reef.client.MultipleRequester;
 import uk.ac.imperial.vazels.reef.client.managers.JsArrayStringSetConverter;
 import uk.ac.imperial.vazels.reef.client.managers.ListedCollectionManager;
 
+/**
+ * Manages actor-based information.
+ */
 public class ActorManager extends ListedCollectionManager<String, SingleActorManager> {
     private static ActorManager manager = null;
     
@@ -56,6 +59,9 @@ public class ActorManager extends ListedCollectionManager<String, SingleActorMan
       return new SingleActorManager(id);
     }
     
+    /**
+     * Request builder for getting the actor list.
+     */
     private class ActorPuller extends MultipleRequester<Set<String>> {
       public ActorPuller() {
         super(RequestBuilder.GET, "/actors/", new JsArrayStringSetConverter());

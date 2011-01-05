@@ -2,13 +2,16 @@ package uk.ac.imperial.vazels.reef.client.actors;
 
 import uk.ac.imperial.vazels.reef.client.actors.ActorOverlay;
 
-//represents an actor as represented on the server
+/**
+ * Java version of the {@link ActorOverlay}.
+ */
 public class Actor {
   private final String name;
   private String type;  
 
-  /* create the actor representation
-   * @param name Either the workload name, or a json string representing the workload.
+  /** 
+   * Create the actor representation.
+   * @param name Either the actor name, or a json string representing the actor.
    */
   public Actor(String name) {
     ActorOverlay actor = parseJSON(name);
@@ -37,12 +40,17 @@ public class Actor {
     return this.type;
   }
   
+  /**
+   * Try to parse a string as json.
+   * @param json The json string.
+   * @return An {@link ActorOverlay} if the parse was successful or {@code null}.
+   */
   protected native ActorOverlay parseJSON(String json) /*-{
-  try {
-    return JSON.parse(json);
-  }
-  catch(e) {
-    return null;
-  }
-}-*/;
+    try {
+      return JSON.parse(json);
+    }
+    catch(e) {
+      return null;
+    }
+  }-*/;
 }

@@ -113,20 +113,22 @@ public class UploadActorWidget extends Composite implements ManagerChangeHandler
   }
 
   /**
-   * Validate the actor name, checking it's non-empty and unique.
+   * Validate the actor name, checking it's non-empty, alphanumeric and unique.
    * @param actorName Name to check.
    * @return Whether the name is valid.
    */
   private boolean validateActorName(String actorName) {
-    if(ActorManager.getManager().getNames().contains(actorName)) {
+    String name = actorName.trim();
+    
+    if(ActorManager.getManager().getNames().contains(name)) {
       Window.alert("You already have a group named '"+actorName+"'.");
       return false;
     }
-    else if(actorName.equals("")) {
-      Window.alert("Must give actor a name");
+    else if(name.matches("^[0-9A-Za-z]{1,}$")) {
+      Window.alert("Actor names must be alphanumeric.");
       return false;
     }
-    //groups were alphanumeric, is this something enforced for actors?
+    
     return true;
   }
   
