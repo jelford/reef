@@ -5,7 +5,7 @@ import uk.ac.imperial.vazels.reef.client.actors.ActorOverlay;
 //represents an actor as represented on the server
 public class Actor {
   private final String name;
-  private String language;  
+  private String type;  
 
   /* create the actor representation
    * @param name Either the workload name, or a json string representing the workload.
@@ -17,7 +17,7 @@ public class Actor {
     }
     else {
       this.name = actor.getName();
-      this.language = actor.getLanguage();
+      this.type = actor.getType();
     }
   }
 
@@ -33,8 +33,8 @@ public class Actor {
    * Get the programming language/type of the actor.
    * @return Type of the actor.
    */
-  public String getLanguage() {
-    return this.language;
+  public String getType() {
+    return this.type;
   }
   
   protected native ActorOverlay parseJSON(String json) /*-{

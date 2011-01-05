@@ -9,7 +9,7 @@ public class ActorOverlay extends JavaScriptObject {
       return this.name;
     }-*/;
 
-  public final native String getLanguage() /*-{
-      return this.language;
+  public final native String getType() /*-{
+      return this.type;
     }-*/;
 }

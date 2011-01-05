@@ -37,8 +37,8 @@ public class SingleActorManager extends Manager<Actor, Void> {
    * Get the type of this actor.
    * @return actor language
    */
-  public String getLanguage() {
-    return actor.getLanguage();
+  public String getType() {
+    return actor.getType();
   }
   
   /**
