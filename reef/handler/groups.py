@@ -34,6 +34,7 @@ class Group(dict):
         self["filters"] = set([]) # Store a list of mapping restrictions (currently non-functional)
         self["online_hosts"] = set([]) # Store a list of host names for connected & evolving hosts
         self["evolving_hosts"] = set([])  
+        self["sue_components"] = set([])
 
     def _json_(self):
         return {"name" : self["name"],
@@ -42,6 +43,7 @@ class Group(dict):
                 "filters" : list(self["filters"]),
                 "online_hosts" : list(self["online_hosts"]),
                 "evolving_hosts" : list(self["evolving_hosts"])
+                "sue_components" = list(self["sue_components"])
                 }
 
 

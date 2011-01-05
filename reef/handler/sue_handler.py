@@ -5,14 +5,14 @@ import config
 import authentication
 import os
 
-
 config.getSettings("SUE").setdefault("dir","SUE")
-config.getSettings("SUE").setdefault("defs", {})
+config.getSettings("SUE").setdefault("defs", {}) # Each def will be a dict like {"name" : "SueComponentName", "file" : "SomeTempFile"}
 
 ### Assignment of SUE components to groups ###
 # GETting will return which SUE component names are assigned to which groups
-# POSTing a file/componentname with a group name (/SUE/groupname/) will assign
-#   that component to that group with that label
+# POSTing a file/componentname will upload a new Sue Component
+# - component_name gives the name
+# - component_file gives the file
 
 @restlite.resource
 def SUE_handler():
@@ -39,31 +39,22 @@ def SUE_handler():
     
     fields = parseMultipart(request, entity)
     if fields is None:
-      raise restlite.Status, "400 Invalid SUE POST request"
+      raise restlite.Status, "400 Invalid SUE POST request - need parameters"
     
-    # Try to find out which group we're sending to
-    group_name = fields.getfirst("group_name")
-    if not group_name:
-      group_name = request['PATH_INFO']
-      
     # Try to find what we should label the component
     component_name = fields.getfirst("component_name")
     if not component_name:
       raise restlite.Status, "400 Must give the SUE component a name"
     
-    # If we can't find the group then throw
-    if not group_name in groups:
-      raise restlite.Status, "400 Invalid group given for SUE request"
-    
     # Try to get the SUE component
     try:
       component_f = fields['component_file']
       if component_f.file:
+        with component_f.file.read() as component:
+          saveSueComponent(component_name, component)
         component = component_f.file.read()
     except KeyError:
       raise restlite.Status, "400 Must provide a file when specifying a SUE component"
-    
-    saveSueComponent(component_name, group_name, component)
     
     return request.response("", "text/plain")
   
@@ -90,7 +81,7 @@ def parseMultipart(request, entity):
     
 
 # Save a SueComponent to a new file and add to naming list
-def saveSueComponent(component_name, group_name, component_file):
+def saveSueComponent(component_name, component_file):
     import tempfile
     sue_dir = os.path.join(
         config.getSettings("global")["projdir"],
@@ -119,10 +110,8 @@ def saveSueComponent(component_name, group_name, component_file):
     if component_name in config.getSettings("SUE")["defs"]:
         os.remove(config.getSettings("SUE")["defs"][component_name]["file"])
     config.getSettings("SUE")["defs"][component_name] = newSueComponent
-    
-    config.getSettings("groups")[group_name]["sue_components"].append(component_name)
-    config.saveConfig()
 
+    config.saveConfig()
 
 def ensureDir(dir):
     if not os.path.isdir(dir):
