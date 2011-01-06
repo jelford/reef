@@ -3,10 +3,7 @@ package uk.ac.imperial.vazels.reef.client.workloads;
 import java.util.HashSet;
 import java.util.Set;
 
-import uk.ac.imperial.vazels.reef.client.MultipleRequester;
-
 import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.http.client.RequestBuilder;
 
 /**
  * Represents a workload as stored on the server.
