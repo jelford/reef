@@ -11,6 +11,8 @@ import com.google.gwt.core.client.JsArrayString;
 public class Group {
   private Set<String> workloads;
   private Set<String> sue_components;
+  private Set<String> connectedHosts;
+  private Set<String> evolvingHosts;
   private final String name;
   private int size;
   
@@ -25,6 +27,8 @@ public class Group {
     this.size = size;
     this.workloads = new HashSet<String>();
     this.sue_components = new HashSet<String>();
+    this.connectedHosts = new HashSet<String>();
+    this.evolvingHosts = new HashSet<String>();
   }
   
   /**
@@ -47,6 +51,19 @@ public class Group {
     for (int i=0; i<nSueComponents.length(); i++) {
       this.sue_components.add(nSueComponents.get(i));
     }
+    
+    JsArrayString nConnectedHosts = overlay.getConnectedHosts();
+    this.connectedHosts = new HashSet<String>();
+    for (int i=0; i<nConnectedHosts.length(); i++) {
+      this.connectedHosts.add(nConnectedHosts.get(i));
+    }
+    
+    JsArrayString nEvolvingHosts = overlay.getEvolvingHosts();
+    this.evolvingHosts = new HashSet<String>();
+    for (int i=0; i<nEvolvingHosts.length(); i++) {
+      this.evolvingHosts.add(nEvolvingHosts.get(i));
+    }
+    
   }
   
   /**
@@ -113,6 +130,16 @@ public class Group {
   public String[] getSueComponents() {
     String [] sueComponentArray = new String[sue_components.size()];
     return sue_components.toArray(sueComponentArray);
+  }
+  
+  public String[] getConnectedHosts() {
+    String [] connectedHostsArray = new String[connectedHosts.size()];
+    return connectedHosts.toArray(connectedHostsArray);
+  }
+  
+  public String[] getEvolvingHosts() {
+    String [] evolvingHostsArray = new String[evolvingHosts.size()];
+    return evolvingHosts.toArray(evolvingHostsArray);
   }
   
   /**

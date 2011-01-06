@@ -116,6 +116,20 @@ public class SingleGroupManager extends SingleTypeManager<Group> implements Dele
     return group.getSueComponents();
   }
   
+  /**
+   * Get the list of fully connected hosts in this group
+   */
+  public String[] getConnectedHosts() {
+    return group.getConnectedHosts();
+  }
+  
+  /**
+   * Get a list of evolving host names in the group
+   */
+  public String[] getEvolvingHosts() {
+    return group.getEvolvingHosts();
+  }
+  
   // Data processing
   
   @Override

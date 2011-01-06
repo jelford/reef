@@ -36,4 +36,12 @@ public class GroupOverlay extends JavaScriptObject{
   public native final JsArrayString getSueComponents() /*-{
     return this.sue_components;
   }-*/;
+  
+  public native final JsArrayString getConnectedHosts() /*-{
+    return this.online_hosts;
+  }-*/;
+  
+  public native final JsArrayString getEvolvingHosts() /*-{
+    return this.evolving_hosts;
+  }-*/;
 }
