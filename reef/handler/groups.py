@@ -42,8 +42,8 @@ class Group(dict):
                 "workloads" : list(self["workloads"]),
                 "filters" : list(self["filters"]),
                 "online_hosts" : list(self["online_hosts"]),
-                "evolving_hosts" : list(self["evolving_hosts"])
-                "sue_components" = list(self["sue_components"])
+                "evolving_hosts" : list(self["evolving_hosts"]),
+                "sue_components" : list(self["sue_components"])
                 }
 
 
@@ -185,6 +185,10 @@ def _getGroupDataFromArgs(args):
     # Add filter list
     if "filters" in args:
         group["workloads"] = args["filters"]
+        n_args = n_args - 1
+        
+    if "sue_components" in args:
+        group["sue_components"] = args["sue_components"]
         n_args = n_args - 1
 
     if n_args > 0:

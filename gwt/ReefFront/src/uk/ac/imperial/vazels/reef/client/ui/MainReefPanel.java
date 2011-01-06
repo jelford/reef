@@ -73,7 +73,7 @@ public class MainReefPanel extends Composite implements ManagerChangeHandler {
       break;
     }
     
-    if(!oldPhase.equals(runningPhase)) {
+    if(oldPhase != runningPhase) {
       setPhase();
     }
   }

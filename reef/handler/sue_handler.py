@@ -16,49 +16,52 @@ config.getSettings("SUE").setdefault("defs", {}) # Each def will be a dict like 
 
 @restlite.resource
 def SUE_handler():
-  def GET(request):
-    authentication.login(request)
-    groups = config.getSettings("groups")
+    def GET(request):
+        authentication.login(request)
+        groups = config.getSettings("groups")
     
-    component_info = {}
+        component_info = {}
     
-    # For each component, build a list of groups to which it is assigned.
-    for component_name in config.getSettings("SUE")[defs]:
-      assigned_groups = []
-      for group in groups:
-        if groups[group]["sue_components"].indexof(component_name) != -1:
-          assigned_groups.append(group)
-      component_info[component_name] = assigned_groups
+        # For each component, build a list of groups to which it is assigned.
+        for component_name in config.getSettings("SUE")["defs"]:
+            assigned_groups = []
+            for group in groups:
+                if component_name in groups[group]["sue_components"]:
+                  assigned_groups.append(group)
+                component_info[component_name] = assigned_groups
     
-    return request.response(component_info)
+        return request.response(component_info)
       
-  def POST(request,entity):
-    authentication.login(request)
+    def POST(request,entity):
+        authentication.login(request)
     
-    groups = config.getSettings("groups")
+        groups = config.getSettings("groups")
     
-    fields = parseMultipart(request, entity)
-    if fields is None:
-      raise restlite.Status, "400 Invalid SUE POST request - need parameters"
+        fields = parseMultipart(request, entity)
+        if fields is None:
+            raise restlite.Status, "400 Invalid SUE POST request - need parameters"
     
-    # Try to find what we should label the component
-    component_name = fields.getfirst("component_name")
-    if not component_name:
-      raise restlite.Status, "400 Must give the SUE component a name"
+        # Try to find what we should label the component
+        component_name = fields.getfirst("component_name")
+        if not component_name:
+            raise restlite.Status, "400 Must give the SUE component a name"
     
-    # Try to get the SUE component
-    try:
-      component_f = fields['component_file']
-      if component_f.file:
-        with component_f.file.read() as component:
-          saveSueComponent(component_name, component)
-        component = component_f.file.read()
-    except KeyError:
-      raise restlite.Status, "400 Must provide a file when specifying a SUE component"
+        # Try to get the SUE component
+        try:
+            component_f = fields['component_file']
+        except KeyError:
+            raise restlite.Status, "400 Must provide a file when specifying a SUE component"
     
-    return request.response("", "text/plain")
-  
-  return locals()
+        if component_f.file:
+            component = component_f.file.read()
+            saveSueComponent(component_name, component)
+        else:
+            raise restlite.Status, "400 The supplied \"component_file\" was not a file"
+    
+    
+        return request.response("", "text/plain")
+      
+    return locals()
   
   
   
@@ -111,6 +114,7 @@ def saveSueComponent(component_name, component_file):
         os.remove(config.getSettings("SUE")["defs"][component_name]["file"])
     config.getSettings("SUE")["defs"][component_name] = newSueComponent
 
+    print config.getSettings("SUE")
     config.saveConfig()
 
 def ensureDir(dir):

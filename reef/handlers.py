@@ -57,6 +57,6 @@ def getRouting():
         (r'POST /control/startexperiment/?$', StartExperimentHandler().getHandler()),
         (r'GET,POST /workloads/?', WorkloadHandler().getHandler()),
         (r'GET /output/$', OutputFullHandler().getHandler()),
-        (r'GET,POST /', AuthPageHandler().getHandler()),
-        (r'GET,POST /sue/?', SUE_handler),
+        (r'GET,POST /sue/?$', SUE_handler),
+        (r'GET,POST /', AuthPageHandler().getHandler())
     ]
