@@ -13,7 +13,7 @@ from handler.dochandler import DocHandler
 config.getSettings("actors").setdefault("dir","actors")
 config.getSettings("actors").setdefault("defs",{})
 
-ALLOWED_TYPES = ["java", "python", "sue"]
+ALLOWED_TYPES = ["java", "python"]
 """The list of allowed types for uploading."""
 
 class ActorsHandler(DocHandler):

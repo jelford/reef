@@ -3,7 +3,10 @@ package uk.ac.imperial.vazels.reef.client.workloads;
 import java.util.HashSet;
 import java.util.Set;
 
+import uk.ac.imperial.vazels.reef.client.MultipleRequester;
+
 import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.http.client.RequestBuilder;
 
 /**
  * Represents a workload as stored on the server.
@@ -48,10 +51,11 @@ public class Workload {
     return this.actors;
   }
   
-  public boolean addActor(String actor) {
+  public boolean addActor(final String actor) {
     return actors.add(actor);
   }
-  public boolean remActor(String actor) {
+  
+  public boolean remActor(final String actor) {
     return actors.remove(actor);
   }
   

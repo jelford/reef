@@ -2,7 +2,6 @@ package uk.ac.imperial.vazels.reef.client.workloads;
 
 import java.util.Set;
 
-import uk.ac.imperial.vazels.reef.client.MultipleRequester;
 import uk.ac.imperial.vazels.reef.client.actors.ActorManager;
 import uk.ac.imperial.vazels.reef.client.managers.IManager;
 import uk.ac.imperial.vazels.reef.client.managers.ManagerChangeHandler;
@@ -13,7 +12,6 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
@@ -43,7 +41,7 @@ public class ActorWorkloadWidget extends Composite {
     initWidget(assignmentTab);
 
     //for list of workloads
-    assignmentTab.add(new Label("Workloads: "));
+    assignmentTab.add(new Label("Select a workload to manage: "));
     wkldsBox = new ListBox();
     assignmentTab.add(wkldsBox);
 
@@ -52,6 +50,7 @@ public class ActorWorkloadWidget extends Composite {
       @Override
       public void change(IManager man) {
         updateWkldsBox();
+        updateAttachedActorsBox();
       }
     });
 
@@ -64,7 +63,7 @@ public class ActorWorkloadWidget extends Composite {
     });
 
     //for list of actors
-    assignmentTab.add(new Label("Actors: "));
+    assignmentTab.add(new Label("Select an actor to assign to the workload: "));
     actorsBox = new ListBox();
     assignmentTab.add(actorsBox);
 
@@ -77,58 +76,44 @@ public class ActorWorkloadWidget extends Composite {
     });
 
     //list of actors attached to selected workload in wkldsBox
-    assignmentTab.add(new Label("Already assigned: "));
+    assignmentTab.add(new Label("Actors already assigned to this group: "));
     attachedActors = new ListBox();
     assignmentTab.add(attachedActors);
 
     //button to submit currently selected actor to currently selected workload
     Button submitButton = new Button ("Assign Actor to Workload", new ClickHandler() {
       public void onClick(ClickEvent event) {
-        assignActor();
-        updateAttachedActorsBox();
+        final String actorName = actorsBox.getItemText(actorsBox.getSelectedIndex());
+        final String workloadName = wkldsBox.getItemText(wkldsBox.getSelectedIndex());
+        final WorkloadManager wMan = WorkloadManager.getManager();
+        wMan.getWorkloadManager(workloadName).addActor(actorName);
       }
     });
     assignmentTab.add(submitButton);
   }
 
 
-  protected class ActorAssignment extends MultipleRequester<Workload> {
-    public ActorAssignment() {
-      super(RequestBuilder.POST, "/actorassign/", null);
-    }
-
-    //EXPECTED query args by server 1. do= "add"/"rem"; 2. workload="NAME"; 3. actor="NAME"
-    protected QueryArg[] getArgs() {
-      QueryArg[] args = new QueryArg[3]; 
-      args[0] = new QueryArg("do", "add"); //TODO allow for "rem"
-      args[1] = new QueryArg("workload", wkldsBox.getItemText(wkldsBox.getSelectedIndex()));
-      args[2] = new QueryArg("actor", actorsBox.getItemText(actorsBox.getSelectedIndex()));
-      return args;
-    }
-  }
-
-  //deals with assigning actor to workload
-  void assignActor() {    
-    //this line does all the assigning to the server
-    new ActorAssignment().go(null);
-  }
-
-  //update wkldsBox with list of workloads from server
-  void updateWkldsBox() {
+  private void updateWkldsBox() {
     final WorkloadManager man = WorkloadManager.getManager();
-    wkldsBox.clear();
     try {
-      //get the list of workloads from the server and add them to wkldsBox
-      man.withServerData(new PullCallback() {
+      man.withAllServerData(new PullCallback() {
         public void got() {
-          Set<String> workloads = man.getNames();
-          for(String w: workloads) {
-            wkldsBox.addItem(w);
-          }
+          updateWkldsBoxNow();
         }
       });
     } catch (MissingRequesterException e) {
       e.printStackTrace();
+    } finally {
+      updateWkldsBoxNow();
+    }
+  }
+  
+  private void updateWkldsBoxNow() {
+    final WorkloadManager man = WorkloadManager.getManager();
+    wkldsBox.clear();
+    Set<String> wklds = man.getNames();
+    for (String w : wklds) {
+      wkldsBox.addItem(w);
     }
   }
 
