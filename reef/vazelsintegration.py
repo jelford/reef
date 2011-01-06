@@ -50,10 +50,11 @@ def _applyWorkloadsAndActors():
             actors.update(workloads[wkld]["actors"])
         _extractActors(grp_num, actors)
 
-        sue_components = set()
-        for sueComp in groups[group]["sue_components"]:
-            sue_components.update(sueComp)
-        _extractSueComponents(grp_num, sue_components)
+        #sue_components = set()
+        #for sueComp in groups[group]["sue_components"]:
+        #    sue_components.update(sueComp)
+        #_extractSueComponents(grp_num, sue_components)
+        _extractSueComponents(grp_num, groups[group]["sue_components"])
   
 def _applyWorkload(workload, group_number):
     """
@@ -113,10 +114,15 @@ def _extractSueComponents(group_number, sueComps):
     
     """
     
-    experiment_dir = config.getSettings('command_centre')['experiment_dir']
+    experiment_dir = config.getSettings('control_centre')['experiment_dir']
     
     for sueComp_name in sueComps:
-        sueCompFile = config.getSettings('SUE')['defs'][sueComp_name]['file']
+        try:
+            sueCompFile = config.getSettings('SUE')['defs'][sueComp_name]['file']
+        except KeyError:
+            print sueComp_name
+            print config.getSettings('SUE')['defs']
+            raise restlite.Status, "500, Failed to extract Sue component"
     
         extractpath = os.path.join(
             controlcentre.getExperimentPath(),
