@@ -7,10 +7,19 @@
 	<g:VerticalPanel>
 		<g:Label text="Groups: " />
 		<g:ListBox ui:field="groupsBox" />
-		<g:Label text="Select a workload to assign:" />
-		<g:ListBox ui:field="wkldsBox" />
-		<g:Label text="Workloads currently attached to selected group:"/>
+		<g:HorizontalPanel>
+			<g:VerticalPanel>
+				<g:Label text="Select a workload to assign:" />
+				<g:ListBox ui:field="wkldsBox" />
+			</g:VerticalPanel>
+			<g:Label addStyleNames="{useful.leftMargin}" text="(or)" />
+			<g:VerticalPanel addStyleNames="{useful.leftMargin}">
+				<g:Label text="Select a SUE component to assign:" />
+				<g:ListBox ui:field="sueBox" />
+			</g:VerticalPanel>
+		</g:HorizontalPanel>
+		<g:Label text="Workloads and Sue Components currently attached to selected group:"/>
 		<g:ListBox ui:field="attachedWklds" />
-		<g:Button ui:field="submitWtoG" />
+		<g:Button ui:field="submitWtoG" text="Assign Workload or Component to Group"/>
 	</g:VerticalPanel>
 </ui:UiBinder> 

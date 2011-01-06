@@ -35,7 +35,7 @@ public class ActorWorkloadWidget extends Composite {
     updateAttachedActorsBox();
   }
 
-  /* 
+  /** 
    * Initialises widget, initialises the 3 ListBox objects and submit button.
    */
   public void initWidget() {
@@ -82,7 +82,7 @@ public class ActorWorkloadWidget extends Composite {
     assignmentTab.add(attachedActors);
 
     //button to submit currently selected actor to currently selected workload
-    Button submitButton = new Button ("Submit", new ClickHandler() {
+    Button submitButton = new Button ("Assign Actor to Workload", new ClickHandler() {
       public void onClick(ClickEvent event) {
         assignActor();
         updateAttachedActorsBox();
@@ -111,31 +111,6 @@ public class ActorWorkloadWidget extends Composite {
   void assignActor() {    
     //this line does all the assigning to the server
     new ActorAssignment().go(null);
-    /*    
-    //obtain strings for the selected actor and workload
-    String wkldAssignTo = wkldsBox.getItemText(wkldsBox.getSelectedIndex());
-    String actorToAssign = actorsBox.getItemText(actorsBox.getSelectedIndex());
-
-    //add selected actor to selected workload and then push this new data to server
-    WorkloadManager manager = WorkloadManager.getManager();
-    SingleWorkloadManager wkldManager = manager.getWorkloadManager(wkldAssignTo);
-    wkldManager.addActor(actorToAssign);
-    try {
-      wkldManager.pushLocalData(new PushCallback() {
-        //show submission occurred
-        public void got() {
-          updateAttachedActorsBox(); 
-        }
-
-        public void failed() {
-          Window.alert("Failure: no confirmation from server that actor assignment succeeded");
-        }        
-      });
-    }
-    catch(MissingRequesterException e) {
-      e.printStackTrace();
-    }
-     */
   }
 
   //update wkldsBox with list of workloads from server
