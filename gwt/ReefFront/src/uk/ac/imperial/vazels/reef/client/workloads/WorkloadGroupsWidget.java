@@ -23,35 +23,41 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
-/* A class to allow the assigning of workloads to groups
- * 
+/**
+ *  A class to allow the assigning of workloads to groups
  */
 public class WorkloadGroupsWidget extends Composite {
   /**
    * Generated code - gives us an interface to the XML-defined UI.
    */
   private static WorkloadGroupsWidgetUiBinder uiBinder = GWT
-    .create(WorkloadGroupsWidgetUiBinder.class);
-  
+  .create(WorkloadGroupsWidgetUiBinder.class);
+
   /**
    * Generated code. 
    */
   interface WorkloadGroupsWidgetUiBinder extends UiBinder<Widget, WorkloadGroupsWidget> {
   }
-  
-  //wkldsBox is list of workloads
-  //groupsBox is list of groups
-  //attachedWklds is list of workloads attached to currently shown group
-  @UiField ListBox wkldsBox;
+
   @UiField ListBox groupsBox;
   @UiField ListBox attachedWklds;
-  @UiField ListBox sueBox;
+  @UiField ListBox executablesBox;
+  
+  private void setUiElementsEnabled(boolean enabled) {
+    updateExecutablesBox();
+    groupsBox.setEnabled(enabled);
+    attachedWklds.setEnabled(enabled);
+    executablesBox.setEnabled(enabled);
+  }
+
+  private int mSueLabelIndex;
+  private int mWkldLabelIndex;
 
   public WorkloadGroupsWidget() {
     initWidget(uiBinder.createAndBindUi(this));
-    
+
     initPanel();
-    
+
     //obtain current groups to put in a ListBox
     try {
       GroupManager.getManager().withAllServerData(new PullCallback() {
@@ -66,24 +72,24 @@ public class WorkloadGroupsWidget extends Composite {
     //obtain current workloads to put in a ListBox
     try {
       WorkloadManager.getManager().withAllServerData(new PullCallback() {
-        public void got() {
-          updateWkldsBox();        
+        public void got() {  
+          updateExecutablesBox();
         }      
       });
     } catch (MissingRequesterException e) {
       e.printStackTrace();
     }
-    
+
     try {
       SueComponentManager.getManager().withAllServerData(new PullCallback() {
         public void got() {
-          updateSueBox();
+          updateExecutablesBox();
         }
       });
     } catch (MissingRequesterException e) {
       e.printStackTrace();
     }
-    
+
     //obtain current workloads assigned to default selected group in group ListBox
     updateAttachedWkldsAndSue();
   }
@@ -97,14 +103,17 @@ public class WorkloadGroupsWidget extends Composite {
       @Override
       public void change(IManager man) {
         updateGroupsBox();
+        updateAttachedWkldsAndSue();
+        updateExecutablesBox();
       }
     });
-    
+
     //selected group, which will change, in groupsBox determines attachedWklds box, which is list of workloads in that selected group
     groupsBox.addChangeHandler(new ChangeHandler() {
       @Override
       public void onChange(ChangeEvent event) {
-        updateAttachedWkldsAndSue();        
+        updateAttachedWkldsAndSue();  
+        updateExecutablesBox();
       }
     });
 
@@ -113,18 +122,18 @@ public class WorkloadGroupsWidget extends Composite {
     WorkloadManager.getManager().addChangeHandler(new ManagerChangeHandler() {
       @Override
       public void change(IManager man) {
-        updateWkldsBox();
+        updateExecutablesBox();
       }
     });
-    
+
     SueComponentManager.getManager().addChangeHandler(new ManagerChangeHandler() {
       @Override
       public void change(IManager man) {
-        updateSueBox();
+        updateExecutablesBox();
       }
     });
   }
-  
+
   @UiHandler("submitWtoG")
   void onClick(ClickEvent event) {
     addItems();
@@ -139,23 +148,49 @@ public class WorkloadGroupsWidget extends Composite {
       groupsBox.addItem(g);
     }
   }
-  
-  //update the list of workloads from server
-  private void updateWkldsBox() {
+
+  private void updateExecutablesBox() {
     final WorkloadManager wkldMan = WorkloadManager.getManager();
-    wkldsBox.clear();
-        
-    //get the list of groups from the server and add any new items to the group box
-    for(String w: wkldMan.getNames()) {
-      wkldsBox.addItem(w);
+    final SueComponentManager sueMan = SueComponentManager.getManager();
+    final SingleGroupManager gMan;
+    try {
+      gMan = GroupManager.getManager().getGroupManager(groupsBox.getItemText(groupsBox.getSelectedIndex()));
+      if (gMan == null) {
+        return;
+      }
+    } catch (NullPointerException e) {
+      return; // widget not properly initialised
+    } catch (IndexOutOfBoundsException e) {
+      return; // list box not initialised
     }
-  }
-  
-  private void updateSueBox() {
-    final SueComponentManager man = SueComponentManager.getManager();
-    sueBox.clear();
-    for (String s: man.getNames()) {
-      sueBox.addItem(s);
+    executablesBox.clear();
+    mWkldLabelIndex = executablesBox.getItemCount();
+    executablesBox.addItem("--- Workloads ---");
+    for (String wkldName : wkldMan.getNames()) {
+      boolean toAdd = true;
+      String[] assignedWorkloads = gMan.getWorkloads();
+      for(int i=0; i<assignedWorkloads.length; i++) {
+        if (assignedWorkloads[i].equals(wkldName)) {
+          toAdd = false;
+        }
+      }
+      if (toAdd) {
+        executablesBox.addItem(wkldName);
+      }
+    }
+    mSueLabelIndex = executablesBox.getItemCount();
+    executablesBox.addItem("--- Sue Components ---");
+    for (String sueName : sueMan.getNames()) {
+      boolean toAdd = true;
+      String[] assignedSueComponents = gMan.getSueComponents();
+      for(int i=0; i<assignedSueComponents.length; i++) {
+        if (assignedSueComponents[i].equals(sueName)) {
+          toAdd = false;
+        }
+      }
+      if (toAdd) {
+        executablesBox.addItem(sueName);
+      }
     }
   }
 
@@ -166,6 +201,9 @@ public class WorkloadGroupsWidget extends Composite {
     if(groupsBox.getItemCount() > 0) {
       GroupManager manager = GroupManager.getManager();
       final SingleGroupManager gpManager = manager.getGroupManager(groupsBox.getItemText(groupsBox.getSelectedIndex()));
+      if (gpManager == null) {
+        return; // The GroupsManager hasn't finished initialising, or the selection is empty.
+      }
       //update known groups from server, and on callback get and use the new workload data
       try {
         gpManager.withServerData(new PullCallback() {
@@ -180,8 +218,7 @@ public class WorkloadGroupsWidget extends Composite {
             }
           }
         });
-      }
-      catch (MissingRequesterException e) {
+      } catch (MissingRequesterException e) {
         e.printStackTrace();
       }
     }
@@ -191,20 +228,26 @@ public class WorkloadGroupsWidget extends Composite {
   public void addItems() {
     GroupManager manager = GroupManager.getManager();
     SingleGroupManager gpManager = manager.getGroupManager(groupsBox.getItemText(groupsBox.getSelectedIndex()));
-    
-    if (wkldsBox.getItemText(wkldsBox.getSelectedIndex()) != null) {
-      gpManager.addWorkload(wkldsBox.getItemText(wkldsBox.getSelectedIndex()));
+
+    int selectedItem = executablesBox.getSelectedIndex();
+    if (selectedItem == mSueLabelIndex || selectedItem == mWkldLabelIndex) {
+      Window.alert("You need to pick either a Workload or a Sue Component to assign to the group");
+      return;
+    } 
+
+    if (selectedItem < mSueLabelIndex) {
+      gpManager.addWorkload(executablesBox.getItemText(selectedItem));
+    } else {
+      gpManager.addSueComponent(executablesBox.getItemText(selectedItem));
     }
-    
-    if (sueBox.getItemText(sueBox.getSelectedIndex()) != null) {
-      gpManager.addSueComponent(sueBox.getItemText(sueBox.getSelectedIndex()));
-    }
-    
+
     try {
+      setUiElementsEnabled(false);
       gpManager.pushLocalData(new PushCallback() {
         //show submission occurred
         public void got() {
           updateAttachedWkldsAndSue();
+          setUiElementsEnabled(true);
         }
 
         public void failed() {

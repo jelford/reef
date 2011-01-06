@@ -7,6 +7,7 @@ import com.google.gwt.http.client.RequestBuilder;
 import uk.ac.imperial.vazels.reef.client.MultipleRequester;
 import uk.ac.imperial.vazels.reef.client.managers.JsArrayStringSetConverter;
 import uk.ac.imperial.vazels.reef.client.managers.ListedCollectionManager;
+import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
 
 /**
  * Manages the set of all the workloads on the server.
@@ -25,6 +26,11 @@ public class WorkloadManager extends ListedCollectionManager<String, SingleWorkl
   public static WorkloadManager getManager() {
     if(manager == null) {
       manager = new WorkloadManager();
+      try {
+        manager.getAllServerData();
+      } catch (MissingRequesterException e) {
+        e.printStackTrace();
+      }
     }
     return manager;
   }

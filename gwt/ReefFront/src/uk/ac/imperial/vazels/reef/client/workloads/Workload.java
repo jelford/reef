@@ -48,10 +48,11 @@ public class Workload {
     return this.actors;
   }
   
-  public boolean addActor(String actor) {
+  public boolean addActor(final String actor) {
     return actors.add(actor);
   }
-  public boolean remActor(String actor) {
+  
+  public boolean remActor(final String actor) {
     return actors.remove(actor);
   }
   
