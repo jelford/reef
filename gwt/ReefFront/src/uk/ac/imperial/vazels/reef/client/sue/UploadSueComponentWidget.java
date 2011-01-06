@@ -52,8 +52,7 @@ public class UploadSueComponentWidget extends Composite implements ManagerChange
     
     formPanel.setAction(new AddressResolution().resolve("/sue"));
     
-    sueTable.setText(0, 0, "Name");
-    sueTable.setText(0, 1, "File");
+    sueTable.setText(0, 0, "Sue Component Name");
     
     suecomponent_name.removeFromParent();
     sueTable.setWidget(1, 0, suecomponent_name);

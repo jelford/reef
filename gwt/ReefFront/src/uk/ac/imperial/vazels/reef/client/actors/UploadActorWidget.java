@@ -71,7 +71,6 @@ public class UploadActorWidget extends Composite implements ManagerChangeHandler
     // on the file type
     actor_type.addItem("JAVA");
     actor_type.addItem("PYTHON");
-    actor_type.addItem("SUE");
     
     ActorManager.getManager().addChangeHandler(this);
     
