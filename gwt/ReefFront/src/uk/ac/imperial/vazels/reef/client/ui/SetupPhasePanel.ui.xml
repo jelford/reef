@@ -8,30 +8,30 @@
 
 	<g:DecoratedTabPanel ui:field="tabPanel">
 		<g:Tab>
-			<g:TabHTML>1.Set up Groups</g:TabHTML>
+			<g:TabHTML>1: Set up Groups</g:TabHTML>
 			<groups:AllocateGroups />
 		</g:Tab>
 		<g:Tab>
-			<g:TabHTML>2.Upload Workload</g:TabHTML>
+			<g:TabHTML>2: Upload Workload</g:TabHTML>
 			<workload:WorkloadWidget />
 		</g:Tab>
 		<g:Tab>
-			<g:TabHTML>3.Upload Actors</g:TabHTML>
+			<g:TabHTML>3: Upload Actors</g:TabHTML>
 			<actors:UploadActorWidget />
 		</g:Tab>
 		<g:Tab>
-			<g:TabHTML>4.Upload Sue Components</g:TabHTML>
+			<g:TabHTML>4: Upload Sue Components</g:TabHTML>
 			<sue:UploadSueComponentWidget />
 		</g:Tab>
 		<g:Tab>
-			<g:TabHTML>4.Assign Workloads &amp; Actors</g:TabHTML>
+			<g:TabHTML>5: Assign Workloads &amp; Actors</g:TabHTML>
 			<g:StackPanel>
 				<workload:ActorWorkloadWidget g:StackPanel-text="5a Assign Actors to Workloads" />
 				<workload:WorkloadGroupsWidget g:StackPanel-text="5b Assign Workloads and Sue Components to Groups" />
 			</g:StackPanel>
 		</g:Tab>
 		<g:Tab>
-			<g:TabHTML>5.Start Experiment</g:TabHTML>
+			<g:TabHTML>6: Start Experiment</g:TabHTML>
 			<server:ServerControlWidget />
 		</g:Tab>
 	</g:DecoratedTabPanel>

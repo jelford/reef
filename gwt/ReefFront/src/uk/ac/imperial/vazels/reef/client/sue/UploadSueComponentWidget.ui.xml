@@ -1,0 +1,21 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:style field="useful" src="../ui/useful.css"/>
+
+	<g:FormPanel ui:field="formPanel" encoding="multipart/form-data" method="POST">
+		<g:VerticalPanel>
+			<g:FlexTable ui:field="sueTable" cellSpacing="2"
+				cellPadding="3" addStyleNames="{useful.important} {useful.majorComponentWidth}" />
+			
+			<g:HorizontalPanel visible="false">
+				<g:TextBox ui:field="suecomponent_name" name="component_name"
+					addStyleNames="{useful.mostlyHStretch} {useful.shortInput}" />
+				<g:FileUpload ui:field="sue_file" name="component_file"
+					addStyleNames="{useful.mostlyHStretch} {useful.shortInput}" />
+				<g:Button ui:field="submitBtn" text="Upload" />
+			</g:HorizontalPanel>
+		</g:VerticalPanel>
+	</g:FormPanel>
+</ui:UiBinder> 
