@@ -29,7 +29,8 @@ public abstract class Manager<PullData, PushData> implements IManager {
    * @param nManager Is this a newly created manager or does it already exist on the server?
    */
   public Manager(boolean nManager) {
-    syncTracker = new SyncTracker(this, false, nManager);
+    //syncTracker = new SyncTracker(this, false, nManager);
+    syncTracker = new SyncTracker(this, nManager, !nManager);
     puller = null;
     pendingPull = false;
     pullHandler = new RepeatPullHandler();
