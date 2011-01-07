@@ -7,11 +7,13 @@ import uk.ac.imperial.vazels.reef.client.managers.IManager;
 import uk.ac.imperial.vazels.reef.client.managers.ManagerChangeHandler;
 import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
 import uk.ac.imperial.vazels.reef.client.managers.PullCallback;
+import uk.ac.imperial.vazels.reef.client.managers.PushCallback;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
@@ -25,6 +27,12 @@ public class ActorWorkloadWidget extends Composite {
   //actorsBox holds list of actors
   //attachedActors holds list of those actors attached to selected workload in wkldsBox
   ListBox wkldsBox, actorsBox, attachedActors;
+
+  private void setUiElementsEnabled(boolean enabled) {
+    wkldsBox.setEnabled(enabled);
+    actorsBox.setEnabled(enabled);
+    attachedActors.setEnabled(enabled);
+  }
 
   public ActorWorkloadWidget() {
     initWidget();
@@ -59,6 +67,7 @@ public class ActorWorkloadWidget extends Composite {
       @Override
       public void onChange(ChangeEvent event) {
         updateAttachedActorsBox();
+        updateActorBox();
       }
     });
 
@@ -83,10 +92,28 @@ public class ActorWorkloadWidget extends Composite {
     //button to submit currently selected actor to currently selected workload
     Button submitButton = new Button ("Assign Actor to Workload", new ClickHandler() {
       public void onClick(ClickEvent event) {
+        /*
+         * TODO: Why is this all inlined so? Because this Widget has not been
+         * properly Xml'd, so I've hacked the functionality I wanted into it.
+         * @author James
+         */
+        setUiElementsEnabled(false);
         final String actorName = actorsBox.getItemText(actorsBox.getSelectedIndex());
         final String workloadName = wkldsBox.getItemText(wkldsBox.getSelectedIndex());
         final WorkloadManager wMan = WorkloadManager.getManager();
         wMan.getWorkloadManager(workloadName).addActor(actorName);
+        wMan.pushLocalData(new PushCallback() {
+          @Override
+          public void failed() {
+            Window.alert("Server communication failure: Can't be sure that your last change was properly sent.");
+            setUiElementsEnabled(true);
+          }
+     
+          @Override
+          public void got() {
+            setUiElementsEnabled(true);
+          }
+        });
       }
     });
     assignmentTab.add(submitButton);
@@ -107,7 +134,7 @@ public class ActorWorkloadWidget extends Composite {
       updateWkldsBoxNow();
     }
   }
-  
+
   private void updateWkldsBoxNow() {
     final WorkloadManager man = WorkloadManager.getManager();
     wkldsBox.clear();
@@ -118,15 +145,31 @@ public class ActorWorkloadWidget extends Composite {
   }
 
   private void updateActorBox() {
-    final ActorManager man = ActorManager.getManager();
+    final ActorManager actMan = ActorManager.getManager();
+    final SingleWorkloadManager wkldMan;
+    try {
+      wkldMan = WorkloadManager.getManager()
+      .getWorkloadManager(wkldsBox.getItemText(wkldsBox.getSelectedIndex()));
+      if (wkldMan == null) {
+        return;
+      }
+    } catch (NullPointerException e) {
+      return; // Can't assign an actor to a workload if we can't get the workload.
+    } catch (IndexOutOfBoundsException e) {
+      return; // Box isn't yet initialised
+    }
     actorsBox.clear();
     try {
       //get the list of workloads from the server and add them to wkldsBox
-      man.withServerData(new PullCallback() {
+      actMan.withServerData(new PullCallback() {
         public void got() {
-          Set<String> actors = man.getNames();
+          Set<String> actors = actMan.getNames();
           for(String a: actors) {
-            actorsBox.addItem(a);
+            if (wkldMan == null ||
+                wkldMan.getActors() == null ||
+                !wkldMan.getActors().contains(a)) {
+              actorsBox.addItem(a);
+            }
           }
         }
       });

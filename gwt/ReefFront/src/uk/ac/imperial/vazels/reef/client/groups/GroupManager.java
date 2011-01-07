@@ -7,6 +7,7 @@ import com.google.gwt.http.client.RequestBuilder;
 import uk.ac.imperial.vazels.reef.client.MultipleRequester;
 import uk.ac.imperial.vazels.reef.client.managers.DeletableListedCollectionManager;
 import uk.ac.imperial.vazels.reef.client.managers.JsArrayStringSetConverter;
+import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
 
 /**
  * Should do all communication involving groups on the server.
@@ -29,6 +30,11 @@ public class GroupManager extends DeletableListedCollectionManager<String, Singl
   public static GroupManager getManager() {
     if(manager == null) {
       manager = new GroupManager();
+      try {
+        manager.getAllServerData();
+      } catch (MissingRequesterException e) {
+        e.printStackTrace();
+      }
     }
     return manager;
   }
