@@ -105,7 +105,7 @@ public class MultipleRequester<Type> extends EasyRequest {
    * You should only override this if you need to use it.
    * </p>
    */
-  protected void received(Type reply, boolean success, String message){
+  public void received(Type reply, boolean success, String message){
   }
   
   /**

@@ -1,10 +1,12 @@
 package uk.ac.imperial.vazels.reef.client.groups;
 
-import com.google.gwt.http.client.RequestBuilder;
-
 import uk.ac.imperial.vazels.reef.client.MultipleRequester;
 import uk.ac.imperial.vazels.reef.client.managers.DeletableManager;
+import uk.ac.imperial.vazels.reef.client.managers.MissingRequesterException;
 import uk.ac.imperial.vazels.reef.client.managers.SingleTypeManager;
+
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.user.client.Window;
 
 /**
  * Manages a group object, deals with syncing to the server.
@@ -149,6 +151,19 @@ public class SingleGroupManager extends SingleTypeManager<Group> implements Dele
           return new Group(original);
         }
       });
+    }
+    
+    @Override
+    public void received(Group received, boolean success, String message) {
+      if (!success) {
+        if ("404".equals(message.split(" ")[0])) {
+          try {
+            pushLocalData(null);
+          } catch (MissingRequesterException e) {
+            Window.alert("Failed to push");
+          }
+        }
+      }
     }
   }
   
