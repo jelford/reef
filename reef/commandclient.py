@@ -8,6 +8,7 @@ import controlcentre
 import os
 import tempfile
 import subprocess
+import restlite
 from handler.groups import getGroupFromRank
 from threading import Timer
 
@@ -197,11 +198,16 @@ def __updateHostStatus(group, status, host=None):
         except KeyError: pass
         group['online_hosts'].add(host_name)
     
-    {
-        'FREE' : __host_free,
-        'CONNECTED' : __host_connected,
-        'EVOLVING' : __host_evolving
-    }[status](group, host)
+    try:
+        {
+            'FREE' : __host_free,
+            'CONNECTED' : __host_connected,
+            'EVOLVING' : __host_evolving
+        }[status](group, host)
+    except KeyError:
+        return False
+    
+    return True
 
   
 def __getCommandLineClientArgs():

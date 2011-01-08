@@ -97,11 +97,11 @@ public class OutputView extends Composite {
     
     main.setSize(groupData.getSize());
     
-    String[] connected_hosts = {"host1", "host2"};
+    //String[] connected_hosts = {"host1", "host2"};
     
-    main.setConnectedHosts(connected_hosts);
+    main.setConnectedHosts(groupData.getConnectedHosts());
     
-    main.setEvolvingHosts(connected_hosts);
+    main.setEvolvingHosts(groupData.getEvolvingHosts());
     
     main.setVariables(getGroupVariables(groupName));
 
