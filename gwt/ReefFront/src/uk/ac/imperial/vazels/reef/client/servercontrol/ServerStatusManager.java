@@ -117,8 +117,8 @@ public class ServerStatusManager extends Manager<ServerStatus, Void>{
     timedOut = checkTimeout();
     
     if(timedOut) {
-      Window.alert(sStringConstants.controlCentreTimeout());
-      ControlCentreManager.getManager().stop();
+      //Window.alert(sStringConstants.controlCentreTimeout());
+      //ControlCentreManager.getManager().stop();
     }
     
     return true;
