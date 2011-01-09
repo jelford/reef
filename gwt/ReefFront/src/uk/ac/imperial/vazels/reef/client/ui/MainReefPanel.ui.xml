@@ -24,7 +24,7 @@
 					<g:Anchor href="https://github.com/jelford/reef/wiki"
 					addStyleNames="{useful.lrSpaced}"
 					target="_blank">
-						Need help?
+						Help
 					</g:Anchor>
 				</g:cell>
 			</g:HorizontalPanel>
