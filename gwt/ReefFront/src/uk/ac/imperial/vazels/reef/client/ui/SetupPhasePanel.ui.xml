@@ -20,14 +20,14 @@
 			<actors:UploadActorWidget />
 		</g:Tab>
 		<g:Tab>
-			<g:TabHTML>4: Upload Sue Components</g:TabHTML>
+			<g:TabHTML>4: Upload SUE Components</g:TabHTML>
 			<sue:UploadSueComponentWidget />
 		</g:Tab>
 		<g:Tab>
 			<g:TabHTML>5: Assign Workloads &amp; Actors</g:TabHTML>
 			<g:StackPanel>
-				<workload:ActorWorkloadWidget g:StackPanel-text="5a Assign Actors to Workloads" />
-				<workload:WorkloadGroupsWidget g:StackPanel-text="5b Assign Workloads and Sue Components to Groups" />
+				<workload:ActorWorkloadWidget g:StackPanel-text="5a: Assign Actors to Workloads" />
+				<workload:WorkloadGroupsWidget g:StackPanel-text="5b: Assign Workloads and SUE Components to Groups" />
 			</g:StackPanel>
 		</g:Tab>
 		<g:Tab>

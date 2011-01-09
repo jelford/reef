@@ -8,7 +8,7 @@
 		<g:Label text="Groups: " />
 		<g:ListBox ui:field="groupsBox" />
 		<g:ListBox ui:field="executablesBox" />
-		<g:Label text="Workloads and Sue Components currently attached to selected group:"/>
+		<g:Label text="Workloads and SUE Components currently attached to selected group:"/>
 		<g:ListBox ui:field="attachedWklds" />
 		<g:Button ui:field="submitWtoG" text="Assign Workload or Component to Group"/>
 	</g:VerticalPanel>
