@@ -52,7 +52,7 @@ public class UploadSueComponentWidget extends Composite implements ManagerChange
     
     formPanel.setAction(new AddressResolution().resolve("/sue"));
     
-    sueTable.setText(0, 0, "Sue Component Name");
+    sueTable.setText(0, 0, "SUE Component Name");
     
     suecomponent_name.removeFromParent();
     sueTable.setWidget(1, 0, suecomponent_name);
@@ -109,11 +109,11 @@ public class UploadSueComponentWidget extends Composite implements ManagerChange
     String name = actorName.trim();
     
     if(SueComponentManager.getManager().getNames().contains(name)) {
-      Window.alert("You already have a Sue Component named '"+name+"'.");
+      Window.alert("You already have a SUE Component named '"+name+"'.");
       return false;
     }
     else if(!name.matches("^[0-9A-Za-z]{1,}$")) {
-      Window.alert("Sue Component names must be alphanumeric.");
+      Window.alert("SUE Component names must be alphanumeric.");
       return false;
     }
     
