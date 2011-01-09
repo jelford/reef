@@ -179,7 +179,7 @@ public class WorkloadGroupsWidget extends Composite {
       }
     }
     mSueLabelIndex = executablesBox.getItemCount();
-    executablesBox.addItem("--- Sue Components ---");
+    executablesBox.addItem("--- SUE Components ---");
     for (String sueName : sueMan.getNames()) {
       boolean toAdd = true;
       String[] assignedSueComponents = gMan.getSueComponents();
