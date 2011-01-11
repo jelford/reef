@@ -274,6 +274,13 @@ public class OutputView extends Composite {
     options.setTitleY(variable);
     options.setLegendFontSize(10);
     options.setLegend(LegendPosition.BOTTOM);
+    
+    /*
+     * @TODO: Let's not have literals in set in the code for styling things please,
+     * it makes me wish that I was not here. 
+     */
+    options.setBackgroundColor("#E3E3E3");
+    options.setLegendBackgroundColor("#E3E3E3");
 
     return new ScatterChart(dt, options);
   }
