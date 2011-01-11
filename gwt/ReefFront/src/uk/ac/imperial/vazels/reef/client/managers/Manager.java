@@ -120,8 +120,8 @@ public abstract class Manager<PullData, PushData> implements IManager {
     pusher.go(new RequestHandler<PushData>() {
       @Override
       @SuppressWarnings("unchecked")
-      public void handle(PushData reply, boolean success, String message) {
-        if(success) {
+      public void handle(PushData reply, Integer code, String message) {
+        if(this.isSuccessful(code)) {
           // We pushed the data
           syncTracker.pushedToServer();
           
@@ -177,8 +177,8 @@ public abstract class Manager<PullData, PushData> implements IManager {
    */
   private class RepeatPullHandler extends RequestHandler<PullData>{
     @Override
-    public void handle(PullData reply, boolean success, String message) {
-      if(success) {
+    public void handle(PullData reply, Integer responseCode, String message) {
+      if(this.isSuccessful(responseCode)) {
         pendingPull = false;
         if(receivePullData(reply)) {
           syncTracker.wipedLocalChanges();

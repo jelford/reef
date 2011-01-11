@@ -64,18 +64,15 @@ public class MultipleRequester<Type> extends EasyRequest {
    * callbacks.
    * </p>
    */
-  protected final void requested(RequestTicket ticket, Integer code, String reason, String content) {
+  protected final void requested(RequestTicket ticket, Integer responseCode, String reason, String content) {
     RequestHandler<Type> handler = handlers.get(ticket);
     
-    if(isSuccess(code)){
+    if (RequestHandler.isSuccessful(responseCode)) {
       Type reply = (converter != null) ? converter.convert(content) : null;
-      handler.handle(reply);
+      handler.handle(reply, responseCode, null);
+    } else {
+      handlers.remove(ticket);
     }
-    else{
-      handler.handle(null, false, getMessage(code, reason));
-    }
-    
-    handlers.remove(ticket);
   }
   
   /**
@@ -105,7 +102,7 @@ public class MultipleRequester<Type> extends EasyRequest {
    * You should only override this if you need to use it.
    * </p>
    */
-  public void received(Type reply, boolean success, String message){
+  protected void received(Type reply, Integer requestCode, String message){
   }
   
   /**
@@ -139,30 +136,13 @@ public class MultipleRequester<Type> extends EasyRequest {
     RequestTicket ticket = request(method, addr+addrExt, getArgs());
     handlers.put(ticket, new RequestHandler<Type>() {
       @Override
-      public void handle(Type reply, boolean success, String message) {
-        received(reply, success, message);
+      public void handle(Type reply, Integer requestCode, String message) {
+        received(reply, requestCode, message);
         if(handler != null){
-          handler.handle(reply, success, message);
+          handler.handle(reply, requestCode, message);
         }
       }
     });
-  }
-  
-  private String getMessage(Integer code, String reason) {
-    if (isSuccess(code))
-      return "";
-
-    if (code != null) {
-      if (reason == null)
-        return code.toString();
-      else
-        return code.toString() + " " + reason;
-    }
-    return "Error in request";
-  }
-
-  private boolean isSuccess(Integer code) {
-    return (code != null && code == 200);
   }
   
   /**

@@ -6,24 +6,22 @@ package uk.ac.imperial.vazels.reef.client;
  * @param <Type> The type that the request should return.
  */
 public abstract class RequestHandler<Type> {
+  
   /**
-   * Success handler used as a shortcut when everything went well.
-   * <p>
-   * Just calls the full handler with code 200 and empty message.
-   * </p>
-   * @param reply The object returned in the response.
+   * Returns whether or not this request code is successful.
+   * @param responseCode
+   * @return
    */
-  public final void handle(Type reply) {
-    handle(reply, true, "");
+  protected static boolean isSuccessful(Integer responseCode) {
+    return (responseCode != null && (responseCode >= 200 && responseCode < 300));
   }
 
   /**
    * The actual handler for request responses.
    * 
    * @param reply The object returned in the response.
-   * @param success {@code true} if and only if we got a successful response.
-   * (Currently this is only code 200, we need to fix that.)
+   * @param responseCode Response code from the server (e.g. 200 == success)
    * @param message A justification for any non-successful response code.
    */
-  public abstract void handle(Type reply, boolean success, String message);
+  public abstract void handle(Type reply,final Integer responseCode, String message);
 }

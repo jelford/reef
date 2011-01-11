@@ -154,9 +154,9 @@ public class SingleGroupManager extends SingleTypeManager<Group> implements Dele
     }
     
     @Override
-    public void received(Group received, boolean success, String message) {
-      if (!success) {
-        if ("404".equals(message.split(" ")[0])) {
+    public void received(Group received, Integer code, String message) {
+      if (code == null || !code.equals(200)) {
+        if (code.equals(404)) {
           try {
             pushLocalData(null);
           } catch (MissingRequesterException e) {

@@ -52,13 +52,13 @@ public class DisplayOutput extends Composite {
   private void refresh() {
     new FetchDataRequest().go(new RequestHandler<String>() {
       @Override
-      public void handle(String reply, boolean success, String message) {
-        if (success  || DEBUG_MODE) {
+      public void handle(String reply, Integer responseCode, String message) {
+        if (this.isSuccessful(responseCode)  || DEBUG_MODE) {
           new OutputDataRequest().go(new RequestHandler<OutputData>(){
 
             @Override
-            public void handle(OutputData reply, boolean success, String message) {
-              if (success) {
+            public void handle(OutputData reply,final Integer responseCode, String message) {
+              if (this.isSuccessful(responseCode)) {
                 view.useData(reply);
               }
             }
