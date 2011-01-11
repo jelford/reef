@@ -1,8 +1,10 @@
 package uk.ac.imperial.vazels.reef.client.output;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import uk.ac.imperial.vazels.reef.client.groups.GroupManager;
@@ -49,7 +51,7 @@ public class OutputView extends Composite {
   void onSelection(SelectionEvent<TreeItem> event) {
     TreeItem item = event.getSelectedItem();
     if(item.getChildCount() == 0 && item.getStyleName().contains("graphable-var")) {
-      String groupname = item.getParentItem().getParentItem().getText();
+      String groupname = item.getParentItem().getText();
       ScatterChart chart = buildChart(groupname, item.getText());
       placeholder.setWidget(chart);
     }
@@ -171,16 +173,33 @@ public class OutputView extends Composite {
 
   /**
    * Build a tree representing the given group.
+   * Starts off collating all the variables that have a value within the group and maps them to one of the hosts that has this data
+   * Next creates a treeItem for each variable, assigns styleName to highlight that it can be graphed at a later stage.
+   * 
    * @param group Name of the group.
    * @param data Data for the group.
    * @return A tree representation.
    */
   private TreeItem buildGroupTree(String group, GroupData data) {
     TreeItem tree = new TreeItem(group);
-
+    Map<String, String> groupVariableNames = new HashMap<String, String>();
     for(String host : data.hostIds()) {
-      final TreeItem treeHost = buildHostTree(host, data.hostInfo(host));
-      tree.addItem(treeHost);
+      for(String varName : data.hostInfo(host).variableNames()) {
+        groupVariableNames.put(varName, host);
+      }
+    }
+    
+    for(String varName : groupVariableNames.keySet()) {
+      TreeItem variable = new TreeItem(varName);
+
+      final TimeSeries series = data.hostInfo(groupVariableNames.get(varName)).variableSeries(varName);
+      final Integer firstTimestamp = series.stamps().iterator().next();
+      final SnapshotData firstSnapshot = series.snapshot(firstTimestamp);
+
+      if(firstSnapshot.getType().equals("Double")) {
+        variable.addStyleName("graphable-var");
+      }
+      tree.addItem(variable);
     }
 
     return tree;
@@ -225,14 +244,14 @@ public class OutputView extends Composite {
     GroupData groupData = data.groupInfo(group);
 
     int rowIndex = 0;
+    int columnIndex;
     for(String host : groupData.hostIds()) {
       TimeSeries timeline = groupData.hostInfo(host).variableSeries(variable);
       if(timeline == null) {
         continue;
       }
 
-      dt.addColumn(ColumnType.NUMBER, "Host " + host);
-      int columnIndex = 1;
+      columnIndex = dt.addColumn(ColumnType.NUMBER, "Host " + host);
 
       for(Integer timestamp : timeline.stamps()) {
         Float value = timeline.snapshot(timestamp).getFloat();
@@ -242,19 +261,19 @@ public class OutputView extends Composite {
         rowIndex++;
       }
 
-      columnIndex++;
     }
 
     Options options = Options.create();
-    options.setLineSize(2);
-    options.setPointSize(10);
+    options.setLineSize(1);
+    options.setPointSize(2);
     options.setMin(0);
     options.setEnableTooltip(true);
     options.setWidth(600);
     options.setHeight(400);
     options.setTitleX("Timestamp");
     options.setTitleY(variable);
-    options.setLegend(LegendPosition.NONE);
+    options.setLegendFontSize(10);
+    options.setLegend(LegendPosition.BOTTOM);
 
     return new ScatterChart(dt, options);
   }
