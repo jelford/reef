@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.user.client.Window;
 
 /**
  * Currently the preferred way to make any application/x-www-form-urlencoded requests.
@@ -71,6 +72,7 @@ public class MultipleRequester<Type> extends EasyRequest {
       Type reply = (converter != null) ? converter.convert(content) : null;
       handler.handle(reply, responseCode, null);
     } else {
+      handler.handle(null, responseCode, null);
       handlers.remove(ticket);
     }
   }
