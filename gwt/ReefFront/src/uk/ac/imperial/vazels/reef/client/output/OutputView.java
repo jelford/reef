@@ -1,11 +1,15 @@
 package uk.ac.imperial.vazels.reef.client.output;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+
+import org.apache.naming.java.javaURLContextFactory;
 
 import uk.ac.imperial.vazels.reef.client.groups.GroupManager;
 import uk.ac.imperial.vazels.reef.client.groups.SingleGroupManager;
@@ -250,11 +254,17 @@ public class OutputView extends Composite {
       if(timeline == null) {
         continue;
       }
-
+      
+      Map<Integer, Float> list = new TreeMap<Integer, Float>();
+      
+      for(Integer timestamp : timeline.stamps()) {
+        list.put(timestamp, timeline.snapshot(timestamp).getFloat());
+      }
+      
       columnIndex = dt.addColumn(ColumnType.NUMBER, "Host " + host);
 
-      for(Integer timestamp : timeline.stamps()) {
-        Float value = timeline.snapshot(timestamp).getFloat();
+      for(Integer timestamp : list.keySet()) {
+        Float value = list.get(timestamp);
         dt.addRow();
         dt.setValue(rowIndex, 0, timestamp);
         dt.setValue(rowIndex, columnIndex, value);
