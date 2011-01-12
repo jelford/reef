@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.user.client.Window;
 
 /**
  * Currently the preferred way to make any application/x-www-form-urlencoded requests.
