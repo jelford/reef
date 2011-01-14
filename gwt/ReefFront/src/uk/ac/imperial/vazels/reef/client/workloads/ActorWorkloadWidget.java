@@ -66,7 +66,6 @@ public class ActorWorkloadWidget extends Composite {
     wkldsBox.addChangeHandler( new ChangeHandler() {
       @Override
       public void onChange(ChangeEvent event) {
-        updateWkldsBox();
         updateActorBox();
         updateAttachedActorsBox();
       }
