@@ -95,6 +95,7 @@ public class ActorWorkloadWidget extends Composite {
         /*
          * TODO: Why is this all inlined so? Because this Widget has not been
          * properly Xml'd, so I've hacked the functionality I wanted into it.
+         * Does this make me feel proud? No.
          * @author James
          */
         setUiElementsEnabled(false);

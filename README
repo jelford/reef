@@ -1,9 +1,14 @@
 Vazels GUI Project
-==================
+------------------
+
+Please check our wiki (https://github.com/jelford/reef/wiki) for _full_ usage instructions. 
+This was a 3rd Year Project undertaken by students at Imperial College London. We have chosen to release the code under the GPLv3.
+
 
 LICENSE ISSUES
-==============
+--------------
 Be aware that this software makes major use of various existing components.
+
  * It comes packaged with Vazels (http://www.vazels.org) which is GPLv3
  * It makes extensive use of the original source code of Restlite
    (http://code.google.com/p/restlite/) which is LGPL
