@@ -1,10 +1,12 @@
 Vazels GUI Project
 ------------------
 
-Please check our wiki (https://github.com/jelford/reef/wiki) for _full_ usage instructions, and developer documentation.
+Please check our wiki (https://github.com/jelford/reef/wiki) for full usage instructions, and developer documentation.
 
+Documentation
+-------------
 This was a 3rd Year Project undertaken by students at Imperial College London. We have chosen to release the code under the GPLv3.
-During the course of the project, various managerial documents were produced as part of the ongoing assessment process. These documents can be found under the `docs` directory of the repository. They are all in `.pdf` format, and are accompanied by staff feedback where given. Readers may wish to note that all reports with feedback given were awarded `A` grades (with the highest possible being `A+`), so we hope these documents are useful.
+During the course of the project, various managerial documents were produced as part of the ongoing assessment process; these documents can be found under the `docs` directory of the repository. They are all in `.pdf` format, and are accompanied by staff feedback where given. Readers might note that all reports with feedback given were awarded `A` grades (with the highest possible being `A+`), so we hope these documents are useful. Please also find slides used for the end-of-project Oral presentation in the same directory under Presentation.
 
 
 LICENSE ISSUES
